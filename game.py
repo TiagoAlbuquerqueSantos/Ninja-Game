@@ -11,20 +11,18 @@ from scripts.efeito_faisca import Faisca
 from scripts.particulas import Particula
 from scripts.tilemap import Tilemap
 from scripts.nuvens import Nuvens
+from scripts.configuracoes import *
 
 
 class Game:
     def __init__(self):
         pygame.init()
-        pygame.display.set_caption('Ninja Game V2')
-        self.tela = pygame.display.set_mode(
-            (640, 480), pygame.RESIZABLE | pygame.SCALED)
-        self.display = pygame.Surface((320, 240), pygame.SRCALPHA)
-        self.display_2 = pygame.Surface((320, 240))
+        pygame.display.set_caption(LEGENDA)
+        flags = pygame.RESIZABLE | pygame.SCALED
+        self.tela = pygame.display.set_mode(RESOLUCAO_TELA, flags=flags)
+        self.display = pygame.Surface(RES_DISPLAY, pygame.SRCALPHA)
+        self.display_2 = pygame.Surface(RES_DISPLAY)
         self.relogio = pygame.time.Clock()
-        self.dt = 0.1
-
-        self.font_style = pygame.font.Font('data/fonts/pocketpixel.ttf', 8)
 
         self.camera = None
         self.scroll = None
@@ -72,13 +70,13 @@ class Game:
         self.sfx['repulsao'].set_volume(0.3)
         self.sfx['pulo'].set_volume(0.7)
 
-        self.nuvens = Nuvens(self.assets['nuvens'], quant=16)
+        self.nuvens = Nuvens(self.assets['nuvens'], quant=NUM_NUVENS)
 
-        self.jogador = Jogador(self, (50, 50), (8, 15))
+        self.jogador = Jogador(self, POSICAO, HIT_BOX)
 
-        self.mapa_jogo = Tilemap(self, tamanho_tile=16)
+        self.mapa_jogo = Tilemap(self, tamanho_tile=TILE_SIZE)
 
-        self.nivel = 0
+        self.nivel = LEVEL
         self.carregar_nivel(self.nivel)
 
         self.balanco_imagem = 0
@@ -106,12 +104,6 @@ class Game:
         self.scroll = [0, 0]
         self.derrotado = 0
         self.transicao = -30
-
-    def debug_terminal(self):
-        # print(self.movimento)
-        # print(f'{self.jogador.pos[0]:.0f}, {self.jogador.pos[1]:.0f}')
-        # print(f"{self.relogio.get_fps():.0f}")
-        pass
 
     def desenhar_texto(self, texto, cor, pos):
         obj_texto = self.font_style.render(str(texto), False, cor)
@@ -237,7 +229,6 @@ class Game:
         if not self.derrotado:
             self.jogador.atualizar(
                 self.mapa_jogo, (self.movimento[1] - self.movimento[0], 0))
-        self.debug_terminal()
 
     def renderizar(self):
         self.display.fill((0, 0, 0, 0))
@@ -248,10 +239,7 @@ class Game:
         if not self.derrotado:
             self.jogador.renderizar(self.display, deslocamento=self.camera)
         self.renderizar_inimigos(self.display, deslocamento=self.camera)
-    # -----------------------------------------------------------------------------------------
-        # self.desenhar_texto(f'Inimigos:{len(self.inimigos)} Level:{self.nivel}', (200, 200, 0), (10, 10))
-        # self.desenhar_texto(f'Nivel: {self.nivel}', (200, 200, 0), (10, 5))
-    # -----------------------------------------------------------------------------------------
+
         self.circulo_transicao()
 
         self.display_2.blit(self.display, (0, 0))
@@ -261,9 +249,6 @@ class Game:
 
         self.tela.blit(pygame.transform.scale(
             self.display_2, self.tela.get_size()), balanco)
-        pygame.display.update()
-        self.dt = self.relogio.tick(60) / 1000
-        self.dt = max(0.001, min(0.1, self.dt))
 
     def checar_eventos(self):
         for evento in pygame.event.get():
@@ -294,6 +279,8 @@ class Game:
             self.checar_eventos()
             self.atualizar()
             self.renderizar()
+            pygame.display.update()
+            self.relogio.tick(FPS)
 
 
 if __name__ == '__main__':

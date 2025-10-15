@@ -1,0 +1,16 @@
+
+RESOLUCAO_TELA = (640, 480)
+RES_DISPLAY = (320, 240)
+LEGENDA = 'Ninja Game'
+
+FPS = 60
+
+NUM_NUVENS = 16
+
+# Parâmetros do jogador
+POSICAO = (50, 50)
+HIT_BOX = (8, 15)
+
+TILE_SIZE = 16
+
+LEVEL = 0

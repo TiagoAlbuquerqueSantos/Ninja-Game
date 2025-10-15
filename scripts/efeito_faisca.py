@@ -2,6 +2,7 @@ import math
 
 import pygame
 
+
 class Faisca:
     def __init__(self, pos, angulo, velocidade):
         self.pos = list(pos)
