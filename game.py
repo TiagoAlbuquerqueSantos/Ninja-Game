@@ -12,6 +12,8 @@ from scripts.particulas import Particula
 from scripts.tilemap import Tilemap
 from scripts.nuvens import Nuvens
 from scripts.configuracoes import *
+from scripts.hud import HUD
+from scripts.level_display import LevelDisplay
 
 
 class Game:
@@ -76,10 +78,22 @@ class Game:
 
         self.mapa_jogo = Tilemap(self, tamanho_tile=TILE_SIZE)
 
+        # Instancia o HUD com fonte pixel art, escala apropriada aos sprites (tamanho 16px)
+        # Pos: (8, 8) em pixels lógicos; Size: (60, 16) para caber 3 corações com tamanho proporcional
+        self.hud = HUD(
+            player=self.jogador,
+            pos=(8, 8),
+            size=(70, 16),
+            font_path='data/fonts/pocketpixel.ttf'
+        )
+
         self.nivel = LEVEL
         self.carregar_nivel(self.nivel)
 
         self.balanco_imagem = 0
+
+        # Inicializa o display de level (será criado quando carregar um nível)
+        self.level_display = None
 
     def carregar_nivel(self, id_mapa):
         self.mapa_jogo.carregar('data/maps/' + str(id_mapa) + '.json')
@@ -104,6 +118,17 @@ class Game:
         self.scroll = [0, 0]
         self.derrotado = 0
         self.transicao = -30
+
+        # Restaura a saúde do jogador ao carregar um novo nível
+        self.jogador.health = self.jogador.max_health
+
+        # Cria o pop-up de exibição do level
+        self.level_display = LevelDisplay(
+            nivel=id_mapa + 1,  # +1 para exibir "Level 1" em vez de "Level 0"
+            tempo_exibicao=180,  # 3 segundos em 60 FPS
+            font_path='data/fonts/pocketpixel.ttf',
+            tamanho_fonte=40
+        )
 
     def desenhar_texto(self, texto, cor, pos):
         obj_texto = self.font_style.render(str(texto), False, cor)
@@ -145,7 +170,7 @@ class Game:
             elif abs(self.jogador.repulsando) < 50:
                 if self.jogador.retangulo().collidepoint(projetil[0]):
                     self.projeteis.remove(projetil)
-                    self.derrotado += 1
+                    self.jogador.tomar_dano(1)
                     self.sfx['hit'].play()
                     self.balanco_imagem = max(16, self.balanco_imagem)
                     for i in range(30):
@@ -184,6 +209,12 @@ class Game:
                 self.carregar_nivel(self.nivel)
         if self.transicao < 0:
             self.transicao += 1
+
+        # Verifica se o jogador morreu (vida zerada)
+        if self.jogador.health <= 0:
+            if not self.derrotado:
+                self.derrotado = 1
+                self.balanco_imagem = max(16, self.balanco_imagem)
 
         if self.derrotado:
             self.derrotado += 1
@@ -229,6 +260,12 @@ class Game:
         if not self.derrotado:
             self.jogador.atualizar(
                 self.mapa_jogo, (self.movimento[1] - self.movimento[0], 0))
+        # garante que o HUD leia os valores atuais do jogador
+        if hasattr(self, 'hud'):
+            self.hud.update_from_player()
+        # atualiza o display de level
+        if self.level_display:
+            self.level_display.atualizar()
 
     def renderizar(self):
         self.display.fill((0, 0, 0, 0))
@@ -243,6 +280,14 @@ class Game:
         self.circulo_transicao()
 
         self.display_2.blit(self.display, (0, 0))
+
+        # desenha o HUD sobre a camada final antes do scale/blit para a tela
+        if hasattr(self, 'hud'):
+            self.hud.draw(self.display_2)
+
+        # desenha o pop-up de level
+        if self.level_display:
+            self.level_display.desenhar(self.display_2)
 
         balanco = (random.random() * self.balanco_imagem - self.balanco_imagem / 2,
                    random.random() * self.balanco_imagem - self.balanco_imagem / 2)

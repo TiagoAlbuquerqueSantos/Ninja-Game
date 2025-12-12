@@ -159,6 +159,8 @@ class Jogador(PhysicsEntity):
         self.pulos = 1
         self.deslize_parede = False
         self.repulsando = 0
+        self.max_health = 3
+        self.health = self.max_health
 
     def atualizar(self, tilemap, movimento=(0, 0)):
         super().atualizar(tilemap, movimento=movimento)
@@ -249,4 +251,9 @@ class Jogador(PhysicsEntity):
                 self.repulsando = -60
             else:
                 self.repulsando = 60
+
+    def tomar_dano(self, quantidade=1):
+        """Reduz a saúde do jogador"""
+        self.health = max(0, self.health - quantidade)
+
 
