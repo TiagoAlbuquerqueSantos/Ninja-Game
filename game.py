@@ -26,6 +26,8 @@ class Game:
         self.display_2 = pygame.Surface(RES_DISPLAY)
         self.relogio = pygame.time.Clock()
 
+        self.rodando = True
+
         self.camera = None
         self.scroll = None
         self.faiscas = None
@@ -130,10 +132,7 @@ class Game:
             tamanho_fonte=40
         )
 
-    def desenhar_texto(self, texto, cor, pos):
-        obj_texto = self.font_style.render(str(texto), False, cor)
-        rect_texto = obj_texto.get_rect(topleft=(pos[0], pos[1]))
-        self.display.blit(obj_texto, rect_texto)
+        self.musica_fundo()
 
     def atualizar_folhas(self):
         for rect in self.gerador_folhas:
@@ -241,7 +240,8 @@ class Game:
         if self.transicao:
             surf_transicao = pygame.Surface(self.display.get_size())
             pygame.draw.circle(surf_transicao, (255, 255, 255),
-                               (self.display.get_width() // 2, self.display.get_height() // 2), (30 - abs(self.transicao)) * 8)
+                               (self.display.get_width() // 2,
+                                        self.display.get_height() // 2), (30 - abs(self.transicao)) * 8)
             surf_transicao.set_colorkey((255, 255, 255))
             self.display.blit(surf_transicao, (0, 0))
 
@@ -297,10 +297,11 @@ class Game:
 
     def checar_eventos(self):
         for evento in pygame.event.get():
-            if evento.type == pygame.QUIT or (evento.type == pygame.KEYDOWN and evento.key == pygame.K_ESCAPE):
-                pygame.quit()
-                sys.exit()
+            if evento.type == pygame.QUIT:
+                self.rodando = False
             if evento.type == pygame.KEYDOWN:
+                if evento.key == pygame.K_ESCAPE:
+                    self.rodando = False
                 if evento.key == pygame.K_F11:
                     pygame.display.toggle_fullscreen()
                 if evento.key == pygame.K_a:
@@ -319,13 +320,14 @@ class Game:
                     self.movimento[1] = False
 
     def rodar(self):
-        self.musica_fundo()
-        while True:
+        while self.rodando:
             self.checar_eventos()
             self.atualizar()
             self.renderizar()
             pygame.display.update()
             self.relogio.tick(FPS)
+        pygame.quit()
+        sys.exit()
 
 
 if __name__ == '__main__':

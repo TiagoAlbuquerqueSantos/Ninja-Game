@@ -83,7 +83,8 @@ class Tilemap:
         for tile in self.tiles_aoredor(pos):
             if tile['tipo'] in COLISAO_TILES:
                 retangulos.append(pygame.Rect(
-                    tile['pos'][0] * self.tamanho_tile, tile['pos'][1] * self.tamanho_tile, self.tamanho_tile, self.tamanho_tile))
+                    tile['pos'][0] * self.tamanho_tile,
+                    tile['pos'][1] * self.tamanho_tile, self.tamanho_tile, self.tamanho_tile))
         return retangulos
 
     def autotile(self):
@@ -91,8 +92,7 @@ class Tilemap:
             tile = self.tilemap[loc]
             vizinhos = set()
             for shift in [(1, 0), (-1, 0), (0, -1), (0, 1)]:
-                checar_loc = str(tile['pos'][0] + shift[0]) + \
-                    ';' + str(tile['pos'][1] + shift[1])
+                checar_loc = str(tile['pos'][0] + shift[0]) + ';' + str(tile['pos'][1] + shift[1])
                 if checar_loc in self.tilemap:
                     if self.tilemap[checar_loc]['tipo'] == tile['tipo']:
                         vizinhos.add(shift)
