@@ -11,6 +11,7 @@ from scripts.efeito_faisca import Faisca
 from scripts.particulas import Particula
 from scripts.tilemap import Tilemap
 from scripts.nuvens import Nuvens
+from scripts.hud import HUD
 from scripts.configuracoes import *
 
 
@@ -23,6 +24,8 @@ class Game:
         self.display = pygame.Surface(RES_DISPLAY, pygame.SRCALPHA)
         self.display_2 = pygame.Surface(RES_DISPLAY)
         self.relogio = pygame.time.Clock()
+
+        self.hud = HUD(fonte_tamanho=8, cor_texto=(255, 0, 0))
 
         self.camera = None
         self.scroll = None
@@ -104,11 +107,6 @@ class Game:
         self.scroll = [0, 0]
         self.derrotado = 0
         self.transicao = -30
-
-    def desenhar_texto(self, texto, cor, pos):
-        obj_texto = self.font_style.render(str(texto), False, cor)
-        rect_texto = obj_texto.get_rect(topleft=(pos[0], pos[1]))
-        self.display.blit(obj_texto, rect_texto)
 
     def atualizar_folhas(self):
         for rect in self.gerador_folhas:
@@ -194,7 +192,7 @@ class Game:
 
     def musica_fundo(self):
         pygame.mixer.music.load('data/music.wav')
-        pygame.mixer.music.set_volume(0.5)
+        pygame.mixer.music.set_volume(1)
         pygame.mixer.music.play(-1)
 
         self.sfx['ambiente'].play(-1)
@@ -239,6 +237,7 @@ class Game:
         if not self.derrotado:
             self.jogador.renderizar(self.display, deslocamento=self.camera)
         self.renderizar_inimigos(self.display, deslocamento=self.camera)
+        self.hud.renderizar(self.display, self.jogador, self.relogio)
 
         self.circulo_transicao()
 
