@@ -6,6 +6,7 @@ import pygame
 from scripts.particulas import Particula
 from scripts.efeito_faisca import Faisca
 
+
 class PhysicsEntity:
     def __init__(self, main, tipo_e, pos, tamanho):
         self.main = main
@@ -139,6 +140,7 @@ class Inimigo(PhysicsEntity):
                 self.main.faiscas.append(Faisca(self.retangulo().center,0, 5 + random.random()))
                 self.main.faiscas.append(Faisca(self.retangulo().center, math.pi, 5 + random.random()))
                 return True
+        return None
 
     def renderizar(self, surf, deslocamento=(0, 0)):
         super().renderizar(surf, deslocamento=deslocamento)
@@ -241,6 +243,7 @@ class Jogador(PhysicsEntity):
             self.pulos -= 1
             self.tempo_ar = 5
             return True
+        return None
 
     def repulsao(self):
         if not self.repulsando:

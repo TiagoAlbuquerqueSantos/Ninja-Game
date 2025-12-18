@@ -73,6 +73,8 @@ class Game:
         self.sfx['repulsao'].set_volume(0.3)
         self.sfx['pulo'].set_volume(0.7)
 
+        self.musica_fundo()
+
         self.nuvens = Nuvens(self.assets['nuvens'], quant=NUM_NUVENS)
 
         self.jogador = Jogador(self, POSICAO, HIT_BOX)
@@ -273,7 +275,6 @@ class Game:
                     self.movimento[1] = False
 
     def rodar(self):
-        self.musica_fundo()
         while True:
             self.checar_eventos()
             self.atualizar()
