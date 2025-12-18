@@ -1,0 +1,150 @@
+Index: game.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import os\nimport sys\nimport math\nimport random\n\nimport pygame\n\nfrom scripts.utils import carregar_imagem, carregar_imagens, Animacao\nfrom scripts.entidades import Jogador, Inimigo\nfrom scripts.efeito_faisca import Faisca\nfrom scripts.particulas import Particula\nfrom scripts.tilemap import Tilemap\nfrom scripts.nuvens import Nuvens\nfrom scripts.configuracoes import *\nfrom scripts.hud import HUD\nfrom scripts.level_display import LevelDisplay\n\n\nclass Game:\n    def __init__(self):\n        pygame.init()\n        pygame.display.set_caption(LEGENDA)\n        flags = pygame.RESIZABLE | pygame.SCALED\n        self.tela = pygame.display.set_mode(RESOLUCAO_TELA, flags=flags)\n        self.display = pygame.Surface(RES_DISPLAY, pygame.SRCALPHA)\n        self.display_2 = pygame.Surface(RES_DISPLAY)\n        self.relogio = pygame.time.Clock()\n\n        self.rodando = True\n\n        self.camera = None\n        self.scroll = None\n        self.faiscas = None\n        self.inimigos = None\n        self.derrotado = None\n        self.projeteis = None\n        self.transicao = None\n        self.particulas = None\n        self.gerador_folhas = None\n\n        self.movimento = [False, False]\n\n        self.assets = {\n            'decor': carregar_imagens('tiles/decor'),\n            'grama': carregar_imagens('tiles/grass'),\n            'decor_larga': carregar_imagens('tiles/large_decor'),\n            'pedra': carregar_imagens('tiles/stone'),\n            'nuvens': carregar_imagens('clouds'),\n            'inimigo/idle': Animacao(carregar_imagens('entities/enemy/idle'), dur_img=6),\n            'inimigo/run': Animacao(carregar_imagens('entities/enemy/run'), dur_img=4),\n            'jogador/idle': Animacao(carregar_imagens('entities/player/idle'), dur_img=6),\n            'jogador/run': Animacao(carregar_imagens('entities/player/run'), dur_img=4),\n            'jogador/pulo': Animacao(carregar_imagens('entities/player/jump')),\n            'jogador/deslize': Animacao(carregar_imagens('entities/player/slide')),\n            'jogador/deslize_parede': Animacao(carregar_imagens('entities/player/wall_slide')),\n            'particulas/folhas': Animacao(carregar_imagens('particles/leaf'), dur_img=20, loop=False),\n            'particulas/particula': Animacao(carregar_imagens('particles/particle'), dur_img=6, loop=False),\n            'pistola': carregar_imagem('gun.png'),\n            'projetil': carregar_imagem('projectile.png'),\n            'plano_fundo': carregar_imagem('background.png'),\n        }\n\n        self.sfx = {\n            'pulo': pygame.mixer.Sound('data/sfx/jump.wav'),\n            'repulsao': pygame.mixer.Sound('data/sfx/dash.wav'),\n            'hit': pygame.mixer.Sound('data/sfx/hit.wav'),\n            'tiro': pygame.mixer.Sound('data/sfx/shoot.wav'),\n            'ambiente': pygame.mixer.Sound('data/sfx/ambience.wav')\n        }\n\n        self.sfx['ambiente'].set_volume(0.2)\n        self.sfx['tiro'].set_volume(0.4)\n        self.sfx['hit'].set_volume(0.8)\n        self.sfx['repulsao'].set_volume(0.3)\n        self.sfx['pulo'].set_volume(0.7)\n\n        self.nuvens = Nuvens(self.assets['nuvens'], quant=NUM_NUVENS)\n\n        self.jogador = Jogador(self, POSICAO, HIT_BOX)\n\n        self.mapa_jogo = Tilemap(self, tamanho_tile=TILE_SIZE)\n\n        # Instancia o HUD com fonte pixel art, escala apropriada aos sprites (tamanho 16px)\n        # Pos: (8, 8) em pixels lógicos; Size: (60, 16) para caber 3 corações com tamanho proporcional\n        self.hud = HUD(\n            player=self.jogador,\n            pos=(8, 8),\n            size=(70, 16),\n            font_path='data/fonts/pocketpixel.ttf'\n        )\n\n        self.nivel = LEVEL\n        self.carregar_nivel(self.nivel)\n\n        self.balanco_imagem = 0\n\n        # Inicializa o display de level (será criado quando carregar um nível)\n        self.level_display = None\n\n    def carregar_nivel(self, id_mapa):\n        self.mapa_jogo.carregar('data/maps/' + str(id_mapa) + '.json')\n\n        self.gerador_folhas = []\n        for arvore in self.mapa_jogo.extrair([('decor_larga', 2)], manter=True):\n            self.gerador_folhas.append(pygame.Rect(\n                4 + arvore['pos'][0], 4 + arvore['pos'][1], 23, 13))\n\n        self.inimigos = []\n        for gerador in self.mapa_jogo.extrair([('geradores', 0), ('geradores', 1)]):\n            if gerador['variante'] == 0:\n                self.jogador.pos = gerador['pos']\n                self.jogador.tempo_ar = 0\n            else:\n                self.inimigos.append(Inimigo(self, gerador['pos'], (8, 15)))\n\n        self.projeteis = []\n        self.particulas = []\n        self.faiscas = []\n\n        self.scroll = [0, 0]\n        self.derrotado = 0\n        self.transicao = -30\n\n        # Restaura a saúde do jogador ao carregar um novo nível\n        self.jogador.health = self.jogador.max_health\n\n        # Cria o pop-up de exibição do level\n        self.level_display = LevelDisplay(\n            nivel=id_mapa + 1,  # +1 para exibir \"Level 1\" em vez de \"Level 0\"\n            tempo_exibicao=180,  # 3 segundos em 60 FPS\n            font_path='data/fonts/pocketpixel.ttf',\n            tamanho_fonte=40\n        )\n\n        self.musica_fundo()\n\n    def atualizar_folhas(self):\n        for rect in self.gerador_folhas:\n            if random.random() * 49999 < rect.width * rect.height:\n                pos = (rect.x + random.random() * rect.width,\n                       rect.y + random.random() * rect.height)\n                self.particulas.append(\n                    Particula(self, 'folhas', pos, velocidade=[-0.1, 0.3], frame=random.randint(0, 20)))\n\n    def renderizar_inimigos(self, surf, deslocamento):\n        for inimigo in self.inimigos.copy():\n            derrotar = inimigo.atualizar(self.mapa_jogo, (0, 0))\n            inimigo.renderizar(surf, deslocamento)\n            if derrotar:\n                self.inimigos.remove(inimigo)\n\n        self.particulas_faiscas_projeteis()\n\n    def particulas_faiscas_projeteis(self):\n        for projetil in self.projeteis.copy():\n            projetil[0][0] += projetil[1]\n            projetil[2] += 1\n            img = self.assets['projetil']\n            self.display.blit(img, (projetil[0][0] - img.get_width() / 2 - self.camera[0],\n                                    projetil[0][1] - img.get_height() / 2 - self.camera[1]))\n            if self.mapa_jogo.checar_solido(projetil[0]):\n                self.projeteis.remove(projetil)\n                for i in range(4):\n                    self.faiscas.append(Faisca(projetil[0], random.random() - 0.5 + (math.pi if projetil[1] > 0 else 0),\n                                               2 + random.random()))\n\n            elif projetil[2] > 360:\n                self.projeteis.remove(projetil)\n            elif abs(self.jogador.repulsando) < 50:\n                if self.jogador.retangulo().collidepoint(projetil[0]):\n                    self.projeteis.remove(projetil)\n                    self.jogador.tomar_dano(1)\n                    self.sfx['hit'].play()\n                    self.balanco_imagem = max(16, self.balanco_imagem)\n                    for i in range(30):\n                        angulo = random.random() * math.pi * 2\n                        velocidade = random.random() * 5\n                        self.faiscas.append(\n                            Faisca(self.jogador.retangulo().center, angulo, 2 + random.random()))\n                        self.particulas.append(Particula(self, 'particula', self.jogador.retangulo().center,\n                                                         velocidade=[math.cos(angulo + math.pi) * velocidade * 0.5,\n                                                                     math.sin(angulo + math.pi) * velocidade * 0.5],\n                                                         frame=random.randint(0, 7)))\n\n        for faisca in self.faiscas.copy():\n            interromper = faisca.atualizar()\n            faisca.renderizar(self.display, deslocamento=self.camera)\n            if interromper:\n                self.faiscas.remove(faisca)\n\n        self.contornos()\n\n        for particula in self.particulas.copy():\n            interromper = particula.atualizar()\n            particula.renderizar(self.display, deslocamento=self.camera)\n            if particula.tipo == 'folhas':\n                particula.pos[0] += math.sin(\n                    particula.animacao.frame * 0.035) * 0.3\n            if interromper:\n                self.particulas.remove(particula)\n\n    def verificar_derrota(self):\n        if not len(self.inimigos):\n            self.transicao += 1\n            if self.transicao > 30:\n                self.nivel = min(\n                    self.nivel + 1, len(os.listdir('./data/maps')) - 1)\n                self.carregar_nivel(self.nivel)\n        if self.transicao < 0:\n            self.transicao += 1\n\n        # Verifica se o jogador morreu (vida zerada)\n        if self.jogador.health <= 0:\n            if not self.derrotado:\n                self.derrotado = 1\n                self.balanco_imagem = max(16, self.balanco_imagem)\n\n        if self.derrotado:\n            self.derrotado += 1\n            if self.derrotado >= 10:\n                self.transicao = min(30, self.transicao + 1)\n            if self.derrotado > 40:\n                self.carregar_nivel(self.nivel)\n\n    def musica_fundo(self):\n        pygame.mixer.music.load('data/music.wav')\n        pygame.mixer.music.set_volume(0.5)\n        pygame.mixer.music.play(-1)\n\n        self.sfx['ambiente'].play(-1)\n\n    def contornos(self):\n        mascara_display = pygame.mask.from_surface(self.display)\n        silueta_display = mascara_display.to_surface(\n            setcolor=(0, 0, 0, 180), unsetcolor=(0, 0, 0, 0))\n        for deslocamento in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n            self.display_2.blit(silueta_display, deslocamento)\n\n    def circulo_transicao(self):\n        if self.transicao:\n            surf_transicao = pygame.Surface(self.display.get_size())\n            pygame.draw.circle(surf_transicao, (255, 255, 255),\n                               (self.display.get_width() // 2,\n                                        self.display.get_height() // 2), (30 - abs(self.transicao)) * 8)\n            surf_transicao.set_colorkey((255, 255, 255))\n            self.display.blit(surf_transicao, (0, 0))\n\n    def movimento_camera(self):\n        self.scroll[0] += (self.jogador.retangulo().centerx -\n                           self.display.get_width() / 2 - self.scroll[0]) / 30\n        self.scroll[1] += (self.jogador.retangulo().centery -\n                           self.display.get_height() / 2 - self.scroll[1]) / 30\n        self.camera = (int(self.scroll[0]), int(self.scroll[1]))\n\n    def atualizar(self):\n        self.verificar_derrota()\n        self.movimento_camera()\n        self.atualizar_folhas()\n        self.nuvens.atualizar()\n        if not self.derrotado:\n            self.jogador.atualizar(\n                self.mapa_jogo, (self.movimento[1] - self.movimento[0], 0))\n        # garante que o HUD leia os valores atuais do jogador\n        if hasattr(self, 'hud'):\n            self.hud.update_from_player()\n        # atualiza o display de level\n        if self.level_display:\n            self.level_display.atualizar()\n\n    def renderizar(self):\n        self.display.fill((0, 0, 0, 0))\n        self.display_2.blit(self.assets['plano_fundo'], (0, 0))\n        self.balanco_imagem = max(0, self.balanco_imagem - 1)\n        self.nuvens.renderizar(self.display_2, deslocamento=self.camera)\n        self.mapa_jogo.renderizar(self.display, deslocamento=self.camera)\n        if not self.derrotado:\n            self.jogador.renderizar(self.display, deslocamento=self.camera)\n        self.renderizar_inimigos(self.display, deslocamento=self.camera)\n\n        self.circulo_transicao()\n\n        self.display_2.blit(self.display, (0, 0))\n\n        # desenha o HUD sobre a camada final antes do scale/blit para a tela\n        if hasattr(self, 'hud'):\n            self.hud.draw(self.display_2)\n\n        # desenha o pop-up de level\n        if self.level_display:\n            self.level_display.desenhar(self.display_2)\n\n        balanco = (random.random() * self.balanco_imagem - self.balanco_imagem / 2,\n                   random.random() * self.balanco_imagem - self.balanco_imagem / 2)\n\n        self.tela.blit(pygame.transform.scale(\n            self.display_2, self.tela.get_size()), balanco)\n\n    def checar_eventos(self):\n        for evento in pygame.event.get():\n            if evento.type == pygame.QUIT:\n                self.rodando = False\n            if evento.type == pygame.KEYDOWN:\n                if evento.key == pygame.K_ESCAPE:\n                    self.rodando = False\n                if evento.key == pygame.K_F11:\n                    pygame.display.toggle_fullscreen()\n                if evento.key == pygame.K_a:\n                    self.movimento[0] = True\n                if evento.key == pygame.K_d:\n                    self.movimento[1] = True\n                if evento.key == pygame.K_SPACE:\n                    if self.jogador.pular():\n                        self.sfx['pulo'].play()\n                if evento.key == pygame.K_j:\n                    self.jogador.repulsao()\n            if evento.type == pygame.KEYUP:\n                if evento.key == pygame.K_a:\n                    self.movimento[0] = False\n                if evento.key == pygame.K_d:\n                    self.movimento[1] = False\n\n    def rodar(self):\n        while self.rodando:\n            self.checar_eventos()\n            self.atualizar()\n            self.renderizar()\n            pygame.display.update()\n            self.relogio.tick(FPS)\n        pygame.quit()\n        sys.exit()\n\n\nif __name__ == '__main__':\n    Game().rodar()\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/game.py b/game.py
+--- a/game.py	(revision 383fc92522c54e1cf79cf36e6f3ea4160d2119bf)
++++ b/game.py	(date 1765645284676)
+@@ -11,7 +11,7 @@
+ from scripts.particulas import Particula
+ from scripts.tilemap import Tilemap
+ from scripts.nuvens import Nuvens
+-from scripts.configuracoes import *
++from scripts.constants import *
+ from scripts.hud import HUD
+ from scripts.level_display import LevelDisplay
+ 
+@@ -21,7 +21,7 @@
+         pygame.init()
+         pygame.display.set_caption(LEGENDA)
+         flags = pygame.RESIZABLE | pygame.SCALED
+-        self.tela = pygame.display.set_mode(RESOLUCAO_TELA, flags=flags)
++        self.tela = pygame.display.set_mode(RES_TELA, flags=flags)
+         self.display = pygame.Surface(RES_DISPLAY, pygame.SRCALPHA)
+         self.display_2 = pygame.Surface(RES_DISPLAY)
+         self.relogio = pygame.time.Clock()
+Index: main.py
+===================================================================
+diff --git a/main.py b/main.py
+new file mode 100644
+--- /dev/null	(date 1765645644001)
++++ b/main.py	(date 1765645644001)
+@@ -0,0 +1,46 @@
++
++import sys
++import pygame
++
++from scripts.constants import *
++
++
++class Game:
++    def __init__(self):
++        pygame.init()
++        pygame.display.set_caption(LEGENDA)
++        self.tela = pygame.display.set_mode(RES_TELA)
++        self.display = pygame.Surface(RES_DISPLAY)
++        self.relogio = pygame.time.Clock()
++
++        self.dt = 0.1
++        self.rodando = True
++
++
++    def checar_eventos(self):
++        for evento in pygame.event.get():
++            if evento.type == pygame.QUIT:
++                self.rodando = False
++            elif evento.type == pygame.KEYDOWN:
++                if evento.key == pygame.K_ESCAPE:
++                    self.rodando = False
++
++
++    def atualizar(self):
++        self.dt = self.relogio.tick(FPS) / 1000
++
++    def renderizar(self):
++        self.tela.blit(pygame.transform.scale(self.display, RES_TELA), (0, 0))
++        pygame.display.flip()
++
++    def rodar(self):
++        while self.rodando:
++            self.checar_eventos()
++            self.atualizar()
++            self.renderizar()
++        pygame.quit()
++        sys.exit()
++
++if __name__ == '__main__':
++    game = Game()
++    game.rodar()
+\ No newline at end of file
+Index: scripts/configuracoes.py
+===================================================================
+diff --git a/scripts/configuracoes.py b/scripts-old/constants.py
+rename from scripts/configuracoes.py
+rename to scripts-old/constants.py
+--- a/scripts/configuracoes.py	(revision 383fc92522c54e1cf79cf36e6f3ea4160d2119bf)
++++ b/scripts-old/constants.py	(date 1765644450772)
+@@ -1,6 +1,6 @@
+ 
+-RESOLUCAO_TELA = (640, 480)
+-RES_DISPLAY = (320, 240)
++RES_TELA = LARGURA, ALTURA = 640, 480
++RES_DISPLAY = 320, 240
+ LEGENDA = 'Ninja Game'
+ 
+ FPS = 60
+Index: scripts/constants.py
+===================================================================
+diff --git a/scripts/constants.py b/scripts/constants.py
+new file mode 100644
+--- /dev/null	(date 1765645741020)
++++ b/scripts/constants.py	(date 1765645741020)
+@@ -0,0 +1,16 @@
++
++RES_TELA = LARGURA, ALTURA = 640, 480
++RES_DISPLAY = 320, 240
++LEGENDA = 'Ninja Game'
++
++FPS = 60
++
++NUM_NUVENS = 16
++
++# Parâmetros do jogador
++POSICAO = (50, 50)
++HIT_BOX = (8, 15)
++
++TILE_SIZE = 16
++
++LEVEL = 0
+\ No newline at end of file
+diff --git a/scripts/efeito_faisca.py b/scripts-old/efeito_faisca.py
+rename from scripts/efeito_faisca.py
+rename to scripts-old/efeito_faisca.py
+diff --git a/scripts/states/state.py b/scripts/states/state.py
+new file mode 100644
+diff --git a/scripts/particulas.py b/scripts-old/particulas.py
+rename from scripts/particulas.py
+rename to scripts-old/particulas.py
+diff --git a/scripts/utils.py b/scripts-old/utils.py
+rename from scripts/utils.py
+rename to scripts-old/utils.py
+diff --git a/scripts/tilemap.py b/scripts-old/tilemap.py
+rename from scripts/tilemap.py
+rename to scripts-old/tilemap.py
+diff --git a/scripts/entidades.py b/scripts-old/entidades.py
+rename from scripts/entidades.py
+rename to scripts-old/entidades.py
+diff --git a/scripts/__init__.py b/scripts/__init__.py
+new file mode 100644
+diff --git a/scripts/states/level.py b/scripts/states/level.py
+new file mode 100644
+diff --git a/scripts/nuvens.py b/scripts-old/nuvens.py
+rename from scripts/nuvens.py
+rename to scripts-old/nuvens.py
+diff --git a/scripts/states/splash.py b/scripts/states/splash.py
+new file mode 100644
+diff --git a/scripts/states/menu.py b/scripts/states/menu.py
+new file mode 100644
