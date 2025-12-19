@@ -63,10 +63,7 @@ class PhysicsEntity:
                     self.colisoes['up'] = True
                 self.pos[1] = rect_entidade.y
 
-        if movimento[0] > 0:
-            self.flipe = False
-        if movimento[0] < 0:
-            self.flipe = True
+        self.flipe_horizontal_imagem(movimento)
 
         self.movimento_atual = movimento
 
@@ -76,6 +73,12 @@ class PhysicsEntity:
             self.velocidade[1] = 0
 
         self.animacao.atualizar()
+
+    def flipe_horizontal_imagem(self, movimento):
+        if movimento[0] > 0:
+            self.flipe = False
+        if movimento[0] < 0:
+            self.flipe = True
 
     def renderizar(self, surf, deslocamento=(0, 0)):
         surf.blit(pygame.transform.flip(self.animacao.imagem(), self.flipe, False),
@@ -130,7 +133,7 @@ class Inimigo(PhysicsEntity):
             if self.retangulo().colliderect(self.main.jogador.retangulo()):
                 self.main.balanco_imagem = max(16, self.main.balanco_imagem)
                 self.main.sfx['hit'].play()
-                for i in range(30):
+                for i in range(NUMS_PARTICULAS_ATAQUE):
                     angulo = random.random() * math.pi * 2
                     velocidade = random.random() * 5
                     self.main.faiscas.append(Faisca(self.retangulo().center, angulo, 2 + random.random()))

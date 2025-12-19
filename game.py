@@ -134,8 +134,6 @@ class Game:
             if derrotar:
                 self.inimigos.remove(inimigo)
 
-        self.render_projeteis()
-
     def render_projeteis(self):
         for projetil in self.projeteis.copy():
             projetil[0][0] += projetil[1]
@@ -216,6 +214,7 @@ class Game:
         self.camera = (int(self.scroll[0]), int(self.scroll[1]))
 
     def atualizar(self):
+        self.balanco_imagem = max(0, self.balanco_imagem - 1)
         self.carregar_proximo_nivel()
         self.verificar_derrota()
         self.movimento_camera()
@@ -226,11 +225,11 @@ class Game:
     def renderizar(self):
         self.display.fill((0, 0, 0, 0))
         self.display_2.blit(self.assets['plano_fundo'], (0, 0))
-        self.balanco_imagem = max(0, self.balanco_imagem - 1)
         self.nuvens.renderizar(self.display_2, deslocamento=self.camera)
         self.mapa_jogo.renderizar(self.display, deslocamento=self.camera)
         self.jogador.renderizar(self.display, deslocamento=self.camera)
         self.renderizar_inimigos()
+        self.render_projeteis()
         aplicar_contornos(self.display_2, self.display)
         self.desenhar_faiscas()
         self.desenhar_particulas()

@@ -4,13 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b4b0171c-7737-4538-ab0b-2bc416d21378" name="Changes" comment="Ajustes no código do editor.py e editor_config.py">
+    <list default="true" id="b4b0171c-7737-4538-ab0b-2bc416d21378" name="Changes" comment="Ajustes nas funções do jogo">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/game.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/constants.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/debug.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/hud.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/hud.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/entidades.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/entidades.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -163,7 +161,15 @@
       <option name="project" value="LOCAL" />
       <updated>1766170000529</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Ajustes nas funções do jogo">
+      <option name="closed" value="true" />
+      <created>1766178474498</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1766178474498</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -198,7 +204,8 @@
     <MESSAGE value="Adicionei um hud para mostrar dos dados de posição e velocidade do jogador" />
     <MESSAGE value="Ajustes no código" />
     <MESSAGE value="Ajustes no código do editor.py e editor_config.py" />
-    <option name="LAST_COMMIT_MESSAGE" value="Ajustes no código do editor.py e editor_config.py" />
+    <MESSAGE value="Ajustes nas funções do jogo" />
+    <option name="LAST_COMMIT_MESSAGE" value="Ajustes nas funções do jogo" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

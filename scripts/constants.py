@@ -40,9 +40,10 @@ PULO = 0.7
 # Camera
 ACE_CAMERA = 30
 
-# Propriedades da Faisca
+# Propriedades de Partícula e Faisca
 NUMS_FAISCA_PAREDE = 4
 NUMS_FAISCA_DERROTADO = 30
+NUMS_PARTICULAS_ATAQUE = 30
 
 
 # Parâmetros do tilemap
