@@ -6,11 +6,6 @@ from scripts.constants import *
 
 
 class HUD:
-    """
-    Classe responsável por renderizar informações na tela (HUD).
-    Exibe FPS, posição do jogador e velocidade usando pgbitmapfont.
-    """
-    
     def __init__(self, game):
         self.game = game
         self.fonte = BitmapFont(
@@ -20,23 +15,15 @@ class HUD:
             spacing=(1, 1)
         )
     
-    def renderizar(self, display, jogador, relogio):
-        """
-        Renderiza as informações na tela.
-        
-        Args:
-            display: Superfície pygame onde renderizar
-            jogador: Objeto do jogador (deve ter pos e velocidade)
-            relogio: Clock do pygame para obter FPS
-        """
-        fps = int(relogio.get_fps())
-        pos_x = round(jogador.pos[0], 1)
-        pos_y = round(jogador.pos[1], 1)
-        vel_x = round(jogador.velocidade[0], 2)
-        vel_y = round(jogador.velocidade[1], 2)
+    def renderizar(self, display):
+        fps = self.game.relogio.get_fps()
+        pos_x = round(self.game.jogador.pos[0], 1)
+        pos_y = round(self.game.jogador.pos[1], 1)
+        vel_x = round(self.game.jogador.velocidade[0], 2)
+        vel_y = round(self.game.jogador.velocidade[1], 2)
         
         # Criar strings de texto
-        texto_fps = f'FPS: {fps}'
+        texto_fps = f'FPS: {fps:.2f}'
         texto_pos = f'Pos: ({pos_x}, {pos_y})'
         texto_vel = f'Vel: ({vel_x}, {vel_y})'
         texto_drr = f'Nums de chances: ({self.game.derrotado})'

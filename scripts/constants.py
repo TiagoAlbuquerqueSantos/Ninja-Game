@@ -37,6 +37,13 @@ HIT = 0.8
 REPULSIVE = 0.3
 PULO = 0.7
 
+# Camera
+ACE_CAMERA = 30
+
+# Propriedades da Faisca
+NUMS_FAISCA_PAREDE = 4
+NUMS_FAISCA_DERROTADO = 30
+
 
 # Parâmetros do tilemap
 AUTOTILE_MAPA = {

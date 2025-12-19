@@ -5,7 +5,7 @@ import random
 
 import pygame
 
-from scripts.utils import carregar_imagem, carregar_imagens, Animacao
+from scripts.utils import carregar_imagem, carregar_imagens, aplicar_contornos, Animacao
 from scripts.entidades import Jogador, Inimigo
 from scripts.efeito_faisca import Faisca
 from scripts.particulas import Particula
@@ -88,6 +88,13 @@ class Game:
 
         self.balanco_imagem = 0
 
+    def musica_fundo(self):
+        pygame.mixer.music.load('data/music.wav')
+        pygame.mixer.music.set_volume(MUSICA_FUNDO)
+        pygame.mixer.music.play(-1)
+
+        self.sfx['ambiente'].play(-1)
+
     def carregar_nivel(self, id_mapa):
         self.mapa_jogo.carregar('data/maps/' + str(id_mapa) + '.json')
 
@@ -120,25 +127,25 @@ class Game:
                 self.particulas.append(
                     Particula(self, 'folhas', pos, velocidade=[-0.1, 0.3], frame=random.randint(0, 20)))
 
-    def renderizar_inimigos(self, surf, deslocamento):
+    def renderizar_inimigos(self):
         for inimigo in self.inimigos.copy():
             derrotar = inimigo.atualizar(self.mapa_jogo, (0, 0))
-            inimigo.renderizar(surf, deslocamento)
+            inimigo.renderizar(self.display, deslocamento=self.camera)
             if derrotar:
                 self.inimigos.remove(inimigo)
 
-        self.particulas_faiscas_projeteis()
+        self.render_projeteis()
 
-    def particulas_faiscas_projeteis(self):
+    def render_projeteis(self):
         for projetil in self.projeteis.copy():
             projetil[0][0] += projetil[1]
             projetil[2] += 1
             img = self.assets['projetil']
             self.display.blit(img, (projetil[0][0] - img.get_width() / 2 - self.camera[0],
-                                    projetil[0][1] - img.get_height() / 2 - self.camera[1]))
+                                          projetil[0][1] - img.get_height() / 2 - self.camera[1]))
             if self.mapa_jogo.checar_solido(projetil[0]):
                 self.projeteis.remove(projetil)
-                for i in range(4):
+                for i in range(NUMS_FAISCA_PAREDE):
                     self.faiscas.append(Faisca(projetil[0], random.random() - 0.5 + (math.pi if projetil[1] > 0 else 0),
                                                2 + random.random()))
 
@@ -150,7 +157,7 @@ class Game:
                     self.derrotado += 1
                     self.sfx['hit'].play()
                     self.balanco_imagem = max(16, self.balanco_imagem)
-                    for i in range(30):
+                    for i in range(NUMS_FAISCA_DERROTADO):
                         angulo = random.random() * math.pi * 2
                         velocidade = random.random() * 5
                         self.faiscas.append(
@@ -160,14 +167,14 @@ class Game:
                                                                      math.sin(angulo + math.pi) * velocidade * 0.5],
                                                          frame=random.randint(0, 7)))
 
+    def desenhar_faiscas(self):
         for faisca in self.faiscas.copy():
             interromper = faisca.atualizar()
             faisca.renderizar(self.display, deslocamento=self.camera)
             if interromper:
                 self.faiscas.remove(faisca)
 
-        self.contornos()
-
+    def desenhar_particulas(self):
         for particula in self.particulas.copy():
             interromper = particula.atualizar()
             particula.renderizar(self.display, deslocamento=self.camera)
@@ -177,7 +184,7 @@ class Game:
             if interromper:
                 self.particulas.remove(particula)
 
-    def verificar_derrota(self):
+    def carregar_proximo_nivel(self):
         if not len(self.inimigos):
             self.transicao += 1
             if self.transicao > 30:
@@ -187,26 +194,13 @@ class Game:
         if self.transicao < 0:
             self.transicao += 1
 
+    def verificar_derrota(self):
         if self.derrotado:
             self.derrotado += 1
             if self.derrotado >= 10:
                 self.transicao = min(30, self.transicao + 1)
             if self.derrotado > 40:
                 self.carregar_nivel(self.nivel)
-
-    def musica_fundo(self):
-        pygame.mixer.music.load('data/music.wav')
-        pygame.mixer.music.set_volume(MUSICA_FUNDO)
-        pygame.mixer.music.play(-1)
-
-        self.sfx['ambiente'].play(-1)
-
-    def contornos(self):
-        mascara_display = pygame.mask.from_surface(self.display)
-        silueta_display = mascara_display.to_surface(
-            setcolor=(0, 0, 0, 180), unsetcolor=(0, 0, 0, 0))
-        for deslocamento in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
-            self.display_2.blit(silueta_display, deslocamento)
 
     def circulo_transicao(self):
         if self.transicao:
@@ -217,11 +211,12 @@ class Game:
             self.display.blit(surf_transicao, (0, 0))
 
     def movimento_camera(self):
-        self.scroll[0] += (self.jogador.retangulo().centerx - DISPLAY_L / 2 - self.scroll[0]) / 30
-        self.scroll[1] += (self.jogador.retangulo().centery - DISPLAY_A / 2 - self.scroll[1]) / 30
+        self.scroll[0] += (self.jogador.retangulo().centerx - DISPLAY_L / 2 - self.scroll[0]) / ACE_CAMERA
+        self.scroll[1] += (self.jogador.retangulo().centery - DISPLAY_A / 2 - self.scroll[1]) / ACE_CAMERA
         self.camera = (int(self.scroll[0]), int(self.scroll[1]))
 
     def atualizar(self):
+        self.carregar_proximo_nivel()
         self.verificar_derrota()
         self.movimento_camera()
         self.atualizar_folhas()
@@ -235,8 +230,11 @@ class Game:
         self.nuvens.renderizar(self.display_2, deslocamento=self.camera)
         self.mapa_jogo.renderizar(self.display, deslocamento=self.camera)
         self.jogador.renderizar(self.display, deslocamento=self.camera)
-        self.renderizar_inimigos(self.display, deslocamento=self.camera)
-        self.hud.renderizar(self.display, self.jogador, self.relogio)
+        self.renderizar_inimigos()
+        aplicar_contornos(self.display_2, self.display)
+        self.desenhar_faiscas()
+        self.desenhar_particulas()
+        self.hud.renderizar(self.display)
 
         self.circulo_transicao()
 
