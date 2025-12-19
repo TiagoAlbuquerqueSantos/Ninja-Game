@@ -12,20 +12,20 @@ from scripts.particulas import Particula
 from scripts.tilemap import Tilemap
 from scripts.nuvens import Nuvens
 from scripts.hud import HUD
-from scripts.configuracoes import *
+from scripts.constants import *
 
 
 class Game:
     def __init__(self):
         pygame.init()
         pygame.display.set_caption(LEGENDA)
-        flags = pygame.RESIZABLE | pygame.SCALED
-        self.tela = pygame.display.set_mode(RESOLUCAO_TELA, flags=flags)
-        self.display = pygame.Surface(RES_DISPLAY, pygame.SRCALPHA)
-        self.display_2 = pygame.Surface(RES_DISPLAY)
+        flags = pygame.SCALED | pygame.RESIZABLE
+        self.tela = pygame.display.set_mode(RES_TELA, flags=flags)
+        self.display = pygame.Surface((DISPLAY_L, DISPLAY_A), pygame.SRCALPHA)
+        self.display_2 = self.display.copy()
         self.relogio = pygame.time.Clock()
 
-        self.hud = HUD(fonte_tamanho=8, cor_texto=(255, 0, 0))
+        self.hud = HUD(self)
 
         self.camera = None
         self.scroll = None
@@ -36,6 +36,8 @@ class Game:
         self.transicao = None
         self.particulas = None
         self.gerador_folhas = None
+
+        self.rodando = True
 
         self.movimento = [False, False]
 
@@ -67,11 +69,11 @@ class Game:
             'ambiente': pygame.mixer.Sound('data/sfx/ambience.wav')
         }
 
-        self.sfx['ambiente'].set_volume(0.2)
-        self.sfx['tiro'].set_volume(0.4)
-        self.sfx['hit'].set_volume(0.8)
-        self.sfx['repulsao'].set_volume(0.3)
-        self.sfx['pulo'].set_volume(0.7)
+        self.sfx['ambiente'].set_volume(AMBIENTE)
+        self.sfx['tiro'].set_volume(TIRO)
+        self.sfx['hit'].set_volume(HIT)
+        self.sfx['repulsao'].set_volume(REPULSIVE)
+        self.sfx['pulo'].set_volume(PULO)
 
         self.musica_fundo()
 
@@ -194,7 +196,7 @@ class Game:
 
     def musica_fundo(self):
         pygame.mixer.music.load('data/music.wav')
-        pygame.mixer.music.set_volume(1)
+        pygame.mixer.music.set_volume(MUSICA_FUNDO)
         pygame.mixer.music.play(-1)
 
         self.sfx['ambiente'].play(-1)
@@ -209,16 +211,14 @@ class Game:
     def circulo_transicao(self):
         if self.transicao:
             surf_transicao = pygame.Surface(self.display.get_size())
-            pygame.draw.circle(surf_transicao, (255, 255, 255),
-                               (self.display.get_width() // 2, self.display.get_height() // 2), (30 - abs(self.transicao)) * 8)
-            surf_transicao.set_colorkey((255, 255, 255))
+            pygame.draw.circle(surf_transicao, BRANCO,
+                               (DISPLAY_L // 2, DISPLAY_A // 2), (30 - abs(self.transicao)) * 8)
+            surf_transicao.set_colorkey(BRANCO)
             self.display.blit(surf_transicao, (0, 0))
 
     def movimento_camera(self):
-        self.scroll[0] += (self.jogador.retangulo().centerx -
-                           self.display.get_width() / 2 - self.scroll[0]) / 30
-        self.scroll[1] += (self.jogador.retangulo().centery -
-                           self.display.get_height() / 2 - self.scroll[1]) / 30
+        self.scroll[0] += (self.jogador.retangulo().centerx - DISPLAY_L / 2 - self.scroll[0]) / 30
+        self.scroll[1] += (self.jogador.retangulo().centery - DISPLAY_A / 2 - self.scroll[1]) / 30
         self.camera = (int(self.scroll[0]), int(self.scroll[1]))
 
     def atualizar(self):
@@ -226,9 +226,7 @@ class Game:
         self.movimento_camera()
         self.atualizar_folhas()
         self.nuvens.atualizar()
-        if not self.derrotado:
-            self.jogador.atualizar(
-                self.mapa_jogo, (self.movimento[1] - self.movimento[0], 0))
+        self.jogador.atualizar(self.mapa_jogo, (self.movimento[1] - self.movimento[0], 0))
 
     def renderizar(self):
         self.display.fill((0, 0, 0, 0))
@@ -236,8 +234,7 @@ class Game:
         self.balanco_imagem = max(0, self.balanco_imagem - 1)
         self.nuvens.renderizar(self.display_2, deslocamento=self.camera)
         self.mapa_jogo.renderizar(self.display, deslocamento=self.camera)
-        if not self.derrotado:
-            self.jogador.renderizar(self.display, deslocamento=self.camera)
+        self.jogador.renderizar(self.display, deslocamento=self.camera)
         self.renderizar_inimigos(self.display, deslocamento=self.camera)
         self.hud.renderizar(self.display, self.jogador, self.relogio)
 
@@ -248,15 +245,15 @@ class Game:
         balanco = (random.random() * self.balanco_imagem - self.balanco_imagem / 2,
                    random.random() * self.balanco_imagem - self.balanco_imagem / 2)
 
-        self.tela.blit(pygame.transform.scale(
-            self.display_2, self.tela.get_size()), balanco)
+        self.tela.blit(pygame.transform.scale(self.display_2, RES_TELA), balanco)
 
     def checar_eventos(self):
         for evento in pygame.event.get():
-            if evento.type == pygame.QUIT or (evento.type == pygame.KEYDOWN and evento.key == pygame.K_ESCAPE):
-                pygame.quit()
-                sys.exit()
-            if evento.type == pygame.KEYDOWN:
+            if evento.type == pygame.QUIT:
+                self.rodando = False
+            elif evento.type == pygame.KEYDOWN:
+                if evento.key == pygame.K_ESCAPE:
+                    self.rodando = False
                 if evento.key == pygame.K_F11:
                     pygame.display.toggle_fullscreen()
                 if evento.key == pygame.K_a:
@@ -275,12 +272,14 @@ class Game:
                     self.movimento[1] = False
 
     def rodar(self):
-        while True:
+        while self.rodando:
             self.checar_eventos()
             self.atualizar()
             self.renderizar()
             pygame.display.update()
             self.relogio.tick(FPS)
+        pygame.quit()
+        sys.exit()
 
 
 if __name__ == '__main__':

@@ -3,6 +3,7 @@ import random
 
 import pygame
 
+from scripts.constants import *
 from scripts.particulas import Particula
 from scripts.efeito_faisca import Faisca
 
@@ -69,7 +70,7 @@ class PhysicsEntity:
 
         self.movimento_atual = movimento
 
-        self.velocidade[1] = min(5, self.velocidade[1] + 0.1)
+        self.velocidade[1] = min(VEL_MAX_QUEDA, self.velocidade[1] + 0.1)
 
         if self.colisoes['down'] or self.colisoes['up']:
             self.velocidade[1] = 0
@@ -163,64 +164,66 @@ class Jogador(PhysicsEntity):
         self.repulsando = 0
 
     def atualizar(self, tilemap, movimento=(0, 0)):
-        super().atualizar(tilemap, movimento=movimento)
+        if not self.main.derrotado:
+            super().atualizar(tilemap, movimento=movimento)
 
-        self.tempo_ar += 1
+            self.tempo_ar += 1
 
-        if self.tempo_ar > 120:
-            if not self.main.derrotado:
-                self.main.balanco_imagem = max(16, self.main.balanco_imagem)
-            self.main.derrotado += 1
+            if self.tempo_ar > 120:
+                if not self.main.derrotado:
+                    self.main.balanco_imagem = max(16, self.main.balanco_imagem)
+                self.main.derrotado += 1
 
-        if self.colisoes['down']:
-            self.tempo_ar = 0
-            self.pulos = 1
+            if self.colisoes['down']:
+                self.tempo_ar = 0
+                self.pulos = 1
 
-        self.deslize_parede = False
-        if (self.colisoes['right'] or self.colisoes['left']) and self.tempo_ar > 4:
-            self.deslize_parede = True
-            self.velocidade[1] = min(self.velocidade[1], 0.5)
-            if self.colisoes['right']:
-                self.flipe = False
-            else:
-                self.flipe = True
-            self.acao_atual('deslize_parede')
+            self.deslize_parede = False
+            if (self.colisoes['right'] or self.colisoes['left']) and self.tempo_ar > 4:
+                self.deslize_parede = True
+                self.velocidade[1] = min(self.velocidade[1], 0.5)
+                if self.colisoes['right']:
+                    self.flipe = False
+                else:
+                    self.flipe = True
+                self.acao_atual('deslize_parede')
 
-        if not self.deslize_parede:
-            if self.tempo_ar > 4:
-                self.acao_atual('pulo')
-            elif movimento[0] != 0:
-                self.acao_atual('run')
-            else:
-                self.acao_atual('idle')
+            if not self.deslize_parede:
+                if self.tempo_ar > 4:
+                    self.acao_atual('pulo')
+                elif movimento[0] != 0:
+                    self.acao_atual('run')
+                else:
+                    self.acao_atual('idle')
 
-        if abs(self.repulsando) in {60, 50}:
-            for i in range(20):
-                angulo = random.random() * math.pi * 2
-                velocidade = random.random() * 0.5 + 0.5
-                vel_particula = [math.cos(angulo) * velocidade, math.sin(angulo) * velocidade]
+            if abs(self.repulsando) in {60, 50}:
+                for i in range(20):
+                    angulo = random.random() * math.pi * 2
+                    velocidade = random.random() * 0.5 + 0.5
+                    vel_particula = [math.cos(angulo) * velocidade, math.sin(angulo) * velocidade]
+                    self.main.particulas.append(Particula(self.main, 'particula', self.retangulo().center,
+                                                          velocidade=vel_particula, frame=random.randint(0, 7)))
+            if self.repulsando > 0:
+                self.repulsando = max(0, self.repulsando - 1)
+            if self.repulsando < 0:
+                self.repulsando = min(0, self.repulsando + 1)
+            if abs(self.repulsando) > 50:
+                self.velocidade[0] = abs(self.repulsando) / self.repulsando * 8
+                if abs(self.repulsando) == 51:
+                    self.velocidade[0] *= 0.1
+                vel_particula = [abs(self.repulsando) / self.repulsando * random.random() * 3, 0]
                 self.main.particulas.append(Particula(self.main, 'particula', self.retangulo().center,
                                                       velocidade=vel_particula, frame=random.randint(0, 7)))
-        if self.repulsando > 0:
-            self.repulsando = max(0, self.repulsando - 1)
-        if self.repulsando < 0:
-            self.repulsando = min(0, self.repulsando + 1)
-        if abs(self.repulsando) > 50:
-            self.velocidade[0] = abs(self.repulsando) / self.repulsando * 8
-            if abs(self.repulsando) == 51:
-                self.velocidade[0] *= 0.1
-            vel_particula = [abs(self.repulsando) / self.repulsando * random.random() * 3, 0]
-            self.main.particulas.append(Particula(self.main, 'particula', self.retangulo().center,
-                                                  velocidade=vel_particula, frame=random.randint(0, 7)))
 
-        if self.velocidade[0] > 0:
-            self.velocidade[0] = max(self.velocidade[0] - 0.1, 0)
-        else:
-            self.velocidade[0] = min(self.velocidade[0] + 0.1, 0)
+            if self.velocidade[0] > 0:
+                self.velocidade[0] = max(self.velocidade[0] - 0.1, 0)
+            else:
+                self.velocidade[0] = min(self.velocidade[0] + 0.1, 0)
 
     def renderizar(self, surf, deslocamento=(0, 0)):
-        if abs(self.repulsando) <= 50:
-            super().renderizar(surf, deslocamento=deslocamento)
+        if not self.main.derrotado:
+            if abs(self.repulsando) <= 50:
+                super().renderizar(surf, deslocamento=deslocamento)
 
     def pular(self):
         if self.deslize_parede:
@@ -239,7 +242,7 @@ class Jogador(PhysicsEntity):
                 return True
 
         elif self.pulos:
-            self.velocidade[1] = -3
+            self.velocidade[1] = -FORCA_PULO
             self.pulos -= 1
             self.tempo_ar = 5
             return True

@@ -1,23 +1,8 @@
-import json
 
+import json
 import pygame
 
-AUTOTILE_MAPA = {
-    tuple(sorted([(1, 0), (0, 1)])): 0,
-    tuple(sorted([(1, 0), (0, 1), (-1, 0)])): 1,
-    tuple(sorted([(-1, 0), (0, 1)])): 2,
-    tuple(sorted([(-1, 0), (0, -1), (0, 1)])): 3,
-    tuple(sorted([(-1, 0), (0, -1)])): 4,
-    tuple(sorted([(-1, 0), (0, -1), (1, 0)])): 5,
-    tuple(sorted([(1, 0), (0, -1)])): 6,
-    tuple(sorted([(1, 0), (0, -1), (0, 1)])): 7,
-    tuple(sorted([(1, 0), (-1, 0), (0, 1), (0, -1)])): 8
-}
-
-NEIGHBOR_OFFSETS = [(-1, 0), (-1, -1), (0, -1), (1, -1),
-                    (1, 0), (0, 0), (-1, 1), (0, 1), (1, 1)]
-COLISAO_TILES = {'grama', 'pedra'}
-TIPOS_AUTOTILE = {'grama', 'pedra'}
+from scripts.constants import *
 
 
 class Tilemap:
@@ -77,6 +62,7 @@ class Tilemap:
         if loc_tile in self.tilemap:
             if self.tilemap[loc_tile]['tipo'] in COLISAO_TILES:
                 return self.tilemap[loc_tile]
+        return None
 
     def colisao_rects_aoredor(self, pos):
         retangulos = []
