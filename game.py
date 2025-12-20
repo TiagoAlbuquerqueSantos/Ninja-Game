@@ -77,11 +77,11 @@ class Game:
 
         self.musica_fundo()
 
-        self.nuvens = Nuvens(self.assets['nuvens'], quant=NUM_NUVENS)
+        self.nuvens = Nuvens(self.assets['nuvens'], NUM_NUVENS)
 
         self.jogador = Jogador(self, POSICAO, HIT_BOX)
 
-        self.mapa_jogo = Tilemap(self, tamanho_tile=TILE_SIZE)
+        self.mapa_jogo = Tilemap(self, TILE_SIZE)
 
         self.nivel = LEVEL
         self.carregar_nivel(self.nivel)
@@ -141,6 +141,7 @@ class Game:
             img = self.assets['projetil']
             self.display.blit(img, (projetil[0][0] - img.get_width() / 2 - self.camera[0],
                                           projetil[0][1] - img.get_height() / 2 - self.camera[1]))
+
             if self.mapa_jogo.checar_solido(projetil[0]):
                 self.projeteis.remove(projetil)
                 for i in range(NUMS_FAISCA_PAREDE):
@@ -203,8 +204,7 @@ class Game:
     def circulo_transicao(self):
         if self.transicao:
             surf_transicao = pygame.Surface(self.display.get_size())
-            pygame.draw.circle(surf_transicao, BRANCO,
-                               (DISPLAY_L // 2, DISPLAY_A // 2), (30 - abs(self.transicao)) * 8)
+            pygame.draw.circle(surf_transicao, BRANCO, CENTRO_TELA, (30 - abs(self.transicao)) * 8)
             surf_transicao.set_colorkey(BRANCO)
             self.display.blit(surf_transicao, (0, 0))
 

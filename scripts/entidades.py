@@ -82,8 +82,8 @@ class PhysicsEntity:
 
     def renderizar(self, surf, deslocamento=(0, 0)):
         surf.blit(pygame.transform.flip(self.animacao.imagem(), self.flipe, False),
-                 (self.pos[0] - deslocamento[0] + self.deslocamento_anim[0],
-                  self.pos[1] - deslocamento[1] + self.deslocamento_anim[1]))
+                 (self.pos[0] - deslocamento[0] + DESLOCAMENTO_ANIM,
+                  self.pos[1] - deslocamento[1] + DESLOCAMENTO_ANIM))
 
 
 class Inimigo(PhysicsEntity):

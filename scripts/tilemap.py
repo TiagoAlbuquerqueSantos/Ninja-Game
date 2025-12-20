@@ -69,7 +69,8 @@ class Tilemap:
         for tile in self.tiles_aoredor(pos):
             if tile['tipo'] in COLISAO_TILES:
                 retangulos.append(pygame.Rect(
-                    tile['pos'][0] * self.tamanho_tile, tile['pos'][1] * self.tamanho_tile, self.tamanho_tile, self.tamanho_tile))
+                    tile['pos'][0] * self.tamanho_tile,
+                    tile['pos'][1] * self.tamanho_tile, self.tamanho_tile, self.tamanho_tile))
         return retangulos
 
     def autotile(self):

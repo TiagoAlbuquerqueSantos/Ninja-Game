@@ -1,6 +1,7 @@
 
 RES_TELA = LARGURA, ALTURA = 640, 480
 DISPLAY_L, DISPLAY_A = 320, 240
+CENTRO_TELA = DISPLAY_L // 2, DISPLAY_A // 2
 LEGENDA = 'Ninja Game'
 FPS = 60
 
@@ -65,3 +66,5 @@ NEIGHBOR_OFFSETS = [(-1, 0), (-1, -1), (0, -1), (1, -1),
 COLISAO_TILES = {'grama', 'pedra'}
 TIPOS_AUTOTILE = {'grama', 'pedra'}
 
+
+DESLOCAMENTO_ANIM = -3

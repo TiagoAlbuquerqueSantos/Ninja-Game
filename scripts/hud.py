@@ -16,31 +16,22 @@ class HUD:
         )
     
     def renderizar(self, display):
-        fps = self.game.relogio.get_fps()
-        pos_x = round(self.game.jogador.pos[0], 1)
-        pos_y = round(self.game.jogador.pos[1], 1)
-        vel_x = round(self.game.jogador.velocidade[0], 2)
-        vel_y = round(self.game.jogador.velocidade[1], 2)
-        
-        # Criar strings de texto
-        texto_fps = f'FPS: {fps:.2f}'
-        texto_pos = f'Pos: ({pos_x}, {pos_y})'
-        texto_vel = f'Vel: ({vel_x}, {vel_y})'
-        texto_drr = f'Nums de chances: ({self.game.derrotado})'
+        pos = (round(self.game.jogador.pos[0], 1),
+               round(self.game.jogador.pos[1], 1))
+        vel = (round(self.game.jogador.velocidade[0], 2),
+               round(self.game.jogador.velocidade[1], 2))
 
-        # Renderizar cada linha
-        surf_fps = self.fonte.render(texto_fps)[0]
-        surf_pos = self.fonte.render(texto_pos)[0]
-        surf_vel = self.fonte.render(texto_vel)[0]
-        surf_drr = self.fonte.render(texto_drr)[0]
+        dados_texto = f"""
+        FPS: {self.game.relogio.get_fps():.2f}
+        Pos: {pos}
+        Vel: {vel}
+        Nums de chances: {self.game.derrotado}
+        Transicao de fase: {self.game.transicao}
+        """
 
-        # Posicionar na tela (canto superior esquerdo com espaçamento)
-        display.blit(surf_fps, (5, 5))
-        display.blit(surf_pos, (5, 15))
-        display.blit(surf_vel, (5, 25))
-        display.blit(surf_drr, (5, 35))
+        self.renderizar_customizado(display, dados_texto)
 
-    def renderizar_customizado(self, display, dados_texto, posicao=(5, 5)):
+    def renderizar_customizado(self, display, dados_texto, posicao=(-30, -5)):
         """
         Renderiza textos customizados em uma posição específica.
         
