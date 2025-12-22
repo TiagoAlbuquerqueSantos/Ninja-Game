@@ -1,4 +1,6 @@
 import pygame
+
+from scripts.constants import VOLUME_AUDIO
 from pygame.mixer import Sound, Channel
 from pathlib import Path
 from typing import Dict, Optional
@@ -14,8 +16,6 @@ class SoundManager:
         self._load_all_sounds()
 
     def _load_all_sounds(self) -> None:
-        """Carrega todos os arquivos de som do diretório."""
-        # Estrutura esperada: assets/sounds/sfx/ e assets/sounds/music/
         sfx_dir = self.sounds_dir / "sfx"
         music_dir = self.sounds_dir / "music"
 
@@ -27,24 +27,21 @@ class SoundManager:
             for music_file in music_dir.glob("*.wav"):
                 self.sounds[music_file.stem] = Sound(str(music_file))
 
-    def play_sfx(self, sfx_name: str, volume: float = 1.0) -> None:
-        """Reproduz um efeito sonoro."""
+        for sound_name, volume in VOLUME_AUDIO.items():
+            self.set_volume(sound_name, volume)
+
+    def play_sfx(self, sfx_name: str) -> None:
         if sfx_name in self.sounds:
-            sound = self.sounds[sfx_name]
-            sound.set_volume(volume)
-            sound.play()
+            self.sounds[sfx_name].play()
 
     def play_music(self, music_name: str, loops: int = -1) -> None:
-        """Reproduz música em loop."""
         if music_name in self.sounds:
-            sound = self.sounds[music_name]
-            sound.play(loops=loops)
+           self.sounds[music_name].play(loops=loops)
 
-    def stop_music(self) -> None:
-        """Para a música atual."""
+    @staticmethod
+    def stop_music() -> None:
         pygame.mixer.stop()
 
-    def set_volume(self, sound_name: str, volume: float) -> None:
-        """Ajusta volume de um som específico."""
+    def set_volume(self, sound_name, volume) -> None:
         if sound_name in self.sounds:
             self.sounds[sound_name].set_volume(max(0, min(1, volume)))

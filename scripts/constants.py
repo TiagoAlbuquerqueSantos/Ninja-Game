@@ -30,14 +30,6 @@ HIT_BOX = (8, 15)
 VEL_MAX_QUEDA = 5
 FORCA_PULO = 3
 
-# Volume de áudio
-MUSICA_FUNDO = 1
-AMBIENTE = 0.2
-TIRO = 0.4
-HIT = 0.8
-REPULSIVE = 0.3
-PULO = 0.7
-
 VOLUME_AUDIO = {
     'ambience': 0.2,
     'shoot': 0.4,

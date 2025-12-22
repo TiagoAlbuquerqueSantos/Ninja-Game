@@ -106,14 +106,14 @@ class Inimigo(PhysicsEntity):
                 distancia =  (self.main.jogador.pos[0] - self.pos[0], self.main.jogador.pos[1] - self.pos[1])
                 if abs(distancia[1]) < 16:
                     if self.flipe and distancia[0] < 0:
-                        self.main.sounds.play_sfx('shoot', TIRO)
+                        self.main.sounds.play_sfx('shoot')
                         self.main.projeteis.append([[self.retangulo().centerx - 7, self.retangulo().centery], -1.5, 0])
                         for i in range(4):
                             self.main.faiscas.append(
                                 Faisca(self.main.projeteis[-1][0], random.random() - 0.5 + math.pi, 2 + random.random()))
 
                     if not self.flipe and distancia[0] > 0:
-                        self.main.sounds.play_sfx('shoot', TIRO)
+                        self.main.sounds.play_sfx('shoot')
                         self.main.projeteis.append([[self.retangulo().centerx + 7, self.retangulo().centery], 1.5, 0])
                         for i in range(4):
                             self.main.faiscas.append(
@@ -132,7 +132,7 @@ class Inimigo(PhysicsEntity):
         if abs(self.main.jogador.repulsando) >= 50:
             if self.retangulo().colliderect(self.main.jogador.retangulo()):
                 self.main.balanco_imagem = max(16, self.main.balanco_imagem)
-                self.main.sounds.play_sfx('hit', HIT)
+                self.main.sounds.play_sfx('hit')
                 for i in range(NUMS_PARTICULAS_ATAQUE):
                     angulo = random.random() * math.pi * 2
                     velocidade = random.random() * 5
@@ -253,7 +253,7 @@ class Jogador(PhysicsEntity):
 
     def repulsao(self):
         if not self.repulsando:
-            self.main.sounds.play_sfx('dash', REPULSIVE)
+            self.main.sounds.play_sfx('dash')
             if self.flipe:
                 self.repulsando = -60
             else:

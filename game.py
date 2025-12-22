@@ -64,9 +64,8 @@ class Game:
         }
 
         self.sounds = SoundManager('data/sounds/')
+        self.sounds.play_music('ambience')
         self.sounds.play_music('music')
-        # self.sounds.play_music('ambience')
-        # self.sounds.set_volume('ambience', AMBIENTE)
 
         self.nuvens = Nuvens(self.assets['nuvens'], NUM_NUVENS)
 
@@ -138,7 +137,7 @@ class Game:
                 if self.jogador.retangulo().collidepoint(projetil[0]):
                     self.projeteis.remove(projetil)
                     self.derrotado += 1
-                    self.sounds.play_sfx('hit', HIT)
+                    self.sounds.play_sfx('hit')
                     self.balanco_imagem = max(16, self.balanco_imagem)
                     for i in range(NUMS_FAISCA_DERROTADO):
                         angulo = random.random() * math.pi * 2
@@ -241,7 +240,7 @@ class Game:
                     self.movimento[1] = True
                 elif evento.key == pygame.K_SPACE:
                     if self.jogador.pular():
-                        self.sounds.play_sfx('jump', PULO)
+                        self.sounds.play_sfx('jump')
                 elif evento.key == pygame.K_j:
                     self.jogador.repulsao()
             elif evento.type == pygame.KEYUP:
