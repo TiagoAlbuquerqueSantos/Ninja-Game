@@ -7,6 +7,7 @@ import pygame
 
 from scripts.utils import carregar_imagem, carregar_imagens, aplicar_contornos, Animacao
 from scripts.entidades import Jogador, Inimigo
+from scripts.soundmanager import SoundManager
 from scripts.efeito_faisca import Faisca
 from scripts.particulas import Particula
 from scripts.tilemap import Tilemap
@@ -14,7 +15,6 @@ from scripts.nuvens import Nuvens
 from scripts.hud import HUD
 from scripts.constants import *
 
-from scripts.soundmanager import SoundManager
 
 
 class Game:
@@ -26,6 +26,7 @@ class Game:
         self.display = pygame.Surface((DISPLAY_L, DISPLAY_A), pygame.SRCALPHA)
         self.display_2 = self.display.copy()
         self.relogio = pygame.time.Clock()
+        self.dt = 0
 
         self.hud = HUD(self)
 
@@ -127,7 +128,7 @@ class Game:
 
             if self.mapa_jogo.checar_solido(projetil[0]):
                 self.projeteis.remove(projetil)
-                for i in range(NUMS_FAISCA_PAREDE):
+                for i in range(NUMS_FAISCA_PAREDE): #TODO particulas quando o projetil bater na parede
                     self.faiscas.append(Faisca(projetil[0], random.random() - 0.5 + (math.pi if projetil[1] > 0 else 0),
                                                2 + random.random()))
 
@@ -139,7 +140,7 @@ class Game:
                     self.derrotado += 1
                     self.sounds.play_sfx('hit')
                     self.balanco_imagem = max(16, self.balanco_imagem)
-                    for i in range(NUMS_FAISCA_DERROTADO):
+                    for i in range(NUMS_FAISCA_DERROTADO): #TODO particulas quando o jogador for derrotado
                         angulo = random.random() * math.pi * 2
                         velocidade = random.random() * 5
                         self.faiscas.append(
@@ -202,7 +203,7 @@ class Game:
         self.verificar_derrota()
         self.movimento_camera()
         self.atualizar_folhas()
-        self.nuvens.atualizar()
+        self.nuvens.atualizar(self.dt)
         self.jogador.atualizar(self.mapa_jogo, (self.movimento[1] - self.movimento[0], 0))
 
     def renderizar(self):
@@ -255,7 +256,7 @@ class Game:
             self.atualizar()
             self.renderizar()
             pygame.display.update()
-            self.relogio.tick(FPS)
+            self.dt = self.relogio.tick(FPS) / 1000.0
         pygame.quit()
         sys.exit()
 

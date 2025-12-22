@@ -1,4 +1,4 @@
-import random
+from random import random, choice
 
 class Nuvem:
     def __init__(self, pos, img, velocidade, margem):
@@ -7,8 +7,8 @@ class Nuvem:
         self.vel = velocidade
         self.margem = margem
 
-    def atualizar(self):
-        self.pos[0] += self.vel
+    def atualizar(self, dt):
+        self.pos[0] += self.vel * 100 * dt
 
     def renderizar(self, surf, deslocamento=(0, 0)):
         renderizar_pos = (self.pos[0] - deslocamento[0] * self.margem, self.pos[1] - deslocamento[1] * self.margem)
@@ -19,15 +19,18 @@ class Nuvens:
     def __init__(self, imagens_nuvens, quant=16):
         self.nuvens = []
 
-        for i in range(quant):
-            self.nuvens.append(Nuvem((random.random() * 99999, random.random() * 99999),
-                                     random.choice(imagens_nuvens), random.random() * 0.05 + 0.05,
-                                     random.random() * 0.6 + 0.2))
+        for _ in range(quant):
+            img_nuvem = choice(imagens_nuvens)
+            pos = (int(random() * 99999), int(random() * 99999))
+            vel = 0.05 + random() * 0.2
+            margem = 0.5 + random() * 0.5
+            self.nuvens.append(Nuvem(pos, img_nuvem, vel, margem))
+
         self.nuvens.sort(key=lambda x: x.margem)
 
-    def atualizar(self):
+    def atualizar(self, dt):
         for nuvem in self.nuvens:
-            nuvem.atualizar()
+            nuvem.atualizar(dt)
 
     def renderizar(self, surf, deslocamento=(0, 0)):
         for nuvem in self.nuvens:

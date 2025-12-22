@@ -108,14 +108,14 @@ class Inimigo(PhysicsEntity):
                     if self.flipe and distancia[0] < 0:
                         self.main.sounds.play_sfx('shoot')
                         self.main.projeteis.append([[self.retangulo().centerx - 7, self.retangulo().centery], -1.5, 0])
-                        for i in range(4):
+                        for i in range(4): #TODO faiscas do tiro
                             self.main.faiscas.append(
                                 Faisca(self.main.projeteis[-1][0], random.random() - 0.5 + math.pi, 2 + random.random()))
 
                     if not self.flipe and distancia[0] > 0:
                         self.main.sounds.play_sfx('shoot')
                         self.main.projeteis.append([[self.retangulo().centerx + 7, self.retangulo().centery], 1.5, 0])
-                        for i in range(4):
+                        for i in range(4): #TODO faiscas do tiro
                             self.main.faiscas.append(
                                 Faisca(self.main.projeteis[-1][0], random.random() - 0.5, 2 + random.random()))
 
@@ -133,7 +133,7 @@ class Inimigo(PhysicsEntity):
             if self.retangulo().colliderect(self.main.jogador.retangulo()):
                 self.main.balanco_imagem = max(16, self.main.balanco_imagem)
                 self.main.sounds.play_sfx('hit')
-                for i in range(NUMS_PARTICULAS_ATAQUE):
+                for i in range(NUMS_PARTICULAS_ATAQUE): #TODO particulas de ataque ao inimigo
                     angulo = random.random() * math.pi * 2
                     velocidade = random.random() * 5
                     self.main.faiscas.append(Faisca(self.retangulo().center, angulo, 2 + random.random()))
@@ -200,7 +200,7 @@ class Jogador(PhysicsEntity):
                     self.acao_atual('idle')
 
             if abs(self.repulsando) in {60, 50}:
-                for i in range(20):
+                for i in range(20): #TODO particulas do dash
                     angulo = random.random() * math.pi * 2
                     velocidade = random.random() * 0.5 + 0.5
                     vel_particula = [math.cos(angulo) * velocidade, math.sin(angulo) * velocidade]

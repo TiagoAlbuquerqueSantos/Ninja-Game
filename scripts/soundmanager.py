@@ -1,17 +1,15 @@
 import pygame
 
 from scripts.constants import VOLUME_AUDIO
-from pygame.mixer import Sound, Channel
+from pygame.mixer import Sound
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Dict
 
 
 class SoundManager:
     def __init__(self, sounds_dir: str = "assets/sounds") -> None:
         self.sounds_dir = Path(sounds_dir)
         self.sounds: Dict[str, Sound] = {}
-        self.channels: Dict[str, Channel] = {}
-        self.music_channel: Optional[Channel] = None
 
         self._load_all_sounds()
 

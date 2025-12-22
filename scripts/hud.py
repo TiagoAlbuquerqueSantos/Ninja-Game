@@ -22,7 +22,7 @@ class HUD:
                round(self.game.jogador.velocidade[1], 2))
 
         dados_texto = f"""
-        FPS: {self.game.relogio.get_fps():.2f}
+        FPS: {self.game.relogio.get_fps():.2f} - Dt: {self.game.dt:.4f}
         Pos: {pos}
         Vel: {vel}
         Nums de chances: {self.game.derrotado}
