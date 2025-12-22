@@ -4,14 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b4b0171c-7737-4538-ab0b-2bc416d21378" name="Changes" comment="Ajustes nas constantes do jogo">
-      <change beforePath="$PROJECT_DIR$/.idea/Ninja-Game.iml" beforeDir="false" />
+    <list default="true" id="b4b0171c-7737-4538-ab0b-2bc416d21378" name="Changes" comment="Ajustes em hud e entidades">
+      <change afterPath="$PROJECT_DIR$/scripts/soundmanager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_13_12_2025_14_28_[Changes]1/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_13_12_2025_14_28__Changes_1.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/music.wav" beforeDir="false" afterPath="$PROJECT_DIR$/data/sounds/music/music.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/sfx/ambience.wav" beforeDir="false" afterPath="$PROJECT_DIR$/data/sounds/sfx/ambience.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/sfx/dash.wav" beforeDir="false" afterPath="$PROJECT_DIR$/data/sounds/sfx/dash.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/sfx/hit.wav" beforeDir="false" afterPath="$PROJECT_DIR$/data/sounds/sfx/hit.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/sfx/jump.wav" beforeDir="false" afterPath="$PROJECT_DIR$/data/sounds/sfx/jump.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/sfx/shoot.wav" beforeDir="false" afterPath="$PROJECT_DIR$/data/sounds/sfx/shoot.wav" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/game.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/constants.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/entidades.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/entidades.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/hud.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/hud.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/tilemap.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/tilemap.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,6 +82,10 @@
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/data/fonts" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/data/sounds/music" />
+      <recent name="$PROJECT_DIR$/data/sounds" />
     </key>
   </component>
   <component name="RunManager" selected="Python.game">
@@ -204,7 +214,15 @@
       <option name="project" value="LOCAL" />
       <updated>1766179548824</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Ajustes em hud e entidades">
+      <option name="closed" value="true" />
+      <created>1766256190734</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1766256190734</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -241,7 +259,8 @@
     <MESSAGE value="Ajustes no código do editor.py e editor_config.py" />
     <MESSAGE value="Ajustes nas funções do jogo" />
     <MESSAGE value="Ajustes nas constantes do jogo" />
-    <option name="LAST_COMMIT_MESSAGE" value="Ajustes nas constantes do jogo" />
+    <MESSAGE value="Ajustes em hud e entidades" />
+    <option name="LAST_COMMIT_MESSAGE" value="Ajustes em hud e entidades" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

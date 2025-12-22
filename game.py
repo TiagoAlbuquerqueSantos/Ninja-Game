@@ -14,12 +14,14 @@ from scripts.nuvens import Nuvens
 from scripts.hud import HUD
 from scripts.constants import *
 
+from scripts.soundmanager import SoundManager
+
 
 class Game:
     def __init__(self):
         pygame.init()
         pygame.display.set_caption(LEGENDA)
-        flags = pygame.SCALED | pygame.RESIZABLE
+        flags = pygame.SCALED + pygame.RESIZABLE
         self.tela = pygame.display.set_mode(RES_TELA, flags=flags)
         self.display = pygame.Surface((DISPLAY_L, DISPLAY_A), pygame.SRCALPHA)
         self.display_2 = self.display.copy()
@@ -61,21 +63,10 @@ class Game:
             'plano_fundo': carregar_imagem('background.png'),
         }
 
-        self.sfx = {
-            'pulo': pygame.mixer.Sound('data/sfx/jump.wav'),
-            'repulsao': pygame.mixer.Sound('data/sfx/dash.wav'),
-            'hit': pygame.mixer.Sound('data/sfx/hit.wav'),
-            'tiro': pygame.mixer.Sound('data/sfx/shoot.wav'),
-            'ambiente': pygame.mixer.Sound('data/sfx/ambience.wav')
-        }
-
-        self.sfx['ambiente'].set_volume(AMBIENTE)
-        self.sfx['tiro'].set_volume(TIRO)
-        self.sfx['hit'].set_volume(HIT)
-        self.sfx['repulsao'].set_volume(REPULSIVE)
-        self.sfx['pulo'].set_volume(PULO)
-
-        self.musica_fundo()
+        self.sounds = SoundManager('data/sounds/')
+        self.sounds.play_music('music')
+        # self.sounds.play_music('ambience')
+        # self.sounds.set_volume('ambience', AMBIENTE)
 
         self.nuvens = Nuvens(self.assets['nuvens'], NUM_NUVENS)
 
@@ -87,13 +78,6 @@ class Game:
         self.carregar_nivel(self.nivel)
 
         self.balanco_imagem = 0
-
-    def musica_fundo(self):
-        pygame.mixer.music.load('data/music.wav')
-        pygame.mixer.music.set_volume(MUSICA_FUNDO)
-        pygame.mixer.music.play(-1)
-
-        self.sfx['ambiente'].play(-1)
 
     def carregar_nivel(self, id_mapa):
         self.mapa_jogo.carregar('data/maps/' + str(id_mapa) + '.json')
@@ -154,7 +138,7 @@ class Game:
                 if self.jogador.retangulo().collidepoint(projetil[0]):
                     self.projeteis.remove(projetil)
                     self.derrotado += 1
-                    self.sfx['hit'].play()
+                    self.sounds.play_sfx('hit', HIT)
                     self.balanco_imagem = max(16, self.balanco_imagem)
                     for i in range(NUMS_FAISCA_DERROTADO):
                         angulo = random.random() * math.pi * 2
@@ -251,21 +235,19 @@ class Game:
             elif evento.type == pygame.KEYDOWN:
                 if evento.key == pygame.K_ESCAPE:
                     self.rodando = False
-                if evento.key == pygame.K_F11:
-                    pygame.display.toggle_fullscreen()
-                if evento.key == pygame.K_a:
+                elif evento.key == pygame.K_a:
                     self.movimento[0] = True
-                if evento.key == pygame.K_d:
+                elif evento.key == pygame.K_d:
                     self.movimento[1] = True
-                if evento.key == pygame.K_SPACE:
+                elif evento.key == pygame.K_SPACE:
                     if self.jogador.pular():
-                        self.sfx['pulo'].play()
-                if evento.key == pygame.K_j:
+                        self.sounds.play_sfx('jump', PULO)
+                elif evento.key == pygame.K_j:
                     self.jogador.repulsao()
-            if evento.type == pygame.KEYUP:
+            elif evento.type == pygame.KEYUP:
                 if evento.key == pygame.K_a:
                     self.movimento[0] = False
-                if evento.key == pygame.K_d:
+                elif evento.key == pygame.K_d:
                     self.movimento[1] = False
 
     def rodar(self):
