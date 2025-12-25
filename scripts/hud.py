@@ -26,7 +26,6 @@ class HUD:
         Pos: {pos}
         Vel: {vel}
         Nums de chances: {self.game.derrotado}
-        Transicao de fase: {self.game.transicao}
         """
 
         self.renderizar_customizado(display, dados_texto)

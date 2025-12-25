@@ -4,13 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b4b0171c-7737-4538-ab0b-2bc416d21378" name="Changes" comment="Criei o soundmanager.py para gerenciar os efeitos sonoros e as musicas do jogo">
+    <list default="true" id="b4b0171c-7737-4538-ab0b-2bc416d21378" name="Changes" comment="Melhorias no sistema de geração de nuvens">
+      <change afterPath="$PROJECT_DIR$/scripts/transicoes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/game.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/entidades.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/entidades.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/hud.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/hud.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/nuvens.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/nuvens.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/soundmanager.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/soundmanager.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,6 +57,7 @@
     &quot;Python.entidades.executor&quot;: &quot;Run&quot;,
     &quot;Python.game.executor&quot;: &quot;Run&quot;,
     &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.scratch_1.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
@@ -70,6 +68,11 @@
     &quot;last_opened_file_path&quot;: &quot;/home/Tiago/Documentos/GitHub/Ninja-Game/data/fonts&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
     &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
+      &quot;Python&quot;
+    ]
   }
 }</component>
   <component name="RecentsManager">
@@ -231,7 +234,15 @@
       <option name="project" value="LOCAL" />
       <updated>1766437869923</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Melhorias no sistema de geração de nuvens">
+      <option name="closed" value="true" />
+      <created>1766440592585</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1766440592585</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -287,7 +298,8 @@
     <MESSAGE value="Ajustes nas constantes do jogo" />
     <MESSAGE value="Ajustes em hud e entidades" />
     <MESSAGE value="Criei o soundmanager.py para gerenciar os efeitos sonoros e as musicas do jogo" />
-    <option name="LAST_COMMIT_MESSAGE" value="Criei o soundmanager.py para gerenciar os efeitos sonoros e as musicas do jogo" />
+    <MESSAGE value="Melhorias no sistema de geração de nuvens" />
+    <option name="LAST_COMMIT_MESSAGE" value="Melhorias no sistema de geração de nuvens" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

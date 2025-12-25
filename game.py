@@ -5,6 +5,7 @@ import random
 
 import pygame
 
+from scripts.transicoes import Circulo
 from scripts.utils import carregar_imagem, carregar_imagens, aplicar_contornos, Animacao
 from scripts.entidades import Jogador, Inimigo
 from scripts.soundmanager import SoundManager
@@ -29,6 +30,7 @@ class Game:
         self.dt = 0
 
         self.hud = HUD(self)
+        self.transicao = Circulo()
 
         self.camera = None
         self.scroll = None
@@ -36,7 +38,6 @@ class Game:
         self.inimigos = None
         self.derrotado = None
         self.projeteis = None
-        self.transicao = None
         self.particulas = None
         self.gerador_folhas = None
 
@@ -101,7 +102,7 @@ class Game:
 
         self.scroll = [0, 0]
         self.derrotado = 0
-        self.transicao = -30
+        self.transicao.resetar()
 
     def atualizar_folhas(self):
         for rect in self.gerador_folhas:
@@ -169,28 +170,18 @@ class Game:
 
     def carregar_proximo_nivel(self):
         if not len(self.inimigos):
-            self.transicao += 1
-            if self.transicao > 30:
-                self.nivel = min(
-                    self.nivel + 1, len(os.listdir('./data/maps')) - 1)
+            self.transicao.ativar()
+            if self.transicao.finalizada():
+                self.nivel = min(self.nivel + 1, len(os.listdir('./data/maps')) - 1)
                 self.carregar_nivel(self.nivel)
-        if self.transicao < 0:
-            self.transicao += 1
 
     def verificar_derrota(self):
         if self.derrotado:
             self.derrotado += 1
             if self.derrotado >= 10:
-                self.transicao = min(30, self.transicao + 1)
+                self.transicao.ativar()
             if self.derrotado > 40:
                 self.carregar_nivel(self.nivel)
-
-    def circulo_transicao(self):
-        if self.transicao:
-            surf_transicao = pygame.Surface(self.display.get_size())
-            pygame.draw.circle(surf_transicao, BRANCO, CENTRO_TELA, (30 - abs(self.transicao)) * 8)
-            surf_transicao.set_colorkey(BRANCO)
-            self.display.blit(surf_transicao, (0, 0))
 
     def movimento_camera(self):
         self.scroll[0] += (self.jogador.retangulo().centerx - DISPLAY_L / 2 - self.scroll[0]) / ACE_CAMERA
@@ -219,7 +210,8 @@ class Game:
         self.desenhar_particulas()
         self.hud.renderizar(self.display)
 
-        self.circulo_transicao()
+        self.transicao.atualizar()
+        self.transicao.renderizar(self.display)
 
         self.display_2.blit(self.display, (0, 0))
 
