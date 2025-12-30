@@ -31,7 +31,7 @@ class Debug:
         FPS: {self.game.relogio.get_fps():.2f} - Dt: {self.game.dt:.4f}
         Pos: {pos}
         Vel: {vel}
-        Nums de chances: {self.game.derrotado}
+        Nums de chances: {self.game.derrotado} - Tempo no Ar: {self.game.jogador.tempo_ar}
         """
 
         if self.exibir_dados:
