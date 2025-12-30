@@ -13,6 +13,7 @@ from scripts.efeito_faisca import Faisca
 from scripts.particulas import Particula
 from scripts.tilemap import Tilemap
 from scripts.nuvens import Nuvens
+from scripts.debug import Debug
 from scripts.hud import HUD
 from scripts.constants import *
 
@@ -30,6 +31,7 @@ class Game:
         self.dt = 0
 
         self.hud = HUD(self)
+        self.debug = Debug(self)
         self.transicao = Circulo()
 
         self.camera = None
@@ -39,7 +41,7 @@ class Game:
         self.derrotado = None
         self.projeteis = None
         self.particulas = None
-        self.gerador_folhas = None
+        self.gerador_folhas = []
 
         self.rodando = True
 
@@ -196,10 +198,11 @@ class Game:
         self.atualizar_folhas()
         self.nuvens.atualizar(self.dt)
         self.jogador.atualizar(self.mapa_jogo, (self.movimento[1] - self.movimento[0], 0))
+        self.hud.atualizar()
 
     def renderizar(self):
         self.display.fill((0, 0, 0, 0))
-        self.display_2.blit(self.assets['plano_fundo'], (0, 0))
+        self.display_2.blit(pygame.transform.scale(self.assets['plano_fundo'], RES_TELA), (0, 0))
         self.nuvens.renderizar(self.display_2, deslocamento=self.camera)
         self.mapa_jogo.renderizar(self.display, deslocamento=self.camera)
         self.jogador.renderizar(self.display, deslocamento=self.camera)
@@ -209,6 +212,7 @@ class Game:
         self.desenhar_faiscas()
         self.desenhar_particulas()
         self.hud.renderizar(self.display)
+        self.debug.renderizar(self.display)
 
         self.transicao.atualizar()
         self.transicao.renderizar(self.display)
@@ -236,6 +240,7 @@ class Game:
                         self.sounds.play_sfx('jump')
                 elif evento.key == pygame.K_j:
                     self.jogador.repulsao()
+                self.debug.exibir_debug(evento)
             elif evento.type == pygame.KEYUP:
                 if evento.key == pygame.K_a:
                     self.movimento[0] = False
