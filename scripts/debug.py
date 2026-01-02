@@ -1,15 +1,15 @@
 import pygame
-from pathlib import Path
 from pgbitmapfont import BitmapFont
 
 from .constants import *
+from .paths import FONTS_ASSETS
 
 
 class Debug:
     def __init__(self, game):
         self.game = game
         self.fonte = BitmapFont(
-            path=Path("data/fonts/small_font.json"),
+            path=FONTS_ASSETS / 'small_font.json',
             size=TAM_FONTE,
             fgcolor=pygame.Color(VERMELHO),
             spacing=(1, 1)

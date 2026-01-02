@@ -16,6 +16,7 @@ from scripts.tilemap import Tilemap
 from scripts.nuvens import Nuvens
 from scripts.debug import Debug
 from scripts.hud import HUD
+from scripts import paths
 from scripts.constants import *
 
 
@@ -67,7 +68,7 @@ class Game:
             'plano_fundo': carregar_imagem('background.png'),
         }
 
-        self.sounds = SoundManager('data/sounds/')
+        self.sounds = SoundManager(paths.SOUND_ASSETS)
         self.sounds.play_music('ambience')
         self.sounds.play_music('music')
 
@@ -83,7 +84,7 @@ class Game:
         self.balanco_imagem = 0
 
     def carregar_nivel(self, id_mapa):
-        self.mapa_jogo.carregar('data/maps/' + str(id_mapa) + '.json')
+        self.mapa_jogo.carregar(paths.MAPS_PATH / f'{id_mapa}.json')
 
         self.gerador_folhas = []
         for arvore in self.mapa_jogo.extrair([('decor_larga', 2)], manter=True):
@@ -174,7 +175,7 @@ class Game:
         if not len(self.inimigos):
             self.transicao.ativar()
             if self.transicao.finalizada():
-                self.nivel = min(self.nivel + 1, len(listdir('./data/maps')) - 1)
+                self.nivel = min(self.nivel + 1, len(listdir(paths.MAPS_PATH)) - 1)
                 self.carregar_nivel(self.nivel)
 
     def verificar_derrota(self):

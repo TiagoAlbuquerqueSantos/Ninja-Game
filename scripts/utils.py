@@ -1,16 +1,16 @@
 import os
 import pygame
 
-BASE_LOCAL_IMG = './data/images/'
+from .paths import IMG_ASSETS
 
 def carregar_imagem(caminho):
-    imagem = pygame.image.load(BASE_LOCAL_IMG + caminho).convert()
+    imagem = pygame.image.load(IMG_ASSETS / caminho).convert()
     imagem.set_colorkey((0, 0, 0))
     return imagem
 
 def carregar_imagens(caminho):
     imagems = []
-    for nome_img in sorted(os.listdir(BASE_LOCAL_IMG + caminho)):
+    for nome_img in sorted(os.listdir(IMG_ASSETS / caminho)):
         imagems.append(carregar_imagem(caminho + '/' + nome_img))
     return imagems
 
