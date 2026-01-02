@@ -1,7 +1,8 @@
-import math
-import random
 
 import pygame
+
+from math import sin, cos, pi
+from random import random, randint
 
 from scripts.constants import *
 from scripts.particulas import Particula
@@ -110,17 +111,17 @@ class Inimigo(PhysicsEntity):
                         self.main.projeteis.append([[self.retangulo().centerx - 7, self.retangulo().centery], -1.5, 0])
                         for i in range(4): #TODO faiscas do tiro
                             self.main.faiscas.append(
-                                Faisca(self.main.projeteis[-1][0], random.random() - 0.5 + math.pi, 2 + random.random()))
+                                Faisca(self.main.projeteis[-1][0], random() - 0.5 + pi, 2 + random()))
 
                     if not self.flipe and distancia[0] > 0:
                         self.main.sounds.play_sfx('shoot')
                         self.main.projeteis.append([[self.retangulo().centerx + 7, self.retangulo().centery], 1.5, 0])
                         for i in range(4): #TODO faiscas do tiro
                             self.main.faiscas.append(
-                                Faisca(self.main.projeteis[-1][0], random.random() - 0.5, 2 + random.random()))
+                                Faisca(self.main.projeteis[-1][0], random() - 0.5, 2 + random()))
 
-        elif random.random() < 0.01:
-            self.correndo = random.randint(30, 120)
+        elif random() < 0.01:
+            self.correndo = randint(30, 120)
 
         super().atualizar(tilemap, movimento=movimento)
 
@@ -134,15 +135,15 @@ class Inimigo(PhysicsEntity):
                 self.main.balanco_imagem = max(16, self.main.balanco_imagem)
                 self.main.sounds.play_sfx('hit')
                 for i in range(NUMS_PARTICULAS_ATAQUE): #TODO particulas de ataque ao inimigo
-                    angulo = random.random() * math.pi * 2
-                    velocidade = random.random() * 5
-                    self.main.faiscas.append(Faisca(self.retangulo().center, angulo, 2 + random.random()))
+                    angulo = random() * pi * 2
+                    velocidade = random() * 5
+                    self.main.faiscas.append(Faisca(self.retangulo().center, angulo, 2 + random()))
                     self.main.particulas.append(Particula(self.main,'particula', self.retangulo().center,
-                                                     velocidade=[math.cos(angulo + math.pi) * velocidade * 0.5,
-                                                                 math.sin(angulo + math.pi) * velocidade * 0.5],
-                                                     frame=random.randint(0, 7)))
-                self.main.faiscas.append(Faisca(self.retangulo().center,0, 5 + random.random()))
-                self.main.faiscas.append(Faisca(self.retangulo().center, math.pi, 5 + random.random()))
+                                                     velocidade=[cos(angulo + pi) * velocidade * 0.5,
+                                                                 sin(angulo + pi) * velocidade * 0.5],
+                                                     frame=randint(0, 7)))
+                self.main.faiscas.append(Faisca(self.retangulo().center,0, 5 + random()))
+                self.main.faiscas.append(Faisca(self.retangulo().center, pi, 5 + random()))
                 return True
         return None
 
@@ -201,11 +202,11 @@ class Jogador(PhysicsEntity):
 
             if abs(self.repulsando) in {60, 50}:
                 for i in range(20): #TODO particulas do dash
-                    angulo = random.random() * math.pi * 2
-                    velocidade = random.random() * 0.5 + 0.5
-                    vel_particula = [math.cos(angulo) * velocidade, math.sin(angulo) * velocidade]
+                    angulo = random() * pi * 2
+                    velocidade = random() * 0.5 + 0.5
+                    vel_particula = [cos(angulo) * velocidade, sin(angulo) * velocidade]
                     self.main.particulas.append(Particula(self.main, 'particula', self.retangulo().center,
-                                                          velocidade=vel_particula, frame=random.randint(0, 7)))
+                                                          velocidade=vel_particula, frame=randint(0, 7)))
             if self.repulsando > 0:
                 self.repulsando = max(0, self.repulsando - 1)
             if self.repulsando < 0:
@@ -214,9 +215,9 @@ class Jogador(PhysicsEntity):
                 self.velocidade[0] = abs(self.repulsando) / self.repulsando * 8
                 if abs(self.repulsando) == 51:
                     self.velocidade[0] *= 0.1
-                vel_particula = [abs(self.repulsando) / self.repulsando * random.random() * 3, 0]
+                vel_particula = [abs(self.repulsando) / self.repulsando * random() * 3, 0]
                 self.main.particulas.append(Particula(self.main, 'particula', self.retangulo().center,
-                                                      velocidade=vel_particula, frame=random.randint(0, 7)))
+                                                      velocidade=vel_particula, frame=randint(0, 7)))
 
             if self.velocidade[0] > 0:
                 self.velocidade[0] = max(self.velocidade[0] - 0.1, 0)

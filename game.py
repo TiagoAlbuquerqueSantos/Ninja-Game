@@ -1,9 +1,10 @@
-import os
-import sys
-import math
-import random
 
 import pygame
+
+from random import random, randint
+from math import sin, cos, pi
+from os import listdir
+from sys import exit
 
 from scripts.transicoes import Circulo
 from scripts.utils import carregar_imagem, carregar_imagens, aplicar_contornos, Animacao
@@ -16,7 +17,6 @@ from scripts.nuvens import Nuvens
 from scripts.debug import Debug
 from scripts.hud import HUD
 from scripts.constants import *
-
 
 
 class Game:
@@ -108,11 +108,11 @@ class Game:
 
     def atualizar_folhas(self):
         for rect in self.gerador_folhas:
-            if random.random() * 49999 < rect.width * rect.height:
-                pos = (rect.x + random.random() * rect.width,
-                       rect.y + random.random() * rect.height)
+            if random() * 49999 < rect.width * rect.height:
+                pos = (rect.x + random() * rect.width,
+                       rect.y + random() * rect.height)
                 self.particulas.append(
-                    Particula(self, 'folhas', pos, velocidade=[-0.1, 0.3], frame=random.randint(0, 20)))
+                    Particula(self, 'folhas', pos, velocidade=[-0.1, 0.3], frame=randint(0, 20)))
 
     def renderizar_inimigos(self):
         for inimigo in self.inimigos.copy():
@@ -132,8 +132,8 @@ class Game:
             if self.mapa_jogo.checar_solido(projetil[0]):
                 self.projeteis.remove(projetil)
                 for i in range(NUMS_FAISCA_PAREDE): #TODO particulas quando o projetil bater na parede
-                    self.faiscas.append(Faisca(projetil[0], random.random() - 0.5 + (math.pi if projetil[1] > 0 else 0),
-                                               2 + random.random()))
+                    self.faiscas.append(Faisca(projetil[0], random() - 0.5 + (pi if projetil[1] > 0 else 0),
+                                               2 + random()))
 
             elif projetil[2] > 360:
                 self.projeteis.remove(projetil)
@@ -144,14 +144,14 @@ class Game:
                     self.sounds.play_sfx('hit')
                     self.balanco_imagem = max(16, self.balanco_imagem)
                     for i in range(NUMS_FAISCA_DERROTADO): #TODO particulas quando o jogador for derrotado
-                        angulo = random.random() * math.pi * 2
-                        velocidade = random.random() * 5
+                        angulo = random() * pi * 2
+                        velocidade = random() * 5
                         self.faiscas.append(
-                            Faisca(self.jogador.retangulo().center, angulo, 2 + random.random()))
+                            Faisca(self.jogador.retangulo().center, angulo, 2 + random()))
                         self.particulas.append(Particula(self, 'particula', self.jogador.retangulo().center,
-                                                         velocidade=[math.cos(angulo + math.pi) * velocidade * 0.5,
-                                                                     math.sin(angulo + math.pi) * velocidade * 0.5],
-                                                         frame=random.randint(0, 7)))
+                                                         velocidade=[cos(angulo + pi) * velocidade * 0.5,
+                                                                     sin(angulo + pi) * velocidade * 0.5],
+                                                         frame=randint(0, 7)))
 
     def desenhar_faiscas(self):
         for faisca in self.faiscas.copy():
@@ -165,7 +165,7 @@ class Game:
             interromper = particula.atualizar()
             particula.renderizar(self.display, deslocamento=self.camera)
             if particula.tipo == 'folhas':
-                particula.pos[0] += math.sin(
+                particula.pos[0] += sin(
                     particula.animacao.frame * 0.035) * 0.3
             if interromper:
                 self.particulas.remove(particula)
@@ -174,7 +174,7 @@ class Game:
         if not len(self.inimigos):
             self.transicao.ativar()
             if self.transicao.finalizada():
-                self.nivel = min(self.nivel + 1, len(os.listdir('./data/maps')) - 1)
+                self.nivel = min(self.nivel + 1, len(listdir('./data/maps')) - 1)
                 self.carregar_nivel(self.nivel)
 
     def verificar_derrota(self):
@@ -182,7 +182,7 @@ class Game:
             self.derrotado += 1
             if self.derrotado >= 10:
                 self.transicao.ativar()
-            if self.derrotado > 40:
+            if self.derrotado > 60:
                 self.carregar_nivel(self.nivel)
 
     def movimento_camera(self):
@@ -219,8 +219,8 @@ class Game:
 
         self.display_2.blit(self.display, (0, 0))
 
-        balanco = (random.random() * self.balanco_imagem - self.balanco_imagem / 2,
-                   random.random() * self.balanco_imagem - self.balanco_imagem / 2)
+        balanco = (random() * self.balanco_imagem - self.balanco_imagem / 2,
+                   random() * self.balanco_imagem - self.balanco_imagem / 2)
 
         self.tela.blit(pygame.transform.scale(self.display_2, RES_TELA), balanco)
 
@@ -255,7 +255,7 @@ class Game:
             pygame.display.update()
             self.dt = self.relogio.tick(FPS) / 1000.0
         pygame.quit()
-        sys.exit()
+        exit()
 
 
 if __name__ == '__main__':

@@ -1,6 +1,7 @@
 
-import json
 import pygame
+
+from json import load, dump
 
 from scripts.constants import *
 
@@ -43,13 +44,13 @@ class Tilemap:
 
     def salvar(self, caminho):
         arquivo = open(caminho, 'w')
-        json.dump({'tilemap': self.tilemap, 'tile_size': self.tamanho_tile,
+        dump({'tilemap': self.tilemap, 'tile_size': self.tamanho_tile,
                   'offgrid': self.offgrid_tiles}, arquivo)
         arquivo.close()
 
     def carregar(self, caminho):
         arquivo = open(caminho, 'r')
-        dados_mapa = json.load(arquivo)
+        dados_mapa = load(arquivo)
         arquivo.close()
 
         self.tilemap = dados_mapa['tilemap']

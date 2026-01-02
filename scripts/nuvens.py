@@ -1,5 +1,6 @@
 from random import random, choice
 
+
 class Nuvem:
     def __init__(self, pos, img, velocidade, margem):
         self.pos = list(pos)
@@ -14,6 +15,7 @@ class Nuvem:
         renderizar_pos = (self.pos[0] - deslocamento[0] * self.margem, self.pos[1] - deslocamento[1] * self.margem)
         surf.blit(self.img, (renderizar_pos[0] % (surf.get_width() + self.img.get_width()) - self.img.get_width(),
                              renderizar_pos[1] % (surf.get_height() + self.img.get_height()) - self.img.get_height()))
+
 
 class Nuvens:
     def __init__(self, imagens_nuvens, quant=16):

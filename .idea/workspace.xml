@@ -4,14 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b4b0171c-7737-4538-ab0b-2bc416d21378" name="Changes" comment="Criei um objeto debug separado do hud para poder manipular com mais facilidade e também adicionar outros recursos no hud">
+    <list default="true" id="b4b0171c-7737-4538-ab0b-2bc416d21378" name="Changes" comment="Adicionei uma informação ao debug.py">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/maps/10.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/data/maps/11.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/maps/3.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/maps/12.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/maps/4.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/maps/2.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/maps/2.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/game.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/constants.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/debug.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/debug.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/efeito_faisca.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/efeito_faisca.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/entidades.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/entidades.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/hud.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/hud.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/nuvens.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/nuvens.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/tilemap.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/tilemap.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,6 +50,10 @@
     &quot;accountId&quot;: &quot;951577ee-c6fc-4b54-8279-9ae2727113d2&quot;
   }
 }</component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
 }</component>
@@ -53,33 +62,34 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Python.configuracoes.executor&quot;: &quot;Run&quot;,
-    &quot;Python.editor.executor&quot;: &quot;Run&quot;,
-    &quot;Python.entidades.executor&quot;: &quot;Run&quot;,
-    &quot;Python.game.executor&quot;: &quot;Run&quot;,
-    &quot;Python.hud.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.scratch_1.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultAutoModeForALLUsers.v1&quot;: &quot;true&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/Tiago/Documentos/GitHub/Ninja-Game/data/fonts&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.configuracoes.executor": "Run",
+    "Python.editor.executor": "Run",
+    "Python.entidades.executor": "Run",
+    "Python.game.executor": "Run",
+    "Python.hud.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.scratch_1.executor": "Run",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultAutoModeForALLUsers.v1": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "main",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "/home/Tiago/Documentos/GitHub/Ninja-Game/data/fonts",
+    "settings.editor.selected.configurable": "preferences.keymap",
+    "to.speed.mode.migration.done": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
-      &quot;Python&quot;
+  "keyToStringList": {
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "Python"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/data/fonts" />
@@ -147,7 +157,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-0978a7220b69-9867c7d4c0a4-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-253.28294.336" />
+        <option value="bundled-python-sdk-f2b7a9f6281b-6e1f45a539f7-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-253.29346.142" />
       </set>
     </attachedChunks>
   </component>
@@ -263,7 +273,15 @@
       <option name="project" value="LOCAL" />
       <updated>1767052891386</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Adicionei uma informação ao debug.py">
+      <option name="closed" value="true" />
+      <created>1767114664597</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1767114664597</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -322,7 +340,8 @@
     <MESSAGE value="Melhorias no sistema de geração de nuvens" />
     <MESSAGE value="Separei a função circulo_transição em game.py para uma classe separadada chamada transicoes.py" />
     <MESSAGE value="Criei um objeto debug separado do hud para poder manipular com mais facilidade e também adicionar outros recursos no hud" />
-    <option name="LAST_COMMIT_MESSAGE" value="Criei um objeto debug separado do hud para poder manipular com mais facilidade e também adicionar outros recursos no hud" />
+    <MESSAGE value="Adicionei uma informação ao debug.py" />
+    <option name="LAST_COMMIT_MESSAGE" value="Adicionei uma informação ao debug.py" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
