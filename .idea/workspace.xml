@@ -4,19 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b4b0171c-7737-4538-ab0b-2bc416d21378" name="Changes" comment="Adicionei uma informação ao debug.py">
+    <list default="true" id="b4b0171c-7737-4538-ab0b-2bc416d21378" name="Changes" comment="Melhorei as importações de bibliotecas do jogo">
+      <change afterPath="$PROJECT_DIR$/scripts/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/paths.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/maps/10.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/maps/11.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/maps/3.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/maps/12.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/maps/4.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/maps/2.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/maps/2.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/game.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/constants.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/efeito_faisca.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/efeito_faisca.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/debug.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/debug.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/entidades.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/entidades.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/hud.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/hud.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/nuvens.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/nuvens.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/soundmanager.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/soundmanager.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/tilemap.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/tilemap.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/transicoes.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/transicoes.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,6 +68,7 @@
     "Python.game.executor": "Run",
     "Python.hud.executor": "Run",
     "Python.main.executor": "Run",
+    "Python.paths.executor": "Run",
     "Python.scratch_1.executor": "Run",
     "RunOnceActivity.MCP Project settings loaded": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
@@ -99,7 +97,7 @@
       <recent name="$PROJECT_DIR$/data/sounds" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.game">
+  <component name="RunManager">
     <configuration name="editor" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Ninja-Game" />
       <option name="ENV_FILES" value="" />
@@ -281,7 +279,15 @@
       <option name="project" value="LOCAL" />
       <updated>1767114664597</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Melhorei as importações de bibliotecas do jogo">
+      <option name="closed" value="true" />
+      <created>1767375224159</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1767375224159</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -309,19 +315,7 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State>
-              <option name="FILTERS">
-                <map>
-                  <entry key="branch">
-                    <value>
-                      <list>
-                        <option value="main" />
-                      </list>
-                    </value>
-                  </entry>
-                </map>
-              </option>
-            </State>
+            <State />
           </value>
         </entry>
       </map>
@@ -341,7 +335,8 @@
     <MESSAGE value="Separei a função circulo_transição em game.py para uma classe separadada chamada transicoes.py" />
     <MESSAGE value="Criei um objeto debug separado do hud para poder manipular com mais facilidade e também adicionar outros recursos no hud" />
     <MESSAGE value="Adicionei uma informação ao debug.py" />
-    <option name="LAST_COMMIT_MESSAGE" value="Adicionei uma informação ao debug.py" />
+    <MESSAGE value="Melhorei as importações de bibliotecas do jogo" />
+    <option name="LAST_COMMIT_MESSAGE" value="Melhorei as importações de bibliotecas do jogo" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

@@ -1,6 +1,6 @@
 import pygame
 
-from scripts.constants import VOLUME_AUDIO
+from .constants import VOLUME_AUDIO
 from pygame.mixer import Sound
 from pathlib import Path
 from typing import Dict

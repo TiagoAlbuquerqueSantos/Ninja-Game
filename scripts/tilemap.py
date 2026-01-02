@@ -3,7 +3,7 @@ import pygame
 
 from json import load, dump
 
-from scripts.constants import *
+from .constants import *
 
 
 class Tilemap:

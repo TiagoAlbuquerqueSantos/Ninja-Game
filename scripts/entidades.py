@@ -4,9 +4,9 @@ import pygame
 from math import sin, cos, pi
 from random import random, randint
 
-from scripts.constants import *
-from scripts.particulas import Particula
-from scripts.efeito_faisca import Faisca
+from .constants import *
+from .particulas import Particula
+from .efeito_faisca import Faisca
 
 
 class PhysicsEntity:

@@ -2,7 +2,7 @@ import pygame
 from pathlib import Path
 from pgbitmapfont import BitmapFont
 
-from scripts.constants import *
+from .constants import *
 
 
 class Debug:
