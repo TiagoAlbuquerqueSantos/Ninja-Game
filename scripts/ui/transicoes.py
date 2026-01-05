@@ -1,7 +1,7 @@
 
 import pygame
 
-from .constants import *
+from scripts.constants import *
 
 
 class Circulo:

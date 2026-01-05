@@ -4,7 +4,7 @@ import pygame
 from math import sin, cos, pi
 from random import random, randint
 
-from .constants import *
+from scripts.constants import *
 from .particulas import Particula
 from .efeito_faisca import Faisca
 

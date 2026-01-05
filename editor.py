@@ -6,7 +6,7 @@ from tkinter import Tk, filedialog
 
 from scripts.editor_config import *
 from scripts.utils import carregar_imagens
-from scripts.tilemap import Tilemap
+from scripts.objects import Tilemap
 
 
 class Editor:

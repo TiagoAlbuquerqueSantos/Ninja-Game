@@ -6,16 +6,11 @@ from math import sin, cos, pi
 from os import listdir
 from sys import exit
 
-from scripts.transicoes import Circulo
 from scripts.utils import carregar_imagem, carregar_imagens, aplicar_contornos, Animacao
-from scripts.entidades import Jogador, Inimigo
+from scripts.objects import Faisca, Particula, Tilemap, Nuvens, Jogador, Inimigo
 from scripts.soundmanager import SoundManager
-from scripts.efeito_faisca import Faisca
-from scripts.particulas import Particula
-from scripts.tilemap import Tilemap
-from scripts.nuvens import Nuvens
+from scripts.ui import Circulo, HUD
 from scripts.debug import Debug
-from scripts.hud import HUD
 from scripts import paths
 from scripts.constants import *
 

@@ -4,13 +4,24 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b4b0171c-7737-4538-ab0b-2bc416d21378" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scripts/states/menu.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scripts/states/scene.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scripts/states/splash.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scripts/states/state.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/debug.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/debug.py" afterDir="false" />
+    <list default="true" id="b4b0171c-7737-4538-ab0b-2bc416d21378" name="Changes" comment="Optimizando o código do jogo">
+      <change afterPath="$PROJECT_DIR$/scripts/objects/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/states/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/ui/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/utils/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/utils/animation.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/utils/image_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/editor.py" beforeDir="false" afterPath="$PROJECT_DIR$/editor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/game.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/efeito_faisca.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/objects/efeito_faisca.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/entidades.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/objects/entidades.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/hud.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/ui/hud.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/nuvens.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/objects/nuvens.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/particulas.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/objects/particulas.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/tilemap.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/objects/tilemap.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/transicoes.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/ui/transicoes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/utils.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,46 +67,48 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python.configuracoes.executor": "Run",
-    "Python.debug.executor": "Run",
-    "Python.editor.executor": "Run",
-    "Python.entidades.executor": "Run",
-    "Python.game.executor": "Run",
-    "Python.hud.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.paths.executor": "Run",
-    "Python.scratch_1.executor": "Run",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultAutoModeForALLUsers.v1": "true",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "desenvolvimento",
-    "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "/home/Tiago/Documentos/GitHub/Ninja-Game/data/fonts",
-    "settings.editor.selected.configurable": "preferences.keymap",
-    "to.speed.mode.migration.done": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.configuracoes.executor&quot;: &quot;Run&quot;,
+    &quot;Python.debug.executor&quot;: &quot;Run&quot;,
+    &quot;Python.editor.executor&quot;: &quot;Run&quot;,
+    &quot;Python.entidades.executor&quot;: &quot;Run&quot;,
+    &quot;Python.game.executor&quot;: &quot;Run&quot;,
+    &quot;Python.hud.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.paths.executor&quot;: &quot;Run&quot;,
+    &quot;Python.scratch_1.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultAutoModeForALLUsers.v1&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;desenvolvimento&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/Tiago/Documentos/GitHub/Ninja-Game/data/fonts&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
-      "Python"
+  &quot;keyToStringList&quot;: {
+    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
+      &quot;Python&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/data/fonts" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/scripts/ui" />
+      <recent name="$PROJECT_DIR$/scripts/objects" />
       <recent name="$PROJECT_DIR$/data/sounds/music" />
       <recent name="$PROJECT_DIR$/data/sounds" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.game">
     <configuration name="editor" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Ninja-Game" />
       <option name="ENV_FILES" value="" />
@@ -301,7 +314,15 @@
       <option name="project" value="LOCAL" />
       <updated>1767378007290</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Optimizando o código do jogo">
+      <option name="closed" value="true" />
+      <created>1767637467009</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1767637467009</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -352,7 +373,8 @@
     <MESSAGE value="Melhorei as importações de bibliotecas do jogo" />
     <MESSAGE value="Melhorei as importações de bibliotecas do jogo 2" />
     <MESSAGE value="Melhorando o acesso aos arquivos do jogo" />
-    <option name="LAST_COMMIT_MESSAGE" value="Melhorando o acesso aos arquivos do jogo" />
+    <MESSAGE value="Optimizando o código do jogo" />
+    <option name="LAST_COMMIT_MESSAGE" value="Optimizando o código do jogo" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
