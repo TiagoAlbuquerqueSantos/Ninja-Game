@@ -15,7 +15,7 @@ class Debug:
             spacing=(1, 1)
         )
 
-        self.exibir_dados = False
+        self.exibir_dados = True
 
     def exibir_debug(self, tecla):
         if tecla.key == pygame.K_F3:
