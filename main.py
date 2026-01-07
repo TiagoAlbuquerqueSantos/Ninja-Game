@@ -2,8 +2,17 @@
 import sys
 import pygame
 import asyncio
+import logging
 
 from scripts.constants import *
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    datefmt='%d-%b-%y %H:%M:%S',
+)
+
+logger = logging.getLogger(__name__)
 
 
 class Game:
@@ -21,7 +30,7 @@ class Game:
         pass
 
     def renderizar(self):
-        pass
+        self.tela.blit(pygame.transform.scale(self.display, RES_TELA), (0, 0))
 
     def checar_eventos(self):
         for evento in pygame.event.get():
@@ -38,11 +47,11 @@ class Game:
                 self.renderizar()
                 pygame.display.update()
 
-                self.dt = pygame.time.Clock().tick(FPS) / 1000.0
+                self.dt = self.relogio.tick(FPS) / 1000.0
                 await asyncio.sleep(0)
 
         except Exception as e:
-            print(f'Erro >>> {e}')
+            logger.error(e)
         finally:
             self.finalizar()
 
