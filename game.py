@@ -11,8 +11,8 @@ from scripts.objects import Faisca, Particula, Tilemap, Nuvens, Jogador, Inimigo
 from scripts.soundmanager import SoundManager
 from scripts.ui import Circulo, HUD
 from scripts.debug import Debug
-from scripts import paths
 from scripts.constants import *
+from scripts import paths
 
 
 class Game:
@@ -204,8 +204,8 @@ class Game:
         self.jogador.renderizar(self.display, deslocamento=self.camera)
         self.renderizar_inimigos()
         self.render_projeteis()
-        aplicar_contornos(self.display_2, self.display)
         self.desenhar_faiscas()
+        aplicar_contornos(self.display_2, self.display)
         self.desenhar_particulas()
         self.hud.renderizar(self.display)
         self.debug.renderizar(self.display)
