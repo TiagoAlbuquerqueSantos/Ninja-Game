@@ -5,6 +5,8 @@ import asyncio
 import logging
 
 from scripts.constants import *
+from scripts.engine import Engine
+from scripts.states import Splash, Scene, Menu
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -20,24 +22,37 @@ class Game:
         pygame.init()
         pygame.display.set_caption(LEGENDA)
         self.tela = pygame.display.set_mode(RES_TELA)
-        self.display = pygame.Surface((DISPLAY_L, DISPLAY_A))
+       # self.display = pygame.Surface((DISPLAY_L, DISPLAY_A))
         self.relogio = pygame.time.Clock()
         self.dt = 0.1
 
         self.rodando = True
 
+        state_dict = {
+            'splash': Splash(),
+            'menu': Menu(),
+            'scene': Scene(),
+        }
+
+        self.engine = Engine(self)
+        self.engine.setup_states(state_dict, 'scene')
+
     def atualizar(self):
-        pass
+        self.engine.atualizar(self.dt, 0)
 
     def renderizar(self):
-        self.tela.blit(pygame.transform.scale(self.display, RES_TELA), (0, 0))
+        self.engine.renderizar(self.tela)
+       # self.tela.blit(pygame.transform.scale(self.display, RES_TELA), (0, 0))
 
     def checar_eventos(self):
-        for evento in pygame.event.get():
+        eventos = pygame.event.get()
+        for evento in eventos:
             if evento.type == pygame.QUIT:
                 self.rodando = False
             elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_ESCAPE:
                 self.rodando = False
+
+        self.engine.eventos_engine(eventos)
 
     async def rodar(self):
         try:
