@@ -4,15 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b4b0171c-7737-4538-ab0b-2bc416d21378" name="Changes" comment="Ajustes na resolução de tela do editor e correção de bug ao fechar janela de pesquisa de arquivo">
-      <change afterPath="$PROJECT_DIR$/scripts/engine.py" afterDir="false" />
+    <list default="true" id="b4b0171c-7737-4538-ab0b-2bc416d21378" name="Changes" comment="Criei o gerenciador de estados de jogo">
+      <change afterPath="$PROJECT_DIR$/scripts/objects/projeteis.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/states/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/states/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/states/menu.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/states/menu.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/states/scene.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/states/scene.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/states/splash.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/states/splash.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/states/state.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/states/state.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/game.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/debug.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/debug.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/objects/entidades.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/objects/entidades.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -120,7 +117,7 @@
       <recent name="$PROJECT_DIR$/data/sounds" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.game">
     <configuration name="editor" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Ninja-Game" />
       <option name="ENV_FILES" value="" />
@@ -366,7 +363,15 @@
       <option name="project" value="LOCAL" />
       <updated>1767896680315</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="Criei o gerenciador de estados de jogo">
+      <option name="closed" value="true" />
+      <created>1767906701858</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1767906701858</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -421,7 +426,8 @@
     <MESSAGE value="Adicinado encurtadores de importação de funções e classes dentro do diretório scripts" />
     <MESSAGE value="Ajustes no main.py criado o logger para dedug de código" />
     <MESSAGE value="Ajustes na resolução de tela do editor e correção de bug ao fechar janela de pesquisa de arquivo" />
-    <option name="LAST_COMMIT_MESSAGE" value="Ajustes na resolução de tela do editor e correção de bug ao fechar janela de pesquisa de arquivo" />
+    <MESSAGE value="Criei o gerenciador de estados de jogo" />
+    <option name="LAST_COMMIT_MESSAGE" value="Criei o gerenciador de estados de jogo" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
