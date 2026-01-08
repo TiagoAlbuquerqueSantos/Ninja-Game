@@ -122,6 +122,14 @@ class Game:
             projetil[0][0] += projetil[1]
             projetil[2] += 1
             img = self.assets['projetil']
+            # for i in range(1): #TODO particulas do rastro do projetil
+            #     self.particulas.append(Particula(self, 'particula',
+            #                                      [projetil[0][0] + random() * 4 - 2,
+            #                                            projetil[0][1] + random() * 4 - 2],
+            #                                      velocidade=[-projetil[1] * 0.1 + (random() - 0.5) * 0.5,
+            #                                                                       (random() - 0.5) * 0.5],
+            #                                      frame=randint(0, 7)))
+
             self.display.blit(img, (projetil[0][0] - img.get_width() / 2 - self.camera[0],
                                           projetil[0][1] - img.get_height() / 2 - self.camera[1]))
 
@@ -129,7 +137,7 @@ class Game:
                 self.projeteis.remove(projetil)
                 for i in range(NUMS_FAISCA_PAREDE): #TODO particulas quando o projetil bater na parede
                     self.faiscas.append(Faisca(projetil[0], random() - 0.5 + (pi if projetil[1] > 0 else 0),
-                                               2 + random()))
+                                                        2 + random()))
 
             elif projetil[2] > 360:
                 self.projeteis.remove(projetil)

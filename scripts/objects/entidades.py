@@ -163,7 +163,7 @@ class Jogador(PhysicsEntity):
     def __init__(self, main, pos, tamanho):
         super().__init__(main, 'jogador', pos, tamanho)
         self.tempo_ar = 0
-        self.pulos = 1
+        self.pulos = 1 #TODO número de pulos extras
         self.deslize_parede = False
         self.repulsando = 0
 
@@ -180,7 +180,7 @@ class Jogador(PhysicsEntity):
 
             if self.colisoes['down']:
                 self.tempo_ar = 0
-                self.pulos = 1
+                self.pulos = 1 #TODO número de pulos extras
 
             self.deslize_parede = False
             if (self.colisoes['right'] or self.colisoes['left']) and self.tempo_ar > 4:
@@ -249,6 +249,15 @@ class Jogador(PhysicsEntity):
             self.velocidade[1] = -FORCA_PULO
             self.pulos -= 1
             self.tempo_ar = 5
+
+            for i in range(3): #TODO particulas do pulo
+                angulo = random() * pi + pi
+                velocidade = random() * 2
+                self.main.faiscas.append(Faisca(self.retangulo().midbottom, angulo, 2 + random()))
+                self.main.particulas.append(Particula(self.main,'particula', self.retangulo().midbottom,
+                                                 velocidade=[cos(angulo) * velocidade * 0.5,
+                                                             sin(angulo) * velocidade * 0.5],
+                                                 frame=randint(0, 7)))
             return True
         return None
 
