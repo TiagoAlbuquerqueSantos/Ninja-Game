@@ -52,13 +52,16 @@ class Editor:
         self.grid_ativo = True
 
     def pesquisar_mapas(self):
-        janela = Tk()
-        janela.withdraw()
-        nome_arquivo = filedialog.askopenfilename(
-            initialdir='', title='Selecionar Mapa',
-            filetypes=(('mapas json', '*.json'), ('todos os arquivos', '*.*')))
-        if nome_arquivo != '':
-            self.mapa_jogo.carregar(nome_arquivo)
+        try:
+            janela = Tk()
+            janela.withdraw()
+            nome_arquivo = filedialog.askopenfilename(
+                initialdir='', title='Selecionar Mapa',
+                filetypes=(('mapas json', '*.json'), ('todos os arquivos', '*.*')))
+            if nome_arquivo != '':
+                self.mapa_jogo.carregar(nome_arquivo)
+        except Exception as e:
+            print(f'Erro ao carregar mapa: {e}')
 
     # ------------------------------- Interfaçe Visual --------------------------------------------
     def renderizar_tile_atual(self, mpos, pos_tile):

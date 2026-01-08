@@ -1,7 +1,7 @@
 
 # Parâmetros iniciais do editor
-EDITOR_RES = LARGURA, ALTURA = 1280, 720
-DISPLAY_L, DISPLAY_A = 640, 360
+EDITOR_RES = LARGURA, ALTURA = 960, 540
+DISPLAY_L, DISPLAY_A = LARGURA // 2, ALTURA // 2
 LEGENDA = 'Editor de Levels'
 FPS = 60
 
