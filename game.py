@@ -1,8 +1,6 @@
 
 import pygame
 
-from pygame.sprite import Group
-
 from random import random, randint
 from math import sin, cos, pi
 from os import listdir
@@ -31,9 +29,6 @@ class Game:
         self.hud = HUD(self)
         self.debug = Debug(self)
         self.transicao = Circulo()
-
-        self.sprites = Group()
-        self.projetil_sprite = Group()
 
         self.camera = None
         self.scroll = None
@@ -122,40 +117,45 @@ class Game:
             if derrotar:
                 self.inimigos.remove(inimigo)
 
-    # def render_projeteis(self):
-    #     for projetil in self.projeteis.copy():
-    #         projetil[0][0] += projetil[1]
-    #         projetil[2] += 1
-    #         img = self.assets['projetil']
-    #
-    #         print(f'X: {projetil[0][0]}, Y: {projetil[0][1]}, Vel: {projetil[1]}, Tempo: {projetil[2]}')
-    #
-    #         self.display.blit(img, (projetil[0][0] - img.get_width() / 2 - self.camera[0],
-    #                                       projetil[0][1] - img.get_height() / 2 - self.camera[1]))
-    #
-    #         if self.mapa_jogo.checar_solido(projetil[0]):
-    #             self.projeteis.remove(projetil)
-    #             for i in range(NUMS_FAISCA_PAREDE): #TODO particulas quando o projetil bater na parede
-    #                 self.faiscas.append(Faisca(projetil[0], random() - 0.5 + (pi if projetil[1] > 0 else 0),
-    #                                                     2 + random()))
-    #
-    #         elif projetil[2] > 360:
-    #             self.projeteis.remove(projetil)
-    #         elif abs(self.jogador.repulsando) < 50:
-    #             if self.jogador.retangulo().collidepoint(projetil[0]):
-    #                 self.projeteis.remove(projetil)
-    #                 self.derrotado += 1
-    #                 self.sounds.play_sfx('hit')
-    #                 self.balanco_imagem = max(16, self.balanco_imagem)
-    #                 for i in range(NUMS_FAISCA_DERROTADO): #TODO particulas quando o jogador for derrotado
-    #                     angulo = random() * pi * 2
-    #                     velocidade = random() * 5
-    #                     self.faiscas.append(
-    #                         Faisca(self.jogador.retangulo().center, angulo, 2 + random()))
-    #                     self.particulas.append(Particula(self, 'particula', self.jogador.retangulo().center,
-    #                                                      velocidade=[cos(angulo + pi) * velocidade * 0.5,
-    #                                                                  sin(angulo + pi) * velocidade * 0.5],
-    #                                                      frame=randint(0, 7)))
+    def render_projeteis(self):
+        for projetil in self.projeteis.copy():
+            projetil[0][0] += projetil[1]
+            projetil[2] += 1
+            img = self.assets['projetil']
+            # for i in range(1): #TODO particulas do rastro do projetil
+            #     self.particulas.append(Particula(self, 'particula',
+            #                                      [projetil[0][0] + random() * 4 - 2,
+            #                                            projetil[0][1] + random() * 4 - 2],
+            #                                      velocidade=[-projetil[1] * 0.1 + (random() - 0.5) * 0.5,
+            #                                                                       (random() - 0.5) * 0.5],
+            #                                      frame=randint(0, 7)))
+
+            self.display.blit(img, (projetil[0][0] - img.get_width() / 2 - self.camera[0],
+                                          projetil[0][1] - img.get_height() / 2 - self.camera[1]))
+
+            if self.mapa_jogo.checar_solido(projetil[0]):
+                self.projeteis.remove(projetil)
+                for i in range(NUMS_FAISCA_PAREDE): #TODO particulas quando o projetil bater na parede
+                    self.faiscas.append(Faisca(projetil[0], random() - 0.5 + (pi if projetil[1] > 0 else 0),
+                                                        2 + random()))
+
+            elif projetil[2] > 360:
+                self.projeteis.remove(projetil)
+            elif abs(self.jogador.repulsando) < 50:
+                if self.jogador.retangulo().collidepoint(projetil[0]):
+                    self.projeteis.remove(projetil)
+                    self.derrotado += 1
+                    self.sounds.play_sfx('hit')
+                    self.balanco_imagem = max(16, self.balanco_imagem)
+                    for i in range(NUMS_FAISCA_DERROTADO): #TODO particulas quando o jogador for derrotado
+                        angulo = random() * pi * 2
+                        velocidade = random() * 5
+                        self.faiscas.append(
+                            Faisca(self.jogador.retangulo().center, angulo, 2 + random()))
+                        self.particulas.append(Particula(self, 'particula', self.jogador.retangulo().center,
+                                                         velocidade=[cos(angulo + pi) * velocidade * 0.5,
+                                                                     sin(angulo + pi) * velocidade * 0.5],
+                                                         frame=randint(0, 7)))
 
     def desenhar_faiscas(self):
         for faisca in self.faiscas.copy():
@@ -200,8 +200,6 @@ class Game:
         self.verificar_derrota()
         self.movimento_camera()
         self.atualizar_folhas()
-        self.sprites.update(self.dt)
-        self.projetil_sprite.update(self.dt)
         self.nuvens.atualizar(self.dt)
         self.jogador.atualizar(self.mapa_jogo, (self.movimento[1] - self.movimento[0], 0))
         self.hud.atualizar()
@@ -213,8 +211,7 @@ class Game:
         self.mapa_jogo.renderizar(self.display, deslocamento=self.camera)
         self.jogador.renderizar(self.display, deslocamento=self.camera)
         self.renderizar_inimigos()
-        self.sprites.draw(self.display)
-    #    self.render_projeteis()
+        self.render_projeteis()
         self.desenhar_faiscas()
         aplicar_contornos(self.display_2, self.display)
         self.desenhar_particulas()

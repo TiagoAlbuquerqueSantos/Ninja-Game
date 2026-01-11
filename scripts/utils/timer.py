@@ -25,6 +25,5 @@ class Timer:
         if self.ativo:
             tempo_atual = get_ticks()
             if tempo_atual - self.tempo_inicial >= self.duracao:
-                if self.funcao:
                     self.funcao()
                 self.desativar()

@@ -29,6 +29,7 @@ class Debug:
 
         dados_texto = f"""
         FPS: {self.game.relogio.get_fps():.2f} - Dt: {self.game.dt:.4f}
+        Num Projetis: {len(self.game.projeteis)} - Num Particulas: {len(self.game.particulas)} - Num Faiscas: {len(self.game.faiscas)}
         Pos: {pos}
         Vel: {vel}
         Nums de chances: {self.game.derrotado} - Tempo no Ar: {self.game.jogador.tempo_ar}

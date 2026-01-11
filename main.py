@@ -68,12 +68,9 @@ class Game:
         except Exception as e:
             logger.error(e)
         finally:
-            self.finalizar()
+            pygame.quit()
+            sys.exit()
 
-    @staticmethod
-    def finalizar():
-        pygame.quit()
-        sys.exit()
 
 if __name__ == '__main__':
     app = Game()
