@@ -12,8 +12,8 @@ from .efeito_faisca import Faisca
 
 
 class Projetil(Sprite):
-    def __init__(self, game, pos, direcao):
-        super().__init__()
+    def __init__(self, game, grupos, pos, direcao):
+        super().__init__(grupos)
         self.game = game
         self.image = self.game.assets['projetil']
         self.rect = self.image.get_rect(center=pos)

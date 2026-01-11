@@ -110,25 +110,17 @@ class Inimigo(PhysicsEntity):
                 if abs(distancia[1]) < 16:
                     if self.flipe and distancia[0] < 0:
                         self.main.sounds.play_sfx('shoot')
-                        proj = Projetil(self.main, [self.retangulo().centerx - 7,
-                                                         self.retangulo().centery], -1)
-                        self.main.projetil_sprite.add(proj)
-                        self.main.sprites.add(proj)
-                       # self.main.projeteis.append([[self.retangulo().centerx - 7, self.retangulo().centery], -1.5, 0])
-                       #  for i in range(4): #TODO faiscas do tiro
-                       #      self.main.faiscas.append(
-                       #          Faisca(self.main.projeteis[-1][0], random() - 0.5 + pi, 2 + random()))
+                        Projetil(
+                            self.main,
+                            [self.main.projetil_sprite, self.main.sprites],
+                            [self.retangulo().centerx - 7, self.retangulo().centery], -1)
 
                     if not self.flipe and distancia[0] > 0:
                         self.main.sounds.play_sfx('shoot')
-                      #  self.main.projeteis.append([[self.retangulo().centerx + 7, self.retangulo().centery], 1.5, 0])
-                        proj = Projetil(self.main, [self.retangulo().centerx + 7,
-                                                         self.retangulo().centery], 1)
-                        self.main.projetil_sprite.add(proj)
-                        self.main.sprites.add(proj)
-                        # for i in range(4): #TODO faiscas do tiro
-                        #     self.main.faiscas.append(
-                        #         Faisca(self.main.projeteis[-1][0], random() - 0.5, 2 + random()))
+                        Projetil(
+                            self.main,
+                            [self.main.projetil_sprite, self.main.sprites],
+                            [self.retangulo().centerx + 7, self.retangulo().centery], 1)
 
         elif random() < 0.01:
             self.correndo = randint(30, 120)
