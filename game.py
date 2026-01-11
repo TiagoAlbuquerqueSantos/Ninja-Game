@@ -1,6 +1,5 @@
 
 import pygame
-from pygame.sprite import Group
 
 from random import random, randint
 from math import sin
@@ -25,9 +24,6 @@ class Game:
         self.display = pygame.Surface((DISPLAY_L, DISPLAY_A), pygame.SRCALPHA)
         self.display_2 = self.display.copy()
         self.relogio = pygame.time.Clock()
-
-        self.sprites = Group()
-        self.projetil_sprite = Group()
 
         self.hud = HUD(self)
         self.debug = Debug(self)
