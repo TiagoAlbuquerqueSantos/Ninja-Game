@@ -23,7 +23,6 @@ class PhysicsEntity:
         self.animacao = None
 
         self.acao = ''
-        self.deslocamento_anim = (-3, -3)
         self.flipe = False
         self.acao_atual('idle')
 

@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b4b0171c-7737-4538-ab0b-2bc416d21378" name="Changes" comment="Atualizando projeto">
-      <change beforePath="$PROJECT_DIR$/.idea/Ninja-Game.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/objects/entidades.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/objects/entidades.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/objects/projetil.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/objects/projetil.py" afterDir="false" />
-    </list>
+    <list default="true" id="b4b0171c-7737-4538-ab0b-2bc416d21378" name="Changes" comment="Atualizando projeto" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -371,7 +366,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768140385856</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="Atualizando projeto">
+      <option name="closed" value="true" />
+      <created>1768152582586</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1768152582586</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
