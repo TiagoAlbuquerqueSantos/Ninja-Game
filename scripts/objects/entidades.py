@@ -8,8 +8,6 @@ from scripts.constants import *
 from .particulas import Particula
 from .efeito_faisca import Faisca
 
-from .projetil import Projetil
-
 
 class PhysicsEntity:
     def __init__(self, main, tipo_e, pos, tamanho):

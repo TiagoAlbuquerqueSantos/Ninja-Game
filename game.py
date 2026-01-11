@@ -1,8 +1,6 @@
 
 import pygame
 
-from pygame.sprite import Group
-
 from random import random, randint
 from math import sin
 from os import listdir
@@ -30,9 +28,6 @@ class Game:
         self.hud = HUD(self)
         self.debug = Debug(self)
         self.transicao = Circulo()
-
-        self.sprites = Group()
-        self.projetil_sprite = Group()
 
         self.camera = None
         self.scroll = None
