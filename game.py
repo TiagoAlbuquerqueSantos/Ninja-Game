@@ -2,12 +2,12 @@
 import pygame
 
 from random import random, randint
-from math import sin, cos, pi
+from math import sin
 from os import listdir
 from sys import exit
 
 from scripts.utils import carregar_imagem, carregar_imagens, aplicar_contornos, Animacao
-from scripts.objects import Faisca, Particula, Tilemap, Nuvens, Jogador, Inimigo
+from scripts.objects import Particula, Tilemap, Nuvens, Jogador, Inimigo
 from scripts.soundmanager import SoundManager
 from scripts.ui import Circulo, HUD
 from scripts.debug import Debug
@@ -24,7 +24,6 @@ class Game:
         self.display = pygame.Surface((DISPLAY_L, DISPLAY_A), pygame.SRCALPHA)
         self.display_2 = self.display.copy()
         self.relogio = pygame.time.Clock()
-        self.dt = 0
 
         self.hud = HUD(self)
         self.debug = Debug(self)
@@ -35,7 +34,6 @@ class Game:
         self.faiscas = None
         self.inimigos = None
         self.derrotado = None
-        self.projeteis = None
         self.particulas = None
         self.gerador_folhas = []
 
@@ -94,7 +92,7 @@ class Game:
             else:
                 self.inimigos.append(Inimigo(self, gerador['pos'], (8, 15)))
 
-        self.projeteis = []
+        self.projetil_sprite.empty()
         self.particulas = []
         self.faiscas = []
 
@@ -116,46 +114,6 @@ class Game:
             inimigo.renderizar(self.display, deslocamento=self.camera)
             if derrotar:
                 self.inimigos.remove(inimigo)
-
-    def render_projeteis(self):
-        for projetil in self.projeteis.copy():
-            projetil[0][0] += projetil[1]
-            projetil[2] += 1
-            img = self.assets['projetil']
-            # for i in range(1): #TODO particulas do rastro do projetil
-            #     self.particulas.append(Particula(self, 'particula',
-            #                                      [projetil[0][0] + random() * 4 - 2,
-            #                                            projetil[0][1] + random() * 4 - 2],
-            #                                      velocidade=[-projetil[1] * 0.1 + (random() - 0.5) * 0.5,
-            #                                                                       (random() - 0.5) * 0.5],
-            #                                      frame=randint(0, 7)))
-
-            self.display.blit(img, (projetil[0][0] - img.get_width() / 2 - self.camera[0],
-                                          projetil[0][1] - img.get_height() / 2 - self.camera[1]))
-
-            if self.mapa_jogo.checar_solido(projetil[0]):
-                self.projeteis.remove(projetil)
-                for i in range(NUMS_FAISCA_PAREDE): #TODO particulas quando o projetil bater na parede
-                    self.faiscas.append(Faisca(projetil[0], random() - 0.5 + (pi if projetil[1] > 0 else 0),
-                                                        2 + random()))
-
-            elif projetil[2] > 360:
-                self.projeteis.remove(projetil)
-            elif abs(self.jogador.repulsando) < 50:
-                if self.jogador.retangulo().collidepoint(projetil[0]):
-                    self.projeteis.remove(projetil)
-                    self.derrotado += 1
-                    self.sounds.play_sfx('hit')
-                    self.balanco_imagem = max(16, self.balanco_imagem)
-                    for i in range(NUMS_FAISCA_DERROTADO): #TODO particulas quando o jogador for derrotado
-                        angulo = random() * pi * 2
-                        velocidade = random() * 5
-                        self.faiscas.append(
-                            Faisca(self.jogador.retangulo().center, angulo, 2 + random()))
-                        self.particulas.append(Particula(self, 'particula', self.jogador.retangulo().center,
-                                                         velocidade=[cos(angulo + pi) * velocidade * 0.5,
-                                                                     sin(angulo + pi) * velocidade * 0.5],
-                                                         frame=randint(0, 7)))
 
     def desenhar_faiscas(self):
         for faisca in self.faiscas.copy():
@@ -194,13 +152,15 @@ class Game:
         self.scroll[1] += (self.jogador.retangulo().centery - DISPLAY_A / 2 - self.scroll[1]) / ACE_CAMERA
         self.camera = (int(self.scroll[0]), int(self.scroll[1]))
 
-    def atualizar(self):
+    def atualizar(self, dt):
         self.balanco_imagem = max(0, self.balanco_imagem - 1)
         self.carregar_proximo_nivel()
         self.verificar_derrota()
         self.movimento_camera()
         self.atualizar_folhas()
-        self.nuvens.atualizar(self.dt)
+        self.sprites.update(dt)
+        self.projetil_sprite.update(dt)
+        self.nuvens.atualizar(dt)
         self.jogador.atualizar(self.mapa_jogo, (self.movimento[1] - self.movimento[0], 0))
         self.hud.atualizar()
 
@@ -211,7 +171,7 @@ class Game:
         self.mapa_jogo.renderizar(self.display, deslocamento=self.camera)
         self.jogador.renderizar(self.display, deslocamento=self.camera)
         self.renderizar_inimigos()
-        self.render_projeteis()
+        self.sprites.draw(self.display)
         self.desenhar_faiscas()
         aplicar_contornos(self.display_2, self.display)
         self.desenhar_particulas()
@@ -253,11 +213,11 @@ class Game:
 
     def rodar(self):
         while self.rodando:
+            dt = self.relogio.tick(FPS) / 1000.0
             self.checar_eventos()
-            self.atualizar()
+            self.atualizar(dt)
             self.renderizar()
             pygame.display.update()
-            self.dt = self.relogio.tick(FPS) / 1000.0
         pygame.quit()
         exit()
 
