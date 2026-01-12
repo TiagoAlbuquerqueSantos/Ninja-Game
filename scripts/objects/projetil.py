@@ -9,6 +9,7 @@ from ..utils import Timer
 from ..constants import NUMS_FAISCA_PAREDE, NUMS_FAISCA_DERROTADO
 from .particulas import Particula
 from .efeito_faisca import Faisca
+from ..constants import VEL_PROJETIL
 
 
 class Projetil(Sprite):
@@ -57,7 +58,7 @@ class Projetil(Sprite):
     def update(self, dt):
         self.tempo_vida.atualizar()
 
-        self.pos.x += self.direcao * 50 * dt
+        self.pos.x += self.direcao * VEL_PROJETIL * dt
         self.rect.x = self.pos.x - self.image.get_width() / 2 - self.game.camera[0]
         self.rect.y = self.pos.y - self.image.get_height() / 2 - self.game.camera[1]
         self.destruir_projetil()

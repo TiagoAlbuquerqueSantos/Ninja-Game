@@ -69,3 +69,5 @@ COLISAO_TILES = {'grama', 'pedra'}
 TIPOS_AUTOTILE = {'grama', 'pedra'}
 
 DESLOCAMENTO_ANIM = -3
+
+VEL_PROJETIL = 140
