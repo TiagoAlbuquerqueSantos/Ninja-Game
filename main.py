@@ -7,12 +7,7 @@ import logging
 from scripts.constants import *
 from scripts.engine import Engine
 from scripts.states import Splash, Scene, Menu
-
-logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    datefmt='%d-%b-%y %H:%M:%S',
-)
+from scripts.log import setup_logger
 
 logger = logging.getLogger(__name__)
 
@@ -73,5 +68,5 @@ class Game:
 
 
 if __name__ == '__main__':
-    app = Game()
-    asyncio.run(app.rodar())
+    setup_logger()
+    asyncio.run(Game().rodar())

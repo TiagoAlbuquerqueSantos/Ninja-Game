@@ -157,6 +157,7 @@ class Game:
         self.nuvens.atualizar(dt)
         self.jogador.atualizar(self.mapa_jogo, (self.movimento[1] - self.movimento[0], 0))
         self.hud.atualizar()
+        self.transicao.atualizar()
 
     def renderizar(self):
         self.display.fill((0, 0, 0, 0))
@@ -173,7 +174,6 @@ class Game:
         self.hud.renderizar(self.display)
         self.debug.renderizar(self.display)
 
-        self.transicao.atualizar()
         self.transicao.renderizar(self.display)
 
         self.display_2.blit(self.display, (0, 0))
