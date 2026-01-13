@@ -150,6 +150,15 @@ class Inimigo(PhysicsEntity):
     def renderizar(self, surf, deslocamento=(0, 0)):
         super().renderizar(surf, deslocamento=deslocamento)
 
+        # cor_linha = (255, 0, 0) if int(self.main.jogador.pos[1]) == int(self.pos[1]) else (0, 0, 0)
+        #
+        # pygame.draw.line(
+        #     surf,
+        #     cor_linha,
+        #     (self.retangulo().centerx - deslocamento[0], self.retangulo().centery - deslocamento[1]),
+        #     (self.main.jogador.retangulo().centerx - deslocamento[0],
+        #              self.main.jogador.retangulo().centery - deslocamento[1]), 1)
+
         if self.flipe:
             surf.blit(pygame.transform.flip(self.main.assets['pistola'], True, False),
                       (self.retangulo().centerx - 4 - self.main.assets['pistola'].get_width() - deslocamento[0],

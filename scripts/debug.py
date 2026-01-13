@@ -17,7 +17,7 @@ class Debug:
 
         self.exibir_dados = True
 
-    def exibir_debug(self, tecla):
+    def exibir_dados_tela(self, tecla):
         if tecla.key == pygame.K_F3:
             self.exibir_dados = not self.exibir_dados
 

@@ -2,13 +2,13 @@
 import pygame
 from pygame.sprite import Group
 
-from random import random, randint
+from random import random
 from math import sin
 from os import listdir
 from sys import exit
 
 from scripts.utils import carregar_imagem, carregar_imagens, aplicar_contornos, Animacao
-from scripts.objects import Particula, Tilemap, Nuvens, Jogador, Inimigo
+from scripts.objects import GeradorFolhas, Tilemap, Nuvens, Jogador, Inimigo
 from scripts.soundmanager import SoundManager
 from scripts.ui import Circulo, HUD
 from scripts.debug import Debug
@@ -39,7 +39,6 @@ class Game:
         self.inimigos = None
         self.derrotado = None
         self.particulas = None
-        self.gerador_folhas = []
 
         self.rodando = True
 
@@ -75,6 +74,8 @@ class Game:
 
         self.mapa_jogo = Tilemap(self, TILE_SIZE)
 
+        self.gerador_folhas = GeradorFolhas(self)
+
         self.nivel = LEVEL
         self.carregar_nivel(self.nivel)
 
@@ -83,10 +84,7 @@ class Game:
     def carregar_nivel(self, id_mapa):
         self.mapa_jogo.carregar(paths.MAPS_PATH / f'{id_mapa}.json')
 
-        self.gerador_folhas = []
-        for arvore in self.mapa_jogo.extrair([('decor_larga', 2)], manter=True):
-            self.gerador_folhas.append(pygame.Rect(
-                4 + arvore['pos'][0], 4 + arvore['pos'][1], 23, 13))
+        self.gerador_folhas.carregar_geradores(self.mapa_jogo)
 
         self.inimigos = []
         for gerador in self.mapa_jogo.extrair([('geradores', 0), ('geradores', 1)]):
@@ -104,19 +102,11 @@ class Game:
         self.derrotado = 0
         self.transicao.resetar()
 
-    def atualizar_folhas(self):
-        for rect in self.gerador_folhas:
-            if random() * 49999 < rect.width * rect.height:
-                pos = (rect.x + random() * rect.width,
-                       rect.y + random() * rect.height)
-                self.particulas.append(
-                    Particula(self, 'folhas', pos, velocidade=[-0.1, 0.3], frame=randint(0, 20)))
-
     def renderizar_inimigos(self):
         for inimigo in self.inimigos.copy():
-            derrotar = inimigo.atualizar(self.mapa_jogo, (0, 0))
+            derrotado = inimigo.atualizar(self.mapa_jogo, (0, 0))
             inimigo.renderizar(self.display, deslocamento=self.camera)
-            if derrotar:
+            if derrotado:
                 self.inimigos.remove(inimigo)
 
     def desenhar_faiscas(self):
@@ -161,7 +151,7 @@ class Game:
         self.carregar_proximo_nivel()
         self.verificar_derrota()
         self.movimento_camera()
-        self.atualizar_folhas()
+        self.gerador_folhas.atualizar()
     #    self.sprites.update(dt)
         self.projetil_sprite.update(dt)
         self.nuvens.atualizar(dt)
@@ -209,7 +199,7 @@ class Game:
                         self.sounds.play_sfx('jump')
                 elif evento.key == pygame.K_j:
                     self.jogador.repulsao()
-                self.debug.exibir_debug(evento)
+                self.debug.exibir_dados_tela(evento)
             elif evento.type == pygame.KEYUP:
                 if evento.key == pygame.K_a:
                     self.movimento[0] = False
