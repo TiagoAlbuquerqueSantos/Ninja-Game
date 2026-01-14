@@ -22,8 +22,7 @@ class Game:
         pygame.display.set_caption(LEGENDA)
         flags = pygame.SCALED + pygame.RESIZABLE
         self.tela = pygame.display.set_mode(RES_TELA, flags=flags)
-        self.display = pygame.Surface((DISPLAY_L, DISPLAY_A), pygame.SRCALPHA)
-        self.display_2 = self.display.copy()
+        self.display = pygame.Surface(RES_TELA, pygame.SRCALPHA)
         self.relogio = pygame.time.Clock()
 
         self.sprites = Group()
@@ -142,9 +141,14 @@ class Game:
                 self.carregar_nivel(self.nivel)
 
     def movimento_camera(self):
-        self.scroll[0] += (self.jogador.retangulo().centerx - DISPLAY_L / 2 - self.scroll[0]) / ACE_CAMERA
-        self.scroll[1] += (self.jogador.retangulo().centery - DISPLAY_A / 2 - self.scroll[1]) / ACE_CAMERA
+        self.scroll[0] += (self.jogador.retangulo().centerx - LARGURA / 2 - self.scroll[0]) / ACE_CAMERA
+        self.scroll[1] += (self.jogador.retangulo().centery - ALTURA / 2 - self.scroll[1]) / ACE_CAMERA
         self.camera = (int(self.scroll[0]), int(self.scroll[1]))
+
+        balanco = (random() * self.balanco_imagem - self.balanco_imagem / 2,
+                   random() * self.balanco_imagem - self.balanco_imagem / 2)
+
+        self.camera = (self.camera[0] + int(balanco[0]), self.camera[1] + int(balanco[1]))
 
     def atualizar(self, dt):
         self.balanco_imagem = max(0, self.balanco_imagem - 1)
@@ -161,27 +165,22 @@ class Game:
 
     def renderizar(self):
         self.display.fill((0, 0, 0, 0))
-        self.display_2.blit(pygame.transform.scale(self.assets['plano_fundo'], RES_TELA), (0, 0))
-        self.nuvens.renderizar(self.display_2, deslocamento=self.camera)
+        self.tela.blit(self.assets['plano_fundo'], (0, 0))
+        self.nuvens.renderizar(self.tela, deslocamento=self.camera)
         self.mapa_jogo.renderizar(self.display, deslocamento=self.camera)
         self.jogador.renderizar(self.display, deslocamento=self.camera)
         self.renderizar_inimigos()
         self.projetil_sprite.draw(self.display)
         #self.sprites.draw(self.display)
         self.desenhar_faiscas()
-        aplicar_contornos(self.display_2, self.display)
+        aplicar_contornos(self.tela, self.display)
         self.desenhar_particulas()
-        self.hud.renderizar(self.display)
+       # self.hud.renderizar(self.display)
         self.debug.renderizar(self.display)
 
         self.transicao.renderizar(self.display)
 
-        self.display_2.blit(self.display, (0, 0))
-
-        balanco = (random() * self.balanco_imagem - self.balanco_imagem / 2,
-                   random() * self.balanco_imagem - self.balanco_imagem / 2)
-
-        self.tela.blit(pygame.transform.scale(self.display_2, RES_TELA), balanco)
+        self.tela.blit(self.display, (0, 0))
 
     def checar_eventos(self):
         for evento in pygame.event.get():
