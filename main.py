@@ -16,8 +16,7 @@ class Game:
     def __init__(self):
         pygame.init()
         pygame.display.set_caption(LEGENDA)
-        self.tela = pygame.display.set_mode(RES_TELA)
-       # self.display = pygame.Surface((DISPLAY_L, DISPLAY_A))
+        self.tela = pygame.display.set_mode(RES_TELA, pygame.SCALED)
         self.relogio = pygame.time.Clock()
         self.dt = 0.1
 
@@ -37,7 +36,6 @@ class Game:
 
     def renderizar(self):
         self.engine.renderizar(self.tela)
-       # self.tela.blit(pygame.transform.scale(self.display, RES_TELA), (0, 0))
 
     def checar_eventos(self):
         eventos = pygame.event.get()

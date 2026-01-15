@@ -5,7 +5,6 @@ from .constants import *
 class Engine:
     def __init__(self, app):
         self.app = app
-        self.display = pygame.Surface((DISPLAY_L, DISPLAY_A))
 
         self.state_dict = {}
         self.state_nome = None
@@ -31,5 +30,4 @@ class Engine:
         self.estado.atualizar(dt, tempo)
 
     def renderizar(self, surf):
-        self.estado.renderizar(self.display)
-        surf.blit(pygame.transform.scale(self.display, RES_TELA), (0, 0))
+        self.estado.renderizar(surf)
