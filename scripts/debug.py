@@ -37,7 +37,7 @@ class Debug:
         if self.exibir_dados:
             self.renderizar_customizado(display, dados_texto)
 
-    def renderizar_customizado(self, display, dados_texto, posicao=(-30, DISPLAY_A - 45)):
+    def renderizar_customizado(self, display, dados_texto, posicao=(-30, ALTURA - 45)):
         """
         Renderiza textos customizados em uma posição específica.
 

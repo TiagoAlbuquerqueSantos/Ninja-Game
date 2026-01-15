@@ -4,7 +4,7 @@ from pygame.sprite import Group
 
 from random import random
 from math import sin
-from os import listdir
+from os import listdir, environ
 from sys import exit
 
 from scripts.utils import carregar_imagem, carregar_imagens, aplicar_contornos, Animacao
@@ -15,14 +15,16 @@ from scripts.debug import Debug
 from scripts.constants import *
 from scripts import paths
 
+FLAGS_TELA = pygame.SCALED | pygame.RESIZABLE
+
 
 class Game:
     def __init__(self):
         pygame.init()
+        environ['SDL_VIDEO_CENTERED'] = '1'
         pygame.display.set_caption(LEGENDA)
-        flags = pygame.SCALED + pygame.RESIZABLE
-        self.tela = pygame.display.set_mode(RES_TELA, flags=flags)
-        self.display = pygame.Surface(RES_TELA, pygame.SRCALPHA)
+        self.tela = pygame.display.set_mode(RES_TELA, FLAGS_TELA)
+        self.mascara_surf = pygame.Surface(RES_TELA, pygame.SRCALPHA)
         self.relogio = pygame.time.Clock()
 
         self.sprites = Group()
@@ -40,6 +42,7 @@ class Game:
         self.particulas = None
 
         self.rodando = True
+        self.tela_cheia = False
 
         self.movimento = [False, False]
 
@@ -104,21 +107,21 @@ class Game:
     def renderizar_inimigos(self):
         for inimigo in self.inimigos.copy():
             derrotado = inimigo.atualizar(self.mapa_jogo, (0, 0))
-            inimigo.renderizar(self.display, deslocamento=self.camera)
+            inimigo.renderizar(self.mascara_surf, deslocamento=self.camera)
             if derrotado:
                 self.inimigos.remove(inimigo)
 
     def desenhar_faiscas(self):
         for faisca in self.faiscas.copy():
             interromper = faisca.atualizar()
-            faisca.renderizar(self.display, deslocamento=self.camera)
+            faisca.renderizar(self.mascara_surf, deslocamento=self.camera)
             if interromper:
                 self.faiscas.remove(faisca)
 
     def desenhar_particulas(self):
         for particula in self.particulas.copy():
             interromper = particula.atualizar()
-            particula.renderizar(self.display, deslocamento=self.camera)
+            particula.renderizar(self.mascara_surf, deslocamento=self.camera)
             if particula.tipo == 'folhas':
                 particula.pos[0] += sin(
                     particula.animacao.frame * 0.035) * 0.3
@@ -164,23 +167,23 @@ class Game:
         self.transicao.atualizar()
 
     def renderizar(self):
-        self.display.fill((0, 0, 0, 0))
-        self.tela.blit(self.assets['plano_fundo'], (0, 0))
+        self.mascara_surf.fill((0, 0, 0, 0))
+        self.tela.blit(pygame.transform.scale(self.assets['plano_fundo'], RES_TELA), (0, 0))
         self.nuvens.renderizar(self.tela, deslocamento=self.camera)
-        self.mapa_jogo.renderizar(self.display, deslocamento=self.camera)
-        self.jogador.renderizar(self.display, deslocamento=self.camera)
+        self.mapa_jogo.renderizar(self.mascara_surf, deslocamento=self.camera)
+        self.jogador.renderizar(self.mascara_surf, deslocamento=self.camera)
         self.renderizar_inimigos()
-        self.projetil_sprite.draw(self.display)
-        #self.sprites.draw(self.display)
+        self.projetil_sprite.draw(self.mascara_surf)
+        #self.sprites.draw(self.mascara_surf)
         self.desenhar_faiscas()
-        aplicar_contornos(self.tela, self.display)
+        aplicar_contornos(self.tela, self.mascara_surf)
         self.desenhar_particulas()
-       # self.hud.renderizar(self.display)
-        self.debug.renderizar(self.display)
+       # self.hud.renderizar(self.mascara_surf)
+        self.debug.renderizar(self.mascara_surf)
 
-        self.transicao.renderizar(self.display)
+        self.transicao.renderizar(self.mascara_surf)
 
-        self.tela.blit(self.display, (0, 0))
+        self.tela.blit(self.mascara_surf, (0, 0))
 
     def checar_eventos(self):
         for evento in pygame.event.get():
@@ -198,6 +201,12 @@ class Game:
                         self.sounds.play_sfx('jump')
                 elif evento.key == pygame.K_j:
                     self.jogador.repulsao()
+                elif evento.key == pygame.K_F11:
+                    self.tela_cheia = not self.tela_cheia
+                    if self.tela_cheia:
+                        pygame.display.set_mode(RES_TELA, FLAGS_TELA | pygame.FULLSCREEN)
+                    else:
+                        pygame.display.set_mode(RES_TELA, FLAGS_TELA)
                 self.debug.exibir_dados_tela(evento)
             elif evento.type == pygame.KEYUP:
                 if evento.key == pygame.K_a:

@@ -7,7 +7,7 @@ class HUD:
     def __init__(self, game):
         self.game = game
 
-        self.barra_vida = BarraVida((DISPLAY_L / 2 - 50, 5), (100, 10), 100)
+        self.barra_vida = BarraVida((LARGURA / 2 - 50, 5), (100, 10), 100)
 
     def atualizar(self):
         pass
