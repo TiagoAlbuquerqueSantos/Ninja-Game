@@ -24,8 +24,8 @@ class Circulo:
     def renderizar(self, display):
         if self.estado != 0:
             surf_transicao = pygame.Surface(display.get_size())
-            pygame.draw.circle(surf_transicao, BRANCO, CENTRO_TELA, (RAIO_TRANSICAO - abs(self.estado)) * 8)
-            surf_transicao.set_colorkey(BRANCO)
+            pygame.draw.circle(surf_transicao, Cores.BRANCO, CENTRO_TELA, (RAIO_TRANSICAO - abs(self.estado)) * 8)
+            surf_transicao.set_colorkey(Cores.BRANCO)
             display.blit(surf_transicao, (0, 0))
 
     @property

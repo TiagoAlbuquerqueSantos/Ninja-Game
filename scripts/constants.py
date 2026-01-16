@@ -14,15 +14,16 @@ TAM_FONTE = 8
 RAIO_TRANSICAO = 50
 
 # Cores
-BRANCO = (255, 255, 255)
-PRETO = (0, 0, 0)
-VERDE = (0, 255, 0)
-VERMELHO = (255, 0, 0)
-AZUL = (0, 0, 255)
-CINZA = (100, 100, 100)
-AMARELO = (255, 255, 0)
-CIANO = (0, 255, 255)
-MAGENTA = (255, 0, 255)
+class Cores:
+    BRANCO = (255, 255, 255)
+    PRETO = (0, 0, 0)
+    VERDE = (0, 255, 0)
+    VERMELHO = (255, 0, 0)
+    AZUL = (0, 0, 255)
+    CINZA = (100, 100, 100)
+    AMARELO = (255, 255, 0)
+    CIANO = (0, 255, 255)
+    MAGENTA = (255, 0, 255)
 
 # Parâmetros do jogador
 POSICAO = (50, 50)

@@ -3,10 +3,12 @@ import pygame
 
 from ..paths import IMG_ASSETS
 
-def carregar_imagem(caminho):
-    imagem = pygame.image.load(IMG_ASSETS / caminho).convert()
-    imagem.set_colorkey((0, 0, 0))
-    return imagem
+def carregar_imagem(caminho, escala=None):
+    img = pygame.image.load(IMG_ASSETS / caminho).convert()
+    img.set_colorkey((0, 0, 0))
+    if escala is not None:
+        img = pygame.transform.scale(img, escala)
+    return img
 
 def carregar_imagens(caminho):
     imagems = []

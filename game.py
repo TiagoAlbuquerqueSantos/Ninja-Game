@@ -63,7 +63,7 @@ class Game:
             'particulas/particula': Animacao(carregar_imagens('particles/particle'), dur_img=6, loop=False),
             'pistola': carregar_imagem('gun.png'),
             'projetil': carregar_imagem('projectile.png'),
-            'plano_fundo': carregar_imagem('background.png'),
+            'plano_fundo': carregar_imagem('background.png', RES_TELA),
         }
 
         self.sounds = SoundManager(paths.SOUND_ASSETS)
@@ -168,7 +168,7 @@ class Game:
 
     def renderizar(self):
         self.mascara_surf.fill((0, 0, 0, 0))
-        self.tela.blit(pygame.transform.scale(self.assets['plano_fundo'], RES_TELA), (0, 0))
+        self.tela.blit(self.assets['plano_fundo'], (0, 0))
         self.nuvens.renderizar(self.tela, deslocamento=self.camera)
         self.mapa_jogo.renderizar(self.mascara_surf, deslocamento=self.camera)
         self.jogador.renderizar(self.mascara_surf, deslocamento=self.camera)
@@ -178,7 +178,7 @@ class Game:
         self.desenhar_faiscas()
         aplicar_contornos(self.tela, self.mascara_surf)
         self.desenhar_particulas()
-       # self.hud.renderizar(self.mascara_surf)
+        self.hud.renderizar(self.mascara_surf)
         self.debug.renderizar(self.mascara_surf)
 
         self.transicao.renderizar(self.mascara_surf)
