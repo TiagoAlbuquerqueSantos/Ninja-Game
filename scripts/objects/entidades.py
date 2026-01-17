@@ -35,11 +35,13 @@ class PhysicsEntity:
             self.acao = acao
             self.animacao = self.main.assets[self.tipo + '/' + self.acao].copia()
 
-    def atualizar(self, tilemap, movimento=(0, 0)):
+    def _resetar_colisoes(self):
         self.colisoes = {'up': False, 'down': False, 'right': False, 'left': False}
 
-        movimento_frame = (movimento[0] + self.velocidade[0], movimento[1] + self.velocidade[1])
+    def _calcular_movimento_frame(self, movimento):
+        return movimento[0] + self.velocidade[0], movimento[1] + self.velocidade[1]
 
+    def _processar_colisoes_horizontal(self, tilemap, movimento_frame):
         self.pos[0] += movimento_frame[0]
         rect_entidade = self.retangulo()
         for rect in tilemap.colisao_rects_aoredor(self.pos):
@@ -52,6 +54,7 @@ class PhysicsEntity:
                     self.colisoes['left'] = True
                 self.pos[0] = rect_entidade.x
 
+    def _processar_colisoes_vertical(self, tilemap, movimento_frame):
         self.pos[1] += movimento_frame[1]
         rect_entidade = self.retangulo()
         for rect in tilemap.colisao_rects_aoredor(self.pos):
@@ -64,22 +67,33 @@ class PhysicsEntity:
                     self.colisoes['up'] = True
                 self.pos[1] = rect_entidade.y
 
-        self.flipe_horizontal_imagem(movimento)
-
-        self.movimento_atual = movimento
-
+    def _atualizar_velocidade_vertical(self):
         self.velocidade[1] = min(VEL_MAX_QUEDA, self.velocidade[1] + 0.1)
 
         if self.colisoes['down'] or self.colisoes['up']:
             self.velocidade[1] = 0
-
-        self.animacao.atualizar()
 
     def flipe_horizontal_imagem(self, movimento):
         if movimento[0] > 0:
             self.flipe = False
         if movimento[0] < 0:
             self.flipe = True
+
+    def atualizar(self, tilemap, movimento=(0, 0)):
+        self._resetar_colisoes()
+
+        movimento_frame = self._calcular_movimento_frame(movimento)
+
+        self._processar_colisoes_horizontal(tilemap, movimento_frame)
+        self._processar_colisoes_vertical(tilemap, movimento_frame)
+
+        self.flipe_horizontal_imagem(movimento)
+
+        self.movimento_atual = movimento
+
+        self._atualizar_velocidade_vertical()
+
+        self.animacao.atualizar()
 
     def renderizar(self, surf, deslocamento=(0, 0)):
         surf.blit(pygame.transform.flip(self.animacao.imagem(), self.flipe, False),
@@ -90,9 +104,9 @@ class PhysicsEntity:
 class Inimigo(PhysicsEntity):
     def __init__(self, main, pos, tamanho):
         super().__init__(main, 'inimigo', pos, tamanho)
-        
+
         self.correndo = 0
-        
+
     def atualizar(self, tilemap, movimento=(0, 0)):
         if self.correndo:
             if tilemap.checar_solido((self.retangulo().centerx + (-7 if self.flipe else 7), self.pos[1] + 23)):
@@ -172,71 +186,101 @@ class Jogador(PhysicsEntity):
     def __init__(self, main, pos, tamanho):
         super().__init__(main, 'jogador', pos, tamanho)
         self.tempo_ar = 0
-        self.pulos = 1 #TODO número de pulos extras
+        self.pulos = 1
         self.deslize_parede = False
         self.repulsando = 0
+        self.direcao = [0, 0]
 
-    def atualizar(self, tilemap, movimento=(0, 0)):
-        if not self.main.derrotado:
-            super().atualizar(tilemap, movimento=movimento)
+    def controlar_jogador(self):
+        teclas = pygame.key.get_pressed()
+        if teclas[pygame.K_a]:
+            self.direcao[0] = -1
+        elif teclas[pygame.K_d]:
+            self.direcao[0] = 1
+        else:
+            self.direcao[0] = 0
 
-            self.tempo_ar += 1
+    def _atualizar_tempo_ar(self):
+        """Gerencia o tempo no ar e derrota por limite de tempo"""
+        self.tempo_ar += 1
+        if self.tempo_ar > 120:
+            if not self.main.derrotado:
+                self.main.balanco_imagem = max(16, self.main.balanco_imagem)
+            self.main.derrotado += 1
 
-            if self.tempo_ar > 120:
-                if not self.main.derrotado:
-                    self.main.balanco_imagem = max(16, self.main.balanco_imagem)
-                self.main.derrotado += 1
+    def _resetar_ao_pousar(self):
+        """Reseta propriedades quando o jogador toca o chão"""
+        if self.colisoes['down']:
+            self.tempo_ar = 0
+            self.pulos = 1
 
-            if self.colisoes['down']:
-                self.tempo_ar = 0
-                self.pulos = 1 #TODO número de pulos extras
+    def _verificar_deslize_parede(self):
+        """Verifica se o jogador está deslizando pela parede"""
+        self.deslize_parede = False
+        if (self.colisoes['right'] or self.colisoes['left']) and self.tempo_ar > 4:
+            self.deslize_parede = True
+            self.velocidade[1] = min(self.velocidade[1], 0.5)
+            if self.colisoes['right']:
+                self.flipe = False
+            else:
+                self.flipe = True
+            self.acao_atual('deslize_parede')
 
-            self.deslize_parede = False
-            if (self.colisoes['right'] or self.colisoes['left']) and self.tempo_ar > 4:
-                self.deslize_parede = True
-                self.velocidade[1] = min(self.velocidade[1], 0.5)
-                if self.colisoes['right']:
-                    self.flipe = False
-                else:
-                    self.flipe = True
-                self.acao_atual('deslize_parede')
+    def _atualizar_animacao(self):
+        """Define a animação com base no estado do jogador"""
+        if not self.deslize_parede:
+            if self.tempo_ar > 4:
+                self.acao_atual('pulo')
+            elif self.direcao[0] != 0:
+                self.acao_atual('run')
+            else:
+                self.acao_atual('idle')
 
-            if not self.deslize_parede:
-                if self.tempo_ar > 4:
-                    self.acao_atual('pulo')
-                elif movimento[0] != 0:
-                    self.acao_atual('run')
-                else:
-                    self.acao_atual('idle')
-
-            if abs(self.repulsando) in {60, 50}:
-                for i in range(20): #TODO particulas do dash
-                    angulo = random() * pi * 2
-                    velocidade = random() * 0.5 + 0.5
-                    vel_particula = [cos(angulo) * velocidade, sin(angulo) * velocidade]
-                    self.main.particulas.append(Particula(self.main, 'particula', self.retangulo().center,
-                                                          velocidade=vel_particula, frame=randint(0, 7)))
-            if self.repulsando > 0:
-                self.repulsando = max(0, self.repulsando - 1)
-            if self.repulsando < 0:
-                self.repulsando = min(0, self.repulsando + 1)
-            if abs(self.repulsando) > 50:
-                self.velocidade[0] = abs(self.repulsando) / self.repulsando * 8
-                if abs(self.repulsando) == 51:
-                    self.velocidade[0] *= 0.1
-                vel_particula = [abs(self.repulsando) / self.repulsando * random() * 3, 0]
+    def _gerar_particulas_dash(self):
+        """Gera partículas durante o dash nos momentos-chave"""
+        if abs(self.repulsando) in {60, 50}:
+            for i in range(20):
+                angulo = random() * pi * 2
+                velocidade = random() * 0.5 + 0.5
+                vel_particula = [cos(angulo) * velocidade, sin(angulo) * velocidade]
                 self.main.particulas.append(Particula(self.main, 'particula', self.retangulo().center,
                                                       velocidade=vel_particula, frame=randint(0, 7)))
 
-            if self.velocidade[0] > 0:
-                self.velocidade[0] = max(self.velocidade[0] - 0.1, 0)
-            else:
-                self.velocidade[0] = min(self.velocidade[0] + 0.1, 0)
+    def _atualizar_repulsao(self):
+        """Gerencia o estado de repulsão (dash) e suas partículas"""
+        if self.repulsando > 0:
+            self.repulsando = max(0, self.repulsando - 1)
+        if self.repulsando < 0:
+            self.repulsando = min(0, self.repulsando + 1)
 
-    def renderizar(self, surf, deslocamento=(0, 0)):
+        self._gerar_particulas_dash()
+
+        if abs(self.repulsando) > 50:
+            self.velocidade[0] = abs(self.repulsando) / self.repulsando * 8
+            if abs(self.repulsando) == 51:
+                self.velocidade[0] *= 0.1
+            vel_particula = [abs(self.repulsando) / self.repulsando * random() * 3, 0]
+            self.main.particulas.append(Particula(self.main, 'particula', self.retangulo().center,
+                                                  velocidade=vel_particula, frame=randint(0, 7)))
+
+    def _atualizar_velocidade_horizontal(self):
+        """Aplica desaceleração à velocidade horizontal"""
+        if self.velocidade[0] > 0:
+            self.velocidade[0] = max(self.velocidade[0] - 0.1, 0)
+        else:
+            self.velocidade[0] = min(self.velocidade[0] + 0.1, 0)
+
+    def atualizar(self, tilemap, movimento=(0, 0)):
+        self.controlar_jogador()
         if not self.main.derrotado:
-            if abs(self.repulsando) <= 50:
-                super().renderizar(surf, deslocamento=deslocamento)
+            super().atualizar(tilemap, movimento=self.direcao)
+
+            self._atualizar_tempo_ar()
+            self._resetar_ao_pousar()
+            self._verificar_deslize_parede()
+            self._atualizar_animacao()
+            self._atualizar_repulsao()
+            self._atualizar_velocidade_horizontal()
 
     def pular(self):
         if self.deslize_parede:
@@ -259,14 +303,14 @@ class Jogador(PhysicsEntity):
             self.pulos -= 1
             self.tempo_ar = 5
 
-            for i in range(3): #TODO particulas do pulo
+            for i in range(3):
                 angulo = random() * pi + pi
                 velocidade = random() * 2
                 self.main.faiscas.append(Faisca(self.retangulo().midbottom, angulo, 2 + random()))
-                self.main.particulas.append(Particula(self.main,'particula', self.retangulo().midbottom,
-                                                 velocidade=[cos(angulo) * velocidade * 0.5,
-                                                             sin(angulo) * velocidade * 0.5],
-                                                 frame=randint(0, 7)))
+                self.main.particulas.append(Particula(self.main, 'particula', self.retangulo().midbottom,
+                                                      velocidade=[cos(angulo) * velocidade * 0.5,
+                                                                  sin(angulo) * velocidade * 0.5],
+                                                      frame=randint(0, 7)))
             return True
         return None
 
@@ -277,4 +321,9 @@ class Jogador(PhysicsEntity):
                 self.repulsando = -60
             else:
                 self.repulsando = 60
+
+    def renderizar(self, surf, deslocamento=(0, 0)):
+        if not self.main.derrotado:
+            if abs(self.repulsando) <= 50:
+                super().renderizar(surf, deslocamento=deslocamento)
 

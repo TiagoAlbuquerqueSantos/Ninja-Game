@@ -44,8 +44,6 @@ class Game:
         self.rodando = True
         self.tela_cheia = False
 
-        self.movimento = [False, False]
-
         self.assets = {
             'decor': carregar_imagens('tiles/decor'),
             'grama': carregar_imagens('tiles/grass'),
@@ -162,7 +160,7 @@ class Game:
     #    self.sprites.update(dt)
         self.projetil_sprite.update(dt)
         self.nuvens.atualizar(dt)
-        self.jogador.atualizar(self.mapa_jogo, (self.movimento[1] - self.movimento[0], 0))
+        self.jogador.atualizar(self.mapa_jogo)
         self.hud.atualizar()
         self.transicao.atualizar()
 
@@ -192,10 +190,6 @@ class Game:
             elif evento.type == pygame.KEYDOWN:
                 if evento.key == pygame.K_ESCAPE:
                     self.rodando = False
-                elif evento.key == pygame.K_a:
-                    self.movimento[0] = True
-                elif evento.key == pygame.K_d:
-                    self.movimento[1] = True
                 elif evento.key == pygame.K_SPACE:
                     if self.jogador.pular():
                         self.sounds.play_sfx('jump')
@@ -208,11 +202,6 @@ class Game:
                     else:
                         pygame.display.set_mode(RES_TELA, FLAGS_TELA)
                 self.debug.exibir_dados_tela(evento)
-            elif evento.type == pygame.KEYUP:
-                if evento.key == pygame.K_a:
-                    self.movimento[0] = False
-                elif evento.key == pygame.K_d:
-                    self.movimento[1] = False
 
     def rodar(self):
         while self.rodando:
