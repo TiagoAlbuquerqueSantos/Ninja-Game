@@ -3,6 +3,7 @@ import pygame
 
 from math import sin, cos, pi
 from random import random, randint
+from pygame.math import Vector2 as Vetor
 
 from scripts.constants import *
 from .projetil import Projetil
@@ -16,7 +17,7 @@ class PhysicsEntity:
         self.tipo = tipo_e
         self.pos = list(pos)
         self.tamanho = tamanho
-        self.velocidade = [0, 0]
+        self.velocidade = Vetor(0, 0)
         self.colisoes = {'up': False, 'down': False, 'right': False, 'left': False}
 
         self.animacao = None
@@ -39,7 +40,7 @@ class PhysicsEntity:
         self.colisoes = {'up': False, 'down': False, 'right': False, 'left': False}
 
     def _calcular_movimento_frame(self, movimento):
-        return movimento[0] + self.velocidade[0], movimento[1] + self.velocidade[1]
+        return movimento[0] + self.velocidade.x, movimento[1] + self.velocidade.y
 
     def _processar_colisoes_horizontal(self, tilemap, movimento_frame):
         self.pos[0] += movimento_frame[0]
@@ -68,10 +69,10 @@ class PhysicsEntity:
                 self.pos[1] = rect_entidade.y
 
     def _atualizar_velocidade_vertical(self):
-        self.velocidade[1] = min(VEL_MAX_QUEDA, self.velocidade[1] + 0.1)
+        self.velocidade.y = min(VEL_MAX_QUEDA, self.velocidade.y + 0.1)
 
         if self.colisoes['down'] or self.colisoes['up']:
-            self.velocidade[1] = 0
+            self.velocidade.y = 0
 
     def flipe_horizontal_imagem(self, movimento):
         if movimento[0] > 0:
@@ -224,7 +225,7 @@ class Jogador(PhysicsEntity):
         self.deslize_parede = False
         if (self.colisoes['right'] or self.colisoes['left']) and self.tempo_ar > 4:
             self.deslize_parede = True
-            self.velocidade[1] = min(self.velocidade[1], 0.5)
+            self.velocidade.y = min(self.velocidade.y, 0.5)
             if self.colisoes['right']:
                 self.flipe = False
             else:
@@ -268,38 +269,38 @@ class Jogador(PhysicsEntity):
         self._gerar_particulas_dash()
 
         if abs(self.repulsando) > 50:
-            self.velocidade[0] = abs(self.repulsando) / self.repulsando * 8
+            self.velocidade.x = abs(self.repulsando) / self.repulsando * 8
             if abs(self.repulsando) == 51:
-                self.velocidade[0] *= 0.1
+                self.velocidade.x *= 0.1
             vel_particula = [abs(self.repulsando) / self.repulsando * random() * 3, 0]
             self.main.particulas.append(Particula(self.main, 'particula', self.retangulo().center,
                                                   velocidade=vel_particula, frame=randint(0, 7)))
 
     def _atualizar_velocidade_horizontal(self):
         """Aplica desaceleração à velocidade horizontal"""
-        if self.velocidade[0] > 0:
-            self.velocidade[0] = max(self.velocidade[0] - 0.1, 0)
+        if self.velocidade.x > 0:
+            self.velocidade.x = max(self.velocidade.x - 0.1, 0)
         else:
-            self.velocidade[0] = min(self.velocidade[0] + 0.1, 0)
+            self.velocidade.x = min(self.velocidade.x + 0.1, 0)
 
     def pular(self):
         if self.deslize_parede:
             if self.flipe and self.movimento_atual[0] < 0:
-                self.velocidade[0] = 3.5
-                self.velocidade[1] = -2.5
+                self.velocidade.x = 3.5
+                self.velocidade.y = -2.5
                 self.tempo_ar = 5
                 self.pulos = max(0, self.pulos - 1)
                 return True
 
             elif not self.flipe and self.movimento_atual[0] > 0:
-                self.velocidade[0] = -3.5
-                self.velocidade[1] = -2.5
+                self.velocidade.x = -3.5
+                self.velocidade.y = -2.5
                 self.tempo_ar = 5
                 self.pulos = max(0, self.pulos - 1)
                 return True
 
         elif self.pulos:
-            self.velocidade[1] = -FORCA_PULO
+            self.velocidade.y = -FORCA_PULO
             self.pulos -= 1
             self.tempo_ar = 5
             self._gerar_particulas_pulo()
