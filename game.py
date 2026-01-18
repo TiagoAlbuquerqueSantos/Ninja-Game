@@ -26,6 +26,7 @@ class Game:
         self.tela = pygame.display.set_mode(RES_TELA, FLAGS_TELA)
         self.mascara_surf = pygame.Surface(RES_TELA, pygame.SRCALPHA)
         self.relogio = pygame.time.Clock()
+        self.dt = 0
 
         self.sprites = Group()
         self.projetil_sprite = Group()
@@ -138,7 +139,7 @@ class Game:
             self.derrotado += 1
             if self.derrotado >= 10:
                 self.transicao.ativar()
-            if self.derrotado > 60:
+            if self.derrotado > 40:
                 self.carregar_nivel(self.nivel)
 
     def movimento_camera(self):
@@ -151,15 +152,15 @@ class Game:
 
         self.camera = (self.camera[0] + int(balanco[0]), self.camera[1] + int(balanco[1]))
 
-    def atualizar(self, dt):
+    def atualizar(self):
         self.balanco_imagem = max(0, self.balanco_imagem - 1)
         self.carregar_proximo_nivel()
         self.verificar_derrota()
         self.movimento_camera()
         self.gerador_folhas.atualizar()
     #    self.sprites.update(dt)
-        self.projetil_sprite.update(dt)
-        self.nuvens.atualizar(dt)
+        self.projetil_sprite.update(self.dt)
+        self.nuvens.atualizar(self.dt)
         self.jogador.atualizar(self.mapa_jogo)
         self.hud.atualizar()
         self.transicao.atualizar()
@@ -205,10 +206,10 @@ class Game:
 
     def rodar(self):
         while self.rodando:
-            dt = self.relogio.tick(FPS) / 1000.0
             self.checar_eventos()
-            self.atualizar(dt)
+            self.atualizar()
             self.renderizar()
+            self.dt = self.relogio.tick(FPS) / 1000.0
             pygame.display.update()
         pygame.quit()
         exit()

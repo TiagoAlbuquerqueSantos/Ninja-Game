@@ -11,7 +11,7 @@ NUM_NUVENS = 16
 
 TAM_FONTE = 8
 
-RAIO_TRANSICAO = 50
+RAIO_TRANSICAO = 30
 
 # Cores
 class Cores:
