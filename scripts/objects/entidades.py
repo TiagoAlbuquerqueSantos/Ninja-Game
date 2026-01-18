@@ -81,7 +81,6 @@ class PhysicsEntity:
 
     def atualizar(self, tilemap, movimento=(0, 0)):
         self._resetar_colisoes()
-
         movimento_frame = self._calcular_movimento_frame(movimento)
 
         self._processar_colisoes_horizontal(tilemap, movimento_frame)
@@ -250,6 +249,16 @@ class Jogador(PhysicsEntity):
                 self.main.particulas.append(Particula(self.main, 'particula', self.retangulo().center,
                                                       velocidade=vel_particula, frame=randint(0, 7)))
 
+    def _gerar_particulas_pulo(self):
+        for i in range(3):
+            angulo = random() * pi + pi
+            velocidade = random() * 2
+            self.main.faiscas.append(Faisca(self.retangulo().midbottom, angulo, 2 + random()))
+            self.main.particulas.append(Particula(self.main, 'particula', self.retangulo().midbottom,
+                                                  velocidade=[cos(angulo) * velocidade * 0.5,
+                                                              sin(angulo) * velocidade * 0.5],
+                                                  frame=randint(0, 7)))
+
     def _atualizar_repulsao(self):
         if self.repulsando > 0:
             self.repulsando = max(0, self.repulsando - 1)
@@ -293,15 +302,7 @@ class Jogador(PhysicsEntity):
             self.velocidade[1] = -FORCA_PULO
             self.pulos -= 1
             self.tempo_ar = 5
-
-            for i in range(3):
-                angulo = random() * pi + pi
-                velocidade = random() * 2
-                self.main.faiscas.append(Faisca(self.retangulo().midbottom, angulo, 2 + random()))
-                self.main.particulas.append(Particula(self.main, 'particula', self.retangulo().midbottom,
-                                                      velocidade=[cos(angulo) * velocidade * 0.5,
-                                                                  sin(angulo) * velocidade * 0.5],
-                                                      frame=randint(0, 7)))
+            self._gerar_particulas_pulo()
             return True
         return None
 
