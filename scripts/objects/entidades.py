@@ -104,75 +104,84 @@ class PhysicsEntity:
 class Inimigo(PhysicsEntity):
     def __init__(self, main, pos, tamanho):
         super().__init__(main, 'inimigo', pos, tamanho)
-
         self.correndo = 0
 
-    def atualizar(self, tilemap, movimento=(0, 0)):
-        if self.correndo:
-            if tilemap.checar_solido((self.retangulo().centerx + (-7 if self.flipe else 7), self.pos[1] + 23)):
-                if self.colisoes['right'] or self.colisoes['left']:
-                    self.flipe = not self.flipe
-                else:
-                    movimento = (movimento[0] - 0.5 if self.flipe else 0.5, movimento[1])
-            else:
-                self.flipe = not self.flipe
-            self.correndo = max(0, self.correndo - 1)
-            if not self.correndo:
-                distancia =  (self.main.jogador.pos[0] - self.pos[0], self.main.jogador.pos[1] - self.pos[1])
-                if abs(distancia[1]) < 16:
-                    if self.flipe and distancia[0] < 0:
-                        self.main.sounds.play_sfx('shoot')
-                        Projetil(
-                            self.main,
-                            [self.main.projetil_sprite, self.main.sprites],
-                            [self.retangulo().centerx - 7, self.retangulo().centery], -1)
-
-                    if not self.flipe and distancia[0] > 0:
-                        self.main.sounds.play_sfx('shoot')
-                        Projetil(
-                            self.main,
-                            [self.main.projetil_sprite, self.main.sprites],
-                            [self.retangulo().centerx + 7, self.retangulo().centery], 1)
-
-        elif random() < 0.01:
-            self.correndo = randint(30, 120)
-
-        super().atualizar(tilemap, movimento=movimento)
-
+    def atualizar_animacao(self, movimento):
         if movimento[0] != 0:
             self.acao_atual('run')
         else:
             self.acao_atual('idle')
 
+    def calcular_distancia_jogador(self):
+        return self.main.jogador.pos[0] - self.pos[0], self.main.jogador.pos[1] - self.pos[1]
+
+    def atirar_projetil(self, direcao):
+        self.main.sounds.play_sfx('shoot')
+        Projetil(
+            self.main,
+            [self.main.projetil_sprite, self.main.sprites],
+            [self.retangulo().centerx + (-7 if direcao == -1 else 7), self.retangulo().centery],
+            direcao)
+
+    def gerar_particulas_ataque(self):
+        for i in range(NUMS_PARTICULAS_ATAQUE):
+            angulo = random() * pi * 2
+            velocidade = random() * 5
+            self.main.faiscas.append(Faisca(self.retangulo().center, angulo, 2 + random()))
+            self.main.particulas.append(Particula(self.main, 'particula', self.retangulo().center,
+                                             velocidade=[cos(angulo + pi) * velocidade * 0.5,
+                                                         sin(angulo + pi) * velocidade * 0.5],
+                                             frame=randint(0, 7)))
+        self.main.faiscas.append(Faisca(self.retangulo().center, 0, 5 + random()))
+        self.main.faiscas.append(Faisca(self.retangulo().center, pi, 5 + random()))
+
+    def verificar_colisao_jogador_dash(self):
         if abs(self.main.jogador.repulsando) >= 50:
             if self.retangulo().colliderect(self.main.jogador.retangulo()):
                 self.main.balanco_imagem = max(16, self.main.balanco_imagem)
                 self.main.sounds.play_sfx('hit')
-                for i in range(NUMS_PARTICULAS_ATAQUE): #TODO particulas de ataque ao inimigo
-                    angulo = random() * pi * 2
-                    velocidade = random() * 5
-                    self.main.faiscas.append(Faisca(self.retangulo().center, angulo, 2 + random()))
-                    self.main.particulas.append(Particula(self.main,'particula', self.retangulo().center,
-                                                     velocidade=[cos(angulo + pi) * velocidade * 0.5,
-                                                                 sin(angulo + pi) * velocidade * 0.5],
-                                                     frame=randint(0, 7)))
-                self.main.faiscas.append(Faisca(self.retangulo().center,0, 5 + random()))
-                self.main.faiscas.append(Faisca(self.retangulo().center, pi, 5 + random()))
+                self.gerar_particulas_ataque()
                 return True
-        return None
+        return False
+
+    def verificar_disparo_inimigo(self):
+        if not self.correndo:
+            distancia = self.calcular_distancia_jogador()
+
+            if abs(distancia[1]) < 16:
+                if self.flipe and distancia[0] < 0:
+                    self.atirar_projetil(-1)
+                elif not self.flipe and distancia[0] > 0:
+                    self.atirar_projetil(1)
+
+    def ajustar_movimento_terreno(self, movimento):
+        if self.colisoes['right'] or self.colisoes['left']:
+            self.flipe = not self.flipe
+        else:
+            movimento = (movimento[0] - 0.5 if self.flipe else 0.5, movimento[1])
+        return movimento
+
+    def atualizar_corrida(self, tilemap, movimento):
+        if self.correndo:
+            if tilemap.checar_solido((self.retangulo().centerx + (-7 if self.flipe else 7), self.pos[1] + 23)):
+                movimento = self.ajustar_movimento_terreno(movimento)
+            else:
+                self.flipe = not self.flipe
+            self.correndo = max(0, self.correndo - 1)
+            self.verificar_disparo_inimigo()
+        elif random() < 0.01:
+            self.correndo = randint(30, 120)
+        return movimento
+
+    def atualizar(self, tilemap, movimento=(0, 0)):
+        movimento = self.atualizar_corrida(tilemap, movimento)
+        super().atualizar(tilemap, movimento=movimento)
+
+        self.atualizar_animacao(movimento)
+        return self.verificar_colisao_jogador_dash()
 
     def renderizar(self, surf, deslocamento=(0, 0)):
         super().renderizar(surf, deslocamento=deslocamento)
-
-        # cor_linha = (255, 0, 0) if int(self.main.jogador.pos[1]) == int(self.pos[1]) else (0, 0, 0)
-        #
-        # pygame.draw.line(
-        #     surf,
-        #     cor_linha,
-        #     (self.retangulo().centerx - deslocamento[0], self.retangulo().centery - deslocamento[1]),
-        #     (self.main.jogador.retangulo().centerx - deslocamento[0],
-        #              self.main.jogador.retangulo().centery - deslocamento[1]), 1)
-
         if self.flipe:
             surf.blit(pygame.transform.flip(self.main.assets['pistola'], True, False),
                       (self.retangulo().centerx - 4 - self.main.assets['pistola'].get_width() - deslocamento[0],
@@ -201,7 +210,6 @@ class Jogador(PhysicsEntity):
             self.direcao[0] = 0
 
     def _atualizar_tempo_ar(self):
-        """Gerencia o tempo no ar e derrota por limite de tempo"""
         self.tempo_ar += 1
         if self.tempo_ar > 120:
             if not self.main.derrotado:
@@ -209,13 +217,11 @@ class Jogador(PhysicsEntity):
             self.main.derrotado += 1
 
     def _resetar_ao_pousar(self):
-        """Reseta propriedades quando o jogador toca o chão"""
         if self.colisoes['down']:
             self.tempo_ar = 0
             self.pulos = 1
 
     def _verificar_deslize_parede(self):
-        """Verifica se o jogador está deslizando pela parede"""
         self.deslize_parede = False
         if (self.colisoes['right'] or self.colisoes['left']) and self.tempo_ar > 4:
             self.deslize_parede = True
@@ -227,7 +233,6 @@ class Jogador(PhysicsEntity):
             self.acao_atual('deslize_parede')
 
     def _atualizar_animacao(self):
-        """Define a animação com base no estado do jogador"""
         if not self.deslize_parede:
             if self.tempo_ar > 4:
                 self.acao_atual('pulo')
@@ -237,7 +242,6 @@ class Jogador(PhysicsEntity):
                 self.acao_atual('idle')
 
     def _gerar_particulas_dash(self):
-        """Gera partículas durante o dash nos momentos-chave"""
         if abs(self.repulsando) in {60, 50}:
             for i in range(20):
                 angulo = random() * pi * 2
@@ -247,7 +251,6 @@ class Jogador(PhysicsEntity):
                                                       velocidade=vel_particula, frame=randint(0, 7)))
 
     def _atualizar_repulsao(self):
-        """Gerencia o estado de repulsão (dash) e suas partículas"""
         if self.repulsando > 0:
             self.repulsando = max(0, self.repulsando - 1)
         if self.repulsando < 0:
@@ -269,18 +272,6 @@ class Jogador(PhysicsEntity):
             self.velocidade[0] = max(self.velocidade[0] - 0.1, 0)
         else:
             self.velocidade[0] = min(self.velocidade[0] + 0.1, 0)
-
-    def atualizar(self, tilemap, movimento=(0, 0)):
-        self.controlar_jogador()
-        if not self.main.derrotado:
-            super().atualizar(tilemap, movimento=self.direcao)
-
-            self._atualizar_tempo_ar()
-            self._resetar_ao_pousar()
-            self._verificar_deslize_parede()
-            self._atualizar_animacao()
-            self._atualizar_repulsao()
-            self._atualizar_velocidade_horizontal()
 
     def pular(self):
         if self.deslize_parede:
@@ -322,8 +313,19 @@ class Jogador(PhysicsEntity):
             else:
                 self.repulsando = 60
 
+    def atualizar(self, tilemap, movimento=(0, 0)):
+        self.controlar_jogador()
+        if not self.main.derrotado:
+            super().atualizar(tilemap, movimento=self.direcao)
+
+            self._atualizar_tempo_ar()
+            self._resetar_ao_pousar()
+            self._verificar_deslize_parede()
+            self._atualizar_animacao()
+            self._atualizar_repulsao()
+            self._atualizar_velocidade_horizontal()
+
     def renderizar(self, surf, deslocamento=(0, 0)):
         if not self.main.derrotado:
             if abs(self.repulsando) <= 50:
                 super().renderizar(surf, deslocamento=deslocamento)
-
