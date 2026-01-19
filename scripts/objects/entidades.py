@@ -27,6 +27,7 @@ class PhysicsEntity:
         self.acao_atual('idle')
 
         self.movimento_atual = [0, 0]
+        self.movimento_frame = None
 
     def retangulo(self):
         return pygame.Rect(self.pos[0], self.pos[1], self.tamanho[0], self.tamanho[1])
@@ -39,7 +40,7 @@ class PhysicsEntity:
     def _resetar_colisoes(self):
         self.colisoes = {'up': False, 'down': False, 'right': False, 'left': False}
 
-    def _calcular_movimento_frame(self, movimento):
+    def _calcular_movimento_frame(self, dt, movimento):
         return movimento[0] + self.velocidade.x, movimento[1] + self.velocidade.y
 
     def _processar_colisoes_horizontal(self, tilemap, movimento_frame):
@@ -80,12 +81,12 @@ class PhysicsEntity:
         if movimento[0] < 0:
             self.flipe = True
 
-    def atualizar(self, tilemap, movimento=(0, 0)):
+    def atualizar(self, dt, tilemap, movimento=(0, 0)):
         self._resetar_colisoes()
-        movimento_frame = self._calcular_movimento_frame(movimento)
+        self.movimento_frame = self._calcular_movimento_frame(dt, movimento)
 
-        self._processar_colisoes_horizontal(tilemap, movimento_frame)
-        self._processar_colisoes_vertical(tilemap, movimento_frame)
+        self._processar_colisoes_horizontal(tilemap, self.movimento_frame)
+        self._processar_colisoes_vertical(tilemap, self.movimento_frame)
 
         self.flipe_horizontal_imagem(movimento)
 
@@ -173,9 +174,9 @@ class Inimigo(PhysicsEntity):
             self.correndo = randint(30, 120)
         return movimento
 
-    def atualizar(self, tilemap, movimento=(0, 0)):
+    def atualizar(self, dt, tilemap, movimento=(0, 0)):
         movimento = self.atualizar_corrida(tilemap, movimento)
-        super().atualizar(tilemap, movimento=movimento)
+        super().atualizar(dt, tilemap, movimento=movimento)
 
         self.atualizar_animacao(movimento)
         return self.verificar_colisao_jogador_dash()
@@ -315,10 +316,10 @@ class Jogador(PhysicsEntity):
             else:
                 self.repulsando = 60
 
-    def atualizar(self, tilemap, movimento=(0, 0)):
+    def atualizar(self, dt, tilemap, movimento=(0, 0)):
         self.controlar_jogador()
         if not self.main.derrotado:
-            super().atualizar(tilemap, movimento=self.direcao)
+            super().atualizar(dt, tilemap, movimento=self.direcao)
 
             self._atualizar_tempo_ar()
             self._resetar_ao_pousar()

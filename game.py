@@ -105,7 +105,7 @@ class Game:
 
     def renderizar_inimigos(self):
         for inimigo in self.inimigos.copy():
-            derrotado = inimigo.atualizar(self.mapa_jogo, (0, 0))
+            derrotado = inimigo.atualizar(self.dt, self.mapa_jogo, (0, 0))
             inimigo.renderizar(self.mascara_surf, deslocamento=self.camera)
             if derrotado:
                 self.inimigos.remove(inimigo)
@@ -161,7 +161,7 @@ class Game:
     #    self.sprites.update(dt)
         self.projetil_sprite.update(self.dt)
         self.nuvens.atualizar(self.dt)
-        self.jogador.atualizar(self.mapa_jogo)
+        self.jogador.atualizar(self.dt, self.mapa_jogo)
         self.hud.atualizar()
         self.transicao.atualizar()
 
