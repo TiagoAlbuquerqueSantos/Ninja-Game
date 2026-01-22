@@ -18,14 +18,14 @@ class Debug:
                round(self.game.jogador.pos[1], 1))
         vel = (round(self.game.jogador.velocidade[0], 2),
                round(self.game.jogador.velocidade[1], 2))
-        mov = self.game.jogador.movimento_frame
-
+        mov = (round(self.game.jogador.movimento_frame[0], 2),
+               round(self.game.jogador.movimento_frame[1], 2))
 
         dados_texto = f"""
-        FPS: {self.game.relogio.get_fps():.2f}
-        Pos: {pos}
-        Vel: {vel} - Mov Frame: {mov}
-        Nums de chances: {self.game.derrotado} - Tempo no Ar: {self.game.jogador.tempo_ar}
+        FPS: {self.game.relogio.get_fps():.2f} - Dt: {self.game.dt:.4f}
+        Vel: {vel} - Pos: {pos}
+        Mov Frame: {mov} / Num Nuvens: {len(self.game.nuvens.nuvens)}
+        Num de chances: {self.game.derrotado} - Tempo no Ar: {self.game.jogador.tempo_ar}
         """
 
         if self.exibir_dados:
