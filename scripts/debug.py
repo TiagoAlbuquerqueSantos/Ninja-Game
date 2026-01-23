@@ -13,6 +13,16 @@ class Debug:
         if tecla.key == pygame.K_F3:
             self.exibir_dados = not self.exibir_dados
 
+    def exibir_rects_gerador_folhas(self, display):
+        for rect in self.game.gerador_folhas.geradores:
+            pygame.draw.rect(
+                display,
+                (255, 0, 0),
+                [rect.x - self.game.camera[0],
+                       rect.y - self.game.camera[1],
+                       rect.width, rect.height],
+                1)
+
     def renderizar(self, display):
         pos = (round(self.game.jogador.pos[0], 1),
                round(self.game.jogador.pos[1], 1))
@@ -29,6 +39,7 @@ class Debug:
         """
 
         if self.exibir_dados:
+            self.exibir_rects_gerador_folhas(display)
             self.renderizar_customizado(display, dados_texto)
 
     def renderizar_customizado(self, display, dados_texto, posicao=(-30, ALTURA - 45)):

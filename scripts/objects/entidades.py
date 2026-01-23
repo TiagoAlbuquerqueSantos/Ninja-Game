@@ -199,16 +199,16 @@ class Jogador(PhysicsEntity):
         self.pulos = 1
         self.deslize_parede = False
         self.repulsando = 0
-        self.direcao = [0, 0]
+        self.direcao = 0
 
     def controlar_jogador(self):
         teclas = pygame.key.get_pressed()
         if teclas[pygame.K_a]:
-            self.direcao[0] = -1
+            self.direcao = -1
         elif teclas[pygame.K_d]:
-            self.direcao[0] = 1
+            self.direcao = 1
         else:
-            self.direcao[0] = 0
+            self.direcao = 0
 
     def _atualizar_tempo_ar(self):
         self.tempo_ar += 1
@@ -237,7 +237,7 @@ class Jogador(PhysicsEntity):
         if not self.deslize_parede:
             if self.tempo_ar > 4:
                 self.acao_atual('pulo')
-            elif self.direcao[0] != 0:
+            elif self.direcao != 0:
                 self.acao_atual('run')
             else:
                 self.acao_atual('idle')
@@ -319,7 +319,7 @@ class Jogador(PhysicsEntity):
     def atualizar(self, dt, tilemap, movimento=(0, 0)):
         self.controlar_jogador()
         if not self.main.derrotado:
-            super().atualizar(dt, tilemap, movimento=self.direcao)
+            super().atualizar(dt, tilemap, movimento=(self.direcao, 0))
 
             self._atualizar_tempo_ar()
             self._resetar_ao_pousar()
