@@ -4,6 +4,7 @@ from .efeito_faisca import Faisca
 from .entidades import Inimigo, Jogador
 from .particulas import Particula, GeradorFolhas
 from .tilemap import Tilemap
+from .tile import Tile
 
 __all__ = [
     'GeradorFolhas',
@@ -12,5 +13,6 @@ __all__ = [
     "Inimigo",
     "Jogador",
     "Particula",
-    "Tilemap"
+    "Tilemap",
+    "Tile",
 ]

@@ -29,7 +29,7 @@ class Game:
         }
 
         self.engine = Engine(self)
-        self.engine.setup_states(state_dict, 'menu')
+        self.engine.setup_states(state_dict, 'scene')
 
     def atualizar(self):
         self.engine.atualizar(self.dt, 0)

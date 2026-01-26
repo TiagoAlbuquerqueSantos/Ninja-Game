@@ -24,7 +24,7 @@ class Nuvens:
         for _ in range(quant):
             img_nuvem = choice(imagens_nuvens)
             pos = (int(random() * 99999), int(random() * 99999))
-            vel = 0.05 + random() * 0.2
+            vel = 0.2 + random() * 0.2
             margem = 0.5 + random() * 0.5
             self.nuvens.append(Nuvem(pos, img_nuvem, vel, margem))
 
