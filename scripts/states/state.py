@@ -9,7 +9,7 @@ class State(ABC):
         self.proximo = None
         self.parametros = {}
 
-    def inicializar(self, *args):
+    def inicializar(self, *args) -> None:
         self.parametros = args
 
     def limpar_concluir(self) -> dict:
