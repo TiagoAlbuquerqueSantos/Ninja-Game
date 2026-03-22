@@ -7,13 +7,13 @@ from scripts.constants import *
 
 
 class Tilemap:
-    def __init__(self, main, tamanho_tile=16):
+    def __init__(self, main, tamanho_tile=16) -> None:
         self.main = main
         self.tamanho_tile = tamanho_tile
         self.tilemap = {}
         self.offgrid_tiles = []
 
-    def extrair(self, id_pares, manter=False):
+    def extrair(self, id_pares, manter=False) -> list:
         partidas = []
         for tile in self.offgrid_tiles.copy():
             if (tile['tipo'], tile['variante']) in id_pares:
@@ -31,7 +31,7 @@ class Tilemap:
                     del self.tilemap[loc]
         return partidas
 
-    def tiles_aoredor(self, pos):
+    def tiles_aoredor(self, pos) -> list:
         tiles = []
         loc_tile = (int(pos[0] // self.tamanho_tile),
                     int(pos[1] // self.tamanho_tile))
@@ -42,22 +42,21 @@ class Tilemap:
                 tiles.append(self.tilemap[checar_loc])
         return tiles
 
-    def salvar(self, caminho):
-        arquivo = open(caminho, 'w')
-        dump({'tilemap': self.tilemap, 'tile_size': self.tamanho_tile,
-                  'offgrid': self.offgrid_tiles}, arquivo)
-        arquivo.close()
+    def salvar(self, caminho) -> None:
+        with open(caminho, 'w') as arq:
+            dump({'tilemap': self.tilemap, 'tile_size': self.tamanho_tile, 'offgrid': self.offgrid_tiles}, arq)
+        print('Mapa salvo.')
 
-    def carregar(self, caminho):
-        arquivo = open(caminho, 'r')
-        dados_mapa = load(arquivo)
-        arquivo.close()
+    def carregar(self, caminho) -> None:
+        with open(caminho, 'r') as arq:
+            dados_mapa = load(arq)
+        print('Mapa carregado')
 
         self.tilemap = dados_mapa['tilemap']
         self.tamanho_tile = dados_mapa['tile_size']
         self.offgrid_tiles = dados_mapa['offgrid']
 
-    def checar_solido(self, pos):
+    def checar_solido(self, pos) -> None:
         loc_tile = str(int(pos[0] // self.tamanho_tile)) + \
             ';' + str(int(pos[1] // self.tamanho_tile))
         if loc_tile in self.tilemap:
@@ -65,7 +64,7 @@ class Tilemap:
                 return self.tilemap[loc_tile]
         return None
 
-    def colisao_rects_aoredor(self, pos):
+    def colisao_rects_aoredor(self, pos) -> list:
         retangulos = []
         for tile in self.tiles_aoredor(pos):
             if tile['tipo'] in COLISAO_TILES:
@@ -74,7 +73,7 @@ class Tilemap:
                     tile['pos'][1] * self.tamanho_tile, self.tamanho_tile, self.tamanho_tile))
         return retangulos
 
-    def autotile(self):
+    def autotile(self) -> None:
         for loc in self.tilemap:
             tile = self.tilemap[loc]
             vizinhos = set()
@@ -88,7 +87,7 @@ class Tilemap:
             if (tile['tipo'] in TIPOS_AUTOTILE) and (vizinhos in AUTOTILE_MAPA):
                 tile['variante'] = AUTOTILE_MAPA[vizinhos]
 
-    def renderizar(self, surf, deslocamento=(0, 0)):
+    def renderizar(self, surf, deslocamento=(0, 0)) -> None:
         for tile in self.offgrid_tiles:
             surf.blit(self.main.assets[tile['tipo']][tile['variante']], (tile['pos'][0] - deslocamento[0],
                                                                          tile['pos'][1] - deslocamento[1]))

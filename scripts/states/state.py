@@ -1,7 +1,9 @@
 
+from abc import ABC, abstractmethod
 
-class State(object):
-    def __init__(self):
+
+class State(ABC):
+    def __init__(self) -> None:
         self.feito = False
         self.sair = False
         self.proximo = None
@@ -10,15 +12,18 @@ class State(object):
     def inicializar(self, *args):
         self.parametros = args
 
-    def limpar_concluir(self):
+    def limpar_concluir(self) -> dict:
         self.feito = False
         return self.parametros
 
-    def checar_evento(self, eventos):
+    @abstractmethod
+    def checar_evento(self, eventos) -> None:
         pass
 
-    def atualizar(self, dt, tempo):
+    @abstractmethod
+    def atualizar(self, dt, tempo) -> None:
         pass
 
-    def renderizar(self, surf):
+    @abstractmethod
+    def renderizar(self, surf) -> None:
         pass

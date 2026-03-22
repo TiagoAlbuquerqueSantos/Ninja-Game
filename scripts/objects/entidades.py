@@ -40,7 +40,7 @@ class PhysicsEntity:
     def _resetar_colisoes(self):
         self.colisoes = {'up': False, 'down': False, 'right': False, 'left': False}
 
-    def _calcular_movimento_frame(self, dt, movimento):
+    def _calcular_movimento_frame(self, movimento):
         return movimento[0] + self.velocidade.x, movimento[1] + self.velocidade.y
 
     def _processar_colisoes_horizontal(self, tilemap, movimento_frame):
@@ -83,7 +83,7 @@ class PhysicsEntity:
 
     def atualizar(self, dt, tilemap, movimento=(0, 0)):
         self._resetar_colisoes()
-        self.movimento_frame = self._calcular_movimento_frame(dt, movimento)
+        self.movimento_frame = self._calcular_movimento_frame(movimento)
 
         self._processar_colisoes_horizontal(tilemap, self.movimento_frame)
         self._processar_colisoes_vertical(tilemap, self.movimento_frame)

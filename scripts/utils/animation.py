@@ -1,3 +1,4 @@
+
 class Animacao:
     def __init__(self, imagens, dur_img=5, loop=True):
         self.imagens = imagens

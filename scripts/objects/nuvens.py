@@ -2,23 +2,23 @@ from random import random, choice
 
 
 class Nuvem:
-    def __init__(self, pos, img, velocidade, margem):
+    def __init__(self, pos, img, velocidade, margem) -> None:
         self.pos = list(pos)
         self.img = img
         self.vel = velocidade
         self.margem = margem
 
-    def atualizar(self, dt):
+    def atualizar(self, dt) -> None:
         self.pos[0] += self.vel * 100 * dt
 
-    def renderizar(self, surf, deslocamento=(0, 0)):
+    def renderizar(self, surf, deslocamento=(0, 0)) -> None:
         renderizar_pos = (self.pos[0] - deslocamento[0] * self.margem, self.pos[1] - deslocamento[1] * self.margem)
         surf.blit(self.img, (renderizar_pos[0] % (surf.get_width() + self.img.get_width()) - self.img.get_width(),
                              renderizar_pos[1] % (surf.get_height() + self.img.get_height()) - self.img.get_height()))
 
 
 class Nuvens:
-    def __init__(self, imagens_nuvens, quant=16):
+    def __init__(self, imagens_nuvens, quant=16) -> None:
         self.nuvens = []
 
         for _ in range(quant):
@@ -30,10 +30,10 @@ class Nuvens:
 
         self.nuvens.sort(key=lambda x: x.margem)
 
-    def atualizar(self, dt):
+    def atualizar(self, dt) -> None:
         for nuvem in self.nuvens:
             nuvem.atualizar(dt)
 
-    def renderizar(self, surf, deslocamento=(0, 0)):
+    def renderizar(self, surf, deslocamento=(0, 0)) -> None:
         for nuvem in self.nuvens:
             nuvem.renderizar(surf, deslocamento=deslocamento)
