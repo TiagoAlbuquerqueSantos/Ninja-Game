@@ -2,13 +2,13 @@
 import pygame
 from pygame.sprite import Group
 
-from random import random
+from random import random, choice
 from math import sin
 from os import listdir, environ
 from sys import exit
 
 from scripts.utils import carregar_imagem, carregar_imagens, aplicar_contornos, Animacao
-from scripts.objects import GeradorFolhas, Tilemap, Nuvens, Jogador, Inimigo
+from scripts.objects import GeradorFolhas, Tilemap, Nuvem, Jogador, Inimigo
 from scripts.soundmanager import SoundManager
 from scripts.ui import Circulo, HUD
 from scripts.debug import Debug
@@ -26,10 +26,11 @@ class Game:
         self.tela = pygame.display.set_mode(RES_TELA, FLAGS_TELA)
         self.mascara_surf = pygame.Surface(RES_TELA, pygame.SRCALPHA)
         self.relogio = pygame.time.Clock()
-        self.dt = 0
+        self.dt = 0.0
 
         self.sprites = Group()
         self.projetil_sprite = Group()
+        self.nuvens = Group() #TODO: Variável temporária para teste
 
         self.hud = HUD(self)
         self.debug = Debug(self)
@@ -69,7 +70,7 @@ class Game:
         self.sounds.play_music('ambience')
         self.sounds.play_music('music')
 
-        self.nuvens = Nuvens(self.assets['nuvens'], NUM_NUVENS)
+        self.desenhar_nuvem(self.nuvens, self.assets['nuvens'], NUM_NUVENS)
 
         self.jogador = Jogador(self, POSICAO, HIT_BOX)
 
@@ -102,6 +103,16 @@ class Game:
         self.scroll = [0, 0]
         self.derrotado = 0
         self.transicao.resetar()
+
+    @staticmethod
+    def desenhar_nuvem(sprites, imgs, quant):
+        [Nuvem(
+            grupo=sprites,
+            img=choice(imgs),
+            pos=(int(random() * 99999), int(random() * 99999)),
+            velocidade=0.2 + random() * 0.2,
+            margem=0.5 + random() * 0.5
+        ) for _ in range(quant)]
 
     def renderizar_inimigos(self):
         for inimigo in self.inimigos.copy():
@@ -160,7 +171,7 @@ class Game:
         self.gerador_folhas.atualizar()
     #    self.sprites.update(dt)
         self.projetil_sprite.update(self.dt)
-        self.nuvens.atualizar(self.dt)
+        self.nuvens.update(self.dt, self.camera)
         self.jogador.atualizar(self.dt, self.mapa_jogo)
         self.hud.atualizar()
         self.transicao.atualizar()
@@ -168,7 +179,7 @@ class Game:
     def renderizar(self):
         self.mascara_surf.fill((0, 0, 0, 0))
         self.tela.blit(self.assets['plano_fundo'], (0, 0))
-        self.nuvens.renderizar(self.tela, deslocamento=self.camera)
+        self.nuvens.draw(self.tela)
         self.mapa_jogo.renderizar(self.mascara_surf, deslocamento=self.camera)
         self.jogador.renderizar(self.mascara_surf, deslocamento=self.camera)
         self.renderizar_inimigos()

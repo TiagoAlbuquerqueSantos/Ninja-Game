@@ -45,12 +45,10 @@ class Tilemap:
     def salvar(self, caminho) -> None:
         with open(caminho, 'w') as arq:
             dump({'tilemap': self.tilemap, 'tile_size': self.tamanho_tile, 'offgrid': self.offgrid_tiles}, arq)
-        print('Mapa salvo.')
 
     def carregar(self, caminho) -> None:
         with open(caminho, 'r') as arq:
             dados_mapa = load(arq)
-        print('Mapa carregado')
 
         self.tilemap = dados_mapa['tilemap']
         self.tamanho_tile = dados_mapa['tile_size']

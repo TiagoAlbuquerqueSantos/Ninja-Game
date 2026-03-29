@@ -34,7 +34,7 @@ class Debug:
         dados_texto = f"""
         FPS: {self.game.relogio.get_fps():.2f} - Dt: {self.game.dt:.4f}
         Vel: {vel} - Pos: {pos}
-        Mov Frame: {mov} / Num Nuvens: {len(self.game.nuvens.nuvens)}
+        Mov Frame: {mov}
         Num de chances: {self.game.derrotado} - Tempo no Ar: {self.game.jogador.tempo_ar}
         """
 

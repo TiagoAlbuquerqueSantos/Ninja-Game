@@ -1,5 +1,5 @@
 
-from .nuvens import Nuvens
+from .nuvens import Nuvem
 from .efeito_faisca import Faisca
 from .entidades import Inimigo, Jogador
 from .particulas import Particula, GeradorFolhas
@@ -8,7 +8,7 @@ from .tile import Tile
 
 __all__ = [
     'GeradorFolhas',
-    'Nuvens',
+    'Nuvem',
     "Faisca",
     "Inimigo",
     "Jogador",
