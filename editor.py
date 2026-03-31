@@ -3,7 +3,7 @@ import sys
 import pygame
 
 from pygame.math import Vector2
-from tkinter import Tk, filedialog
+from tkinter import filedialog
 
 from scripts.editor_config import *
 from scripts.utils import carregar_imagens
@@ -32,8 +32,6 @@ class Editor:
             'geradores': carregar_imagens('tiles/spawners')
         }
 
-        self.movimento = [False, False, False, False]
-
         self.mapa_jogo = Tilemap(self, TILE_SIZE)
 
         try:
@@ -54,8 +52,6 @@ class Editor:
 
     def pesquisar_mapas(self):
         try:
-            janela = Tk()
-            janela.withdraw()
             nome_arquivo = filedialog.askopenfilename(
                 initialdir='', title='Selecionar Mapa',
                 filetypes=(('mapas json', '*.json'), ('todos os arquivos', '*.*')))
@@ -76,14 +72,6 @@ class Editor:
                    pos_tile[1] * TILE_SIZE - self.scroll.y)
             self.display.blit(img_tile, pos)
             pygame.draw.rect(self.display, BRANCO, (pos[0], pos[1], TILE_SIZE, TILE_SIZE), 1)
-
-    def desenhar_sidebar(self):
-        surf_sidebar = pygame.Surface((70, self.display.get_height()), pygame.SRCALPHA)
-        surf_sidebar.fill((0, 40, 60, 180))
-
-        pygame.draw.line(surf_sidebar, (0, 255, 120), (0, 0), (0, surf_sidebar.get_height()))
-        pygame.draw.line(surf_sidebar, (0, 255, 120), (0, 70), (surf_sidebar.get_width(), 70))
-        self.display.blit(surf_sidebar, (self.display.get_width() - 70, 0))
 
     def grids_editor(self):
         deslocamento_grid = (self.scroll.x % TILE_SIZE, self.scroll.y % TILE_SIZE)
@@ -173,7 +161,6 @@ class Editor:
         self.display.fill(PRETO)
         self.mapa_jogo.renderizar(self.display, deslocamento=self.camera)
         self.grids_editor()
-        #self.desenhar_sidebar()
         self.renderizar_tile_atual(self.m_pos, self.pos_tile)
 
         self.tela.blit(pygame.transform.scale(
