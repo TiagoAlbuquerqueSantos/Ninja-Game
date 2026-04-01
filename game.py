@@ -154,8 +154,8 @@ class Game:
                 self.carregar_nivel(self.nivel)
 
     def movimento_camera(self):
-        self.scroll[0] += (self.jogador.retangulo().centerx - LARGURA / 2 - self.scroll[0]) / ACE_CAMERA
-        self.scroll[1] += (self.jogador.retangulo().centery - ALTURA / 2 - self.scroll[1]) / ACE_CAMERA
+        self.scroll[0] += (self.jogador.retangulo.centerx - LARGURA / 2 - self.scroll[0]) / ACE_CAMERA
+        self.scroll[1] += (self.jogador.retangulo.centery - ALTURA / 2 - self.scroll[1]) / ACE_CAMERA
         self.camera = (int(self.scroll[0]), int(self.scroll[1]))
 
         balanco = (random() * self.balanco_imagem - self.balanco_imagem / 2,

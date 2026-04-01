@@ -43,7 +43,7 @@ class Projetil(Sprite):
         elif not self.tempo_vida.ativo:
             self.kill()
 
-        elif abs(self.game.jogador.repulsando) < 50 and self.game.jogador.retangulo().collidepoint(self.pos):
+        elif abs(self.game.jogador.repulsando) < 50 and self.game.jogador.retangulo.collidepoint(self.pos):
             self.kill()
             self.game.derrotado += 1
             self.game.sounds.play_sfx('hit')
@@ -53,9 +53,9 @@ class Projetil(Sprite):
                 angulo = random() * pi * 2
                 velocidade = random() * 5
                 self.game.faiscas.append(
-                    Faisca(self.game.jogador.retangulo().center, angulo, 2 + random()))
+                    Faisca(self.game.jogador.retangulo.center, angulo, 2 + random()))
                 self.game.particulas.append(Particula(self.game, 'particula',
-                                                      self.game.jogador.retangulo().center,
+                                                      self.game.jogador.retangulo.center,
                                                  velocidade=[cos(angulo + pi) * velocidade * 0.5,
                                                              sin(angulo + pi) * velocidade * 0.5],
                                                  frame=randint(0, 7)))

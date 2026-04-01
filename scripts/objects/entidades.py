@@ -29,6 +29,7 @@ class PhysicsEntity:
         self.movimento_atual = [0, 0]
         self.movimento_frame = None
 
+    @property
     def retangulo(self):
         return pygame.Rect(self.pos[0], self.pos[1], self.tamanho[0], self.tamanho[1])
 
@@ -45,7 +46,7 @@ class PhysicsEntity:
 
     def _processar_colisoes_horizontal(self, tilemap, movimento_frame):
         self.pos[0] += movimento_frame[0]
-        rect_entidade = self.retangulo()
+        rect_entidade = self.retangulo
         for rect in tilemap.colisao_rects_aoredor(self.pos):
             if rect_entidade.colliderect(rect):
                 if movimento_frame[0] > 0:
@@ -58,7 +59,7 @@ class PhysicsEntity:
 
     def _processar_colisoes_vertical(self, tilemap, movimento_frame):
         self.pos[1] += movimento_frame[1]
-        rect_entidade = self.retangulo()
+        rect_entidade = self.retangulo
         for rect in tilemap.colisao_rects_aoredor(self.pos):
             if rect_entidade.colliderect(rect):
                 if movimento_frame[1] > 0:
@@ -121,24 +122,24 @@ class Inimigo(PhysicsEntity):
         Projetil(
             self.main,
             [self.main.projetil_sprite, self.main.sprites],
-            [self.retangulo().centerx + (-7 if direcao == -1 else 7), self.retangulo().centery],
+            [self.retangulo.centerx + (-7 if direcao == -1 else 7), self.retangulo.centery],
             direcao)
 
     def gerar_particulas_ataque(self):
         for i in range(NUMS_PARTICULAS_ATAQUE):
             angulo = random() * pi * 2
             velocidade = random() * 5
-            self.main.faiscas.append(Faisca(self.retangulo().center, angulo, 2 + random()))
-            self.main.particulas.append(Particula(self.main, 'particula', self.retangulo().center,
+            self.main.faiscas.append(Faisca(self.retangulo.center, angulo, 2 + random()))
+            self.main.particulas.append(Particula(self.main, 'particula', self.retangulo.center,
                                              velocidade=[cos(angulo + pi) * velocidade * 0.5,
                                                          sin(angulo + pi) * velocidade * 0.5],
                                              frame=randint(0, 7)))
-        self.main.faiscas.append(Faisca(self.retangulo().center, 0, 5 + random()))
-        self.main.faiscas.append(Faisca(self.retangulo().center, pi, 5 + random()))
+        self.main.faiscas.append(Faisca(self.retangulo.center, 0, 5 + random()))
+        self.main.faiscas.append(Faisca(self.retangulo.center, pi, 5 + random()))
 
     def verificar_colisao_jogador_dash(self):
         if abs(self.main.jogador.repulsando) >= 50:
-            if self.retangulo().colliderect(self.main.jogador.retangulo()):
+            if self.retangulo.colliderect(self.main.jogador.retangulo):
                 self.main.balanco_imagem = max(16, self.main.balanco_imagem)
                 self.main.sounds.play_sfx('hit')
                 self.gerar_particulas_ataque()
@@ -164,7 +165,7 @@ class Inimigo(PhysicsEntity):
 
     def atualizar_corrida(self, tilemap, movimento):
         if self.correndo:
-            if tilemap.checar_solido((self.retangulo().centerx + (-7 if self.flipe else 7), self.pos[1] + 23)):
+            if tilemap.checar_solido((self.retangulo.centerx + (-7 if self.flipe else 7), self.pos[1] + 23)):
                 movimento = self.ajustar_movimento_terreno(movimento)
             else:
                 self.flipe = not self.flipe
@@ -185,11 +186,11 @@ class Inimigo(PhysicsEntity):
         super().renderizar(surf, deslocamento=deslocamento)
         if self.flipe:
             surf.blit(pygame.transform.flip(self.main.assets['pistola'], True, False),
-                      (self.retangulo().centerx - 4 - self.main.assets['pistola'].get_width() - deslocamento[0],
-                       self.retangulo().centery - deslocamento[1]))
+                      (self.retangulo.centerx - 4 - self.main.assets['pistola'].get_width() - deslocamento[0],
+                       self.retangulo.centery - deslocamento[1]))
         else:
-            surf.blit(self.main.assets['pistola'], (self.retangulo().centerx + 4 - deslocamento[0],
-                                                    self.retangulo().centery - deslocamento[1]))
+            surf.blit(self.main.assets['pistola'], (self.retangulo.centerx + 4 - deslocamento[0],
+                                                    self.retangulo.centery - deslocamento[1]))
 
 
 class Jogador(PhysicsEntity):
@@ -248,15 +249,15 @@ class Jogador(PhysicsEntity):
                 angulo = random() * pi * 2
                 velocidade = random() * 0.5 + 0.5
                 vel_particula = [cos(angulo) * velocidade, sin(angulo) * velocidade]
-                self.main.particulas.append(Particula(self.main, 'particula', self.retangulo().center,
+                self.main.particulas.append(Particula(self.main, 'particula', self.retangulo.center,
                                                       velocidade=vel_particula, frame=randint(0, 7)))
 
     def _gerar_particulas_pulo(self):
         for i in range(3):
             angulo = random() * pi + pi
             velocidade = random() * 2
-            self.main.faiscas.append(Faisca(self.retangulo().midbottom, angulo, 2 + random()))
-            self.main.particulas.append(Particula(self.main, 'particula', self.retangulo().midbottom,
+            self.main.faiscas.append(Faisca(self.retangulo.midbottom, angulo, 2 + random()))
+            self.main.particulas.append(Particula(self.main, 'particula', self.retangulo.midbottom,
                                                   velocidade=[cos(angulo) * velocidade * 0.5,
                                                               sin(angulo) * velocidade * 0.5],
                                                   frame=randint(0, 7)))
@@ -274,7 +275,7 @@ class Jogador(PhysicsEntity):
             if abs(self.repulsando) == 51:
                 self.velocidade.x *= 0.1
             vel_particula = [abs(self.repulsando) / self.repulsando * random() * 3, 0]
-            self.main.particulas.append(Particula(self.main, 'particula', self.retangulo().center,
+            self.main.particulas.append(Particula(self.main, 'particula', self.retangulo.center,
                                                   velocidade=vel_particula, frame=randint(0, 7)))
 
     def _atualizar_velocidade_horizontal(self):
