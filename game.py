@@ -28,9 +28,10 @@ class Game:
         self.relogio = pygame.time.Clock()
         self.dt = 0.0
 
-        self.sprites = Group()
-        self.projetil_sprite = Group()
         self.nuvens = Group() #TODO: Variável temporária para teste
+        self.sprites = Group()
+        self.particulas = Group()
+        self.projetil_sprite = Group()
 
         self.hud = HUD(self)
         self.debug = Debug(self)
@@ -41,7 +42,6 @@ class Game:
         self.faiscas = None
         self.inimigos = None
         self.derrotado = None
-        self.particulas = None
 
         self.rodando = True
         self.tela_cheia = False
@@ -59,8 +59,8 @@ class Game:
             'jogador/pulo': Animacao(carregar_imagens('entities/player/jump')),
             'jogador/deslize': Animacao(carregar_imagens('entities/player/slide')),
             'jogador/deslize_parede': Animacao(carregar_imagens('entities/player/wall_slide')),
-            'particulas/folhas': Animacao(carregar_imagens('particles/leaf'), dur_img=20, loop=False),
-            'particulas/particula': Animacao(carregar_imagens('particles/particle'), dur_img=6, loop=False),
+            'folhas': Animacao(carregar_imagens('particles/leaf'), dur_img=20, loop=False),
+            'particula': Animacao(carregar_imagens('particles/particle'), dur_img=6, loop=False),
             'pistola': carregar_imagem('gun.png'),
             'projetil': carregar_imagem('projectile.png'),
             'plano_fundo': carregar_imagem('background.png', RES_TELA),
@@ -97,7 +97,6 @@ class Game:
                 self.inimigos.append(Inimigo(self, gerador['pos'], (8, 15)))
 
         self.projetil_sprite.empty()
-        self.particulas = []
         self.faiscas = []
 
         self.scroll = [0, 0]
@@ -173,6 +172,7 @@ class Game:
         self.projetil_sprite.update(self.dt)
         self.nuvens.update(self.dt, self.camera)
         self.jogador.atualizar(self.dt, self.mapa_jogo)
+        self.particulas.update(self.camera)
         self.hud.atualizar()
         self.transicao.atualizar()
 
@@ -184,10 +184,9 @@ class Game:
         self.jogador.renderizar(self.mascara_surf, deslocamento=self.camera)
         self.renderizar_inimigos()
         self.projetil_sprite.draw(self.mascara_surf)
-        #self.sprites.draw(self.mascara_surf)
         self.desenhar_faiscas()
         aplicar_contornos(self.tela, self.mascara_surf)
-        self.desenhar_particulas()
+        self.particulas.draw(self.mascara_surf)
         self.hud.renderizar(self.mascara_surf)
         self.debug.renderizar(self.mascara_surf)
 

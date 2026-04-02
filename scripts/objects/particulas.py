@@ -1,35 +1,47 @@
 
 import pygame
 
-from random import randint
-from random import random
+from random import random, randint
+from pygame.sprite import Sprite
+from pygame.math import Vector2
+from math import sin
+
+from scripts.utils import Animacao
 
 
-class Particula:
-    def __init__(self, main, tipo_p, pos, velocidade=(0, 0), frame=0) -> None:
-        self.main = main
-        self.tipo = tipo_p
-        self.pos = list(pos)
-        self.velocidade = list(velocidade)
-        self.animacao = self.main.assets['particulas/' + tipo_p].copia()
-        self.animacao.frame = frame
+class Particula(Sprite):
+    def __init__(self, grupos, anim: Animacao, pos: tuple, velocidade: tuple, frame: int) -> None:
+        super().__init__(grupos)
+        self.pos = Vector2(pos)
+        self.velocidade = velocidade
 
-    def atualizar(self) -> bool:
-        interromper = False
-        if self.animacao.concluido:
-            interromper = True
+        self.anim = anim.copia()
+        self.anim.frame = frame
 
-        self.pos[0] += self.velocidade[0]
-        self.pos[1] += self.velocidade[1]
+        self.image = self.anim.imagem()
+        self.rect = self.image.get_rect(center=self.pos)
 
-        self.animacao.atualizar()
+    def update(self, deslocamento=(0, 0)) -> None:
+        self.anim.atualizar()
 
-        return interromper
+        if self.anim.concluido:
+            self.kill()
 
-    def renderizar(self, surf, deslocamento=(0, 0)) -> None:
-        imagem = self.animacao.imagem()
-        surf.blit(imagem, (self.pos[0] - deslocamento[0] - imagem.get_width() // 2,
-                           self.pos[1] - deslocamento[1] - imagem.get_height() // 2))
+        self.pos.x += self.velocidade[0]
+        self.pos.y += self.velocidade[1]
+
+        self.rect.topleft = (self.pos.x - deslocamento[0] - self.rect.width // 2,
+                             self.pos.y - deslocamento[1] - self.rect.height // 2)
+        self.image = self.anim.imagem()
+
+#TODO: Implementar essa classe futuramente
+class ParticulaFolha(Particula):
+    def __init__(self, grupos, anim: Animacao, pos: tuple, velocidade: tuple, frame: int) -> None:
+        super().__init__(grupos, anim, pos, velocidade, frame)
+
+    def update(self, deslocamento=(0, 0)) -> None:
+        super().update(deslocamento)
+        self.pos.x += sin(self.anim.frame * 0.035) * 0.3
 
 
 class GeradorFolhas:
@@ -48,11 +60,9 @@ class GeradorFolhas:
         """Gera novas partículas de folhas aleatoriamente"""
         for rect in self.geradores:
             if random() * 49999 < rect.width * rect.height:
-                pos = (rect.x + random() * rect.width,
-                       rect.y + random() * rect.height)
-                self.game.particulas.append(
-                    Particula(self.game, 'folhas', pos, velocidade=[-0.1, 0.3], frame=randint(0, 20)))
-
-    def resetar(self) -> None:
-        """Reseta os geradores"""
-        self.geradores = []
+                Particula(
+                    grupos=self.game.particulas,
+                    anim=self.game.assets['folhas'],
+                    pos=(rect.x + random() * rect.width, rect.y + random() * rect.height),
+                    velocidade=(-0.1, 0.3),
+                    frame=randint(0, 20))

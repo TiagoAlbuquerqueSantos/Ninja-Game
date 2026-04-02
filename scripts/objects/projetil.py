@@ -54,11 +54,13 @@ class Projetil(Sprite):
                 velocidade = random() * 5
                 self.game.faiscas.append(
                     Faisca(self.game.jogador.retangulo.center, angulo, 2 + random()))
-                self.game.particulas.append(Particula(self.game, 'particula',
-                                                      self.game.jogador.retangulo.center,
-                                                 velocidade=[cos(angulo + pi) * velocidade * 0.5,
-                                                             sin(angulo + pi) * velocidade * 0.5],
-                                                 frame=randint(0, 7)))
+                Particula(
+                    grupos=self.game.particulas,
+                    anim=self.game.assets['particula'],
+                    pos=self.game.jogador.retangulo.center,
+                    velocidade=(cos(angulo + pi) * velocidade * 0.5,
+                                sin(angulo + pi) * velocidade * 0.5),
+                    frame=randint(0, 7))
 
     def update(self, dt) -> None:
         self.tempo_vida.atualizar()

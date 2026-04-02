@@ -130,10 +130,13 @@ class Inimigo(PhysicsEntity):
             angulo = random() * pi * 2
             velocidade = random() * 5
             self.main.faiscas.append(Faisca(self.retangulo.center, angulo, 2 + random()))
-            self.main.particulas.append(Particula(self.main, 'particula', self.retangulo.center,
-                                             velocidade=[cos(angulo + pi) * velocidade * 0.5,
-                                                         sin(angulo + pi) * velocidade * 0.5],
-                                             frame=randint(0, 7)))
+            Particula(
+                grupos=self.main.particulas,
+                anim=self.main.assets['particula'],
+                pos=self.retangulo.center,
+                velocidade=(cos(angulo + pi) * velocidade * 0.5,
+                           sin(angulo + pi) * velocidade * 0.5),
+                frame=randint(0, 7))
         self.main.faiscas.append(Faisca(self.retangulo.center, 0, 5 + random()))
         self.main.faiscas.append(Faisca(self.retangulo.center, pi, 5 + random()))
 
@@ -204,12 +207,7 @@ class Jogador(PhysicsEntity):
 
     def controlar_jogador(self):
         teclas = pygame.key.get_pressed()
-        if teclas[pygame.K_a]:
-            self.direcao = -1
-        elif teclas[pygame.K_d]:
-            self.direcao = 1
-        else:
-            self.direcao = 0
+        self.direcao = int(teclas[pygame.K_d]) - int(teclas[pygame.K_a])
 
     def _atualizar_tempo_ar(self):
         self.tempo_ar += 1
@@ -248,19 +246,26 @@ class Jogador(PhysicsEntity):
             for i in range(20):
                 angulo = random() * pi * 2
                 velocidade = random() * 0.5 + 0.5
-                vel_particula = [cos(angulo) * velocidade, sin(angulo) * velocidade]
-                self.main.particulas.append(Particula(self.main, 'particula', self.retangulo.center,
-                                                      velocidade=vel_particula, frame=randint(0, 7)))
+                vel_particula = (cos(angulo) * velocidade, sin(angulo) * velocidade)
+                Particula(
+                    grupos=self.main.particulas,
+                    anim=self.main.assets['particula'],
+                    pos=self.retangulo.center,
+                    velocidade=vel_particula,
+                    frame=randint(0, 7))
 
     def _gerar_particulas_pulo(self):
         for i in range(3):
             angulo = random() * pi + pi
             velocidade = random() * 2
             self.main.faiscas.append(Faisca(self.retangulo.midbottom, angulo, 2 + random()))
-            self.main.particulas.append(Particula(self.main, 'particula', self.retangulo.midbottom,
-                                                  velocidade=[cos(angulo) * velocidade * 0.5,
-                                                              sin(angulo) * velocidade * 0.5],
-                                                  frame=randint(0, 7)))
+            Particula(
+                grupos=self.main.particulas,
+                anim=self.main.assets['particula'],
+                pos=self.retangulo.midbottom,
+                velocidade=(cos(angulo) * velocidade * 0.5,
+                           sin(angulo) * velocidade * 0.5),
+                frame=randint(0, 7))
 
     def _atualizar_repulsao(self):
         if self.repulsando > 0:
@@ -274,9 +279,12 @@ class Jogador(PhysicsEntity):
             self.velocidade.x = abs(self.repulsando) / self.repulsando * 8
             if abs(self.repulsando) == 51:
                 self.velocidade.x *= 0.1
-            vel_particula = [abs(self.repulsando) / self.repulsando * random() * 3, 0]
-            self.main.particulas.append(Particula(self.main, 'particula', self.retangulo.center,
-                                                  velocidade=vel_particula, frame=randint(0, 7)))
+            Particula(
+                grupos=self.main.particulas,
+                anim=self.main.assets['particula'],
+                pos=self.retangulo.center,
+                velocidade=(abs(self.repulsando) / self.repulsando * random() * 3, 0),
+                frame=randint(0, 7))
 
     def _atualizar_velocidade_horizontal(self):
         """Aplica desaceleração à velocidade horizontal"""
