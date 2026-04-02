@@ -3,7 +3,6 @@ import pygame
 from pygame.sprite import Group
 
 from random import random, choice
-from math import sin
 from os import listdir, environ
 from sys import exit
 
@@ -126,16 +125,6 @@ class Game:
             faisca.renderizar(self.mascara_surf, deslocamento=self.camera)
             if interromper:
                 self.faiscas.remove(faisca)
-
-    def desenhar_particulas(self):
-        for particula in self.particulas.copy():
-            interromper = particula.atualizar()
-            particula.renderizar(self.mascara_surf, deslocamento=self.camera)
-            if particula.tipo == 'folhas':
-                particula.pos[0] += sin(
-                    particula.animacao.frame * 0.035) * 0.3
-            if interromper:
-                self.particulas.remove(particula)
 
     def carregar_proximo_nivel(self):
         if not len(self.inimigos):

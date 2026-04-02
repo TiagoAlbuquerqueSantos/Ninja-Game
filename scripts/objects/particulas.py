@@ -34,10 +34,12 @@ class Particula(Sprite):
                              self.pos.y - deslocamento[1] - self.rect.height // 2)
         self.image = self.anim.imagem()
 
-#TODO: Implementar essa classe futuramente
+
 class ParticulaFolha(Particula):
-    def __init__(self, grupos, anim: Animacao, pos: tuple, velocidade: tuple, frame: int) -> None:
-        super().__init__(grupos, anim, pos, velocidade, frame)
+    def __init__(self, game, pos: tuple, velocidade: tuple, frame: int) -> None:
+        self.anim = game.assets['folhas']
+
+        super().__init__(game.particulas, self.anim, pos, velocidade, frame)
 
     def update(self, deslocamento=(0, 0)) -> None:
         super().update(deslocamento)
@@ -50,19 +52,17 @@ class GeradorFolhas:
         self.geradores = []
 
     def carregar_geradores(self, mapa_jogo) -> None:
-        """Carrega os retângulos das árvores a partir do mapa"""
         self.geradores = []
         for arvore in mapa_jogo.extrair([('decor_larga', 2)], manter=True):
             self.geradores.append(pygame.Rect(
                 4 + arvore['pos'][0], 4 + arvore['pos'][1], 23, 13))
 
     def atualizar(self) -> None:
-        """Gera novas partículas de folhas aleatoriamente"""
         for rect in self.geradores:
             if random() * 49999 < rect.width * rect.height:
-                Particula(
-                    grupos=self.game.particulas,
-                    anim=self.game.assets['folhas'],
+                ParticulaFolha(
+                    game=self.game,
                     pos=(rect.x + random() * rect.width, rect.y + random() * rect.height),
                     velocidade=(-0.1, 0.3),
-                    frame=randint(0, 20))
+                    frame=randint(0, 20)
+                )
