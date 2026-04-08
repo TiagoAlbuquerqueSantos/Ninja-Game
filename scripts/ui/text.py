@@ -10,7 +10,7 @@ class Text:
         self.conteudo = conteudo
         self.fonte = BitmapFont(
             path=FONTS_ASSETS / f'{estilo_fonte}.json',
-            site=TAM_FONTE,
+            size=TAM_FONTE,
             fgcolor=Color(cor),
             spacing=(1, 1)
         )
