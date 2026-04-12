@@ -4,11 +4,37 @@ import pygame
 from math import sin, cos, pi
 from random import random, randint
 from pygame.math import Vector2 as Vetor
+from pygame.sprite import Sprite, Group
 
 from scripts.constants import *
 from .projetil import Projetil
 from .particulas import Particula
 from .efeito_faisca import Faisca
+
+#TODO: Refatorar para usar a classe Sprites do pygame
+class Entitiy(Sprite):
+    def __init__(
+            self,
+            main,
+            tipo: str,
+            pos: tuple[int, int],
+            tamanho: tuple[int, int],
+            colisoes: Group
+    ) -> None:
+        super().__init__(main.grupos)
+        self.main = main
+        self.tipo = tipo
+        self.sprites_colisao = colisoes
+
+        self.direcao = Vetor(0, 0)
+        self.flipe = False
+
+        self.image = pygame.Surface(*tamanho).convert_alpha()
+        self.rect = self.image.get_rect(topleft=pos) # type: ignore
+        self.hitbox = self.rect.copy().inflate(*tamanho) # type: ignore
+
+    def update(self, *args, **kwargs) -> None:
+        pass
 
 
 class PhysicsEntity:

@@ -1,12 +1,20 @@
 
 from ..constants import LARGURA, ALTURA
 
-from pygame.sprite import Sprite
+from pygame import Surface
+from pygame.sprite import Sprite, Group
 from pygame.math import Vector2
 
 
 class Nuvem(Sprite):
-    def __init__(self, grupo, img, pos, velocidade, margem) -> None:
+    def __init__(
+            self,
+            grupo: Group,
+            img: Surface,
+            pos: tuple[int, int],
+            velocidade: float,
+            margem: float
+    ) -> None:
         super().__init__(grupo)
         self.pos = Vector2(pos)
         self.image = img
