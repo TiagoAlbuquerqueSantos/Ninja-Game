@@ -37,6 +37,31 @@ class Entitiy(Sprite):
         pass
 
 
+class Entitiy(Sprite):
+    def __init__(
+            self,
+            main,
+            tipo: str,
+            pos: tuple[int, int],
+            tamanho: tuple[int, int],
+            colisoes: Group
+    ) -> None:
+        super().__init__(main.grupos)
+        self.main = main
+        self.tipo = tipo
+        self.sprites_colisao = colisoes
+
+        self.direcao = Vetor(0, 0)
+        self.flipe = False
+
+        self.image = pygame.Surface(*tamanho).convert_alpha()
+        self.rect = self.image.get_rect(topleft=pos) # type: ignore
+        self.hitbox = self.rect.copy().inflate(*tamanho) # type: ignore
+
+    def update(self, *args, **kwargs) -> None:
+        pass
+
+
 class PhysicsEntity:
     def __init__(self, main, tipo_e, pos, tamanho):
         self.main = main
