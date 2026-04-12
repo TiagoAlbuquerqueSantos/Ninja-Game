@@ -13,6 +13,7 @@ class Scene(State):
     def __init__(self):
         super().__init__()
         self.proximo = None
+        self.pos_jogador = [0, 0]
 
         self.sprites = Group()
         self.sprites_colisao = Group()
@@ -45,7 +46,7 @@ class Scene(State):
             'pontos_entidades')
         for obj in pontos_entidades:  # type: ignore
             if obj.name == 'jogador':
-                pass
+                self.pos_jogador = [obj.x, obj.y]
             else:
                 pass
 

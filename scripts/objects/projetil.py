@@ -3,7 +3,7 @@ from random import random, randint
 from math import sin, cos, pi
 
 from pygame.math import Vector2
-from pygame.sprite import Sprite
+from pygame.sprite import Sprite, Group
 
 from ..utils import Timer
 from ..constants import NUMS_FAISCA_PAREDE, NUMS_FAISCA_DERROTADO
@@ -13,13 +13,20 @@ from ..constants import VEL_PROJETIL
 
 
 class Projetil(Sprite):
-    def __init__(self, game, grupos, pos, direcao) -> None:
+    def __init__(
+            self,
+            game,
+            grupos: list[Group],
+            pos: list[int],
+            direcao: int
+    ) -> None:
         super().__init__(grupos)
         self.game = game
-        self.image = self.game.assets['projetil']
-        self.rect = self.image.get_rect(center=pos)
-        self.pos = Vector2(pos)
         self.direcao = direcao
+        self.pos = Vector2(pos)
+
+        self.image = self.game.assets['projetil']
+        self.rect = self.image.get_rect(center=pos) #type: ignore
 
         self.tempo_vida = Timer(5000, auto_start=True)
 
@@ -66,8 +73,8 @@ class Projetil(Sprite):
         self.tempo_vida.atualizar()
 
         self.pos.x += self.direcao * VEL_PROJETIL * dt
-        self.rect.x = self.pos.x - self.image.get_width() / 2 - self.game.camera[0]
-        self.rect.y = self.pos.y - self.image.get_height() / 2 - self.game.camera[1]
+        self.rect.x = self.pos.x - self.image.get_width() / 2 - self.game.camera[0] #type: ignore
+        self.rect.y = self.pos.y - self.image.get_height() / 2 - self.game.camera[1] #type: ignore
         self.destruir_projetil()
 
 

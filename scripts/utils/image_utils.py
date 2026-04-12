@@ -4,7 +4,7 @@ from os import listdir
 
 from ..paths import IMG_ASSETS
 
-def carregar_imagem(caminho, escala=None) -> pygame.Surface:
+def carregar_imagem(caminho: str, escala=None) -> pygame.Surface:
     img = pygame.image.load(IMG_ASSETS / caminho).convert()
     img.set_colorkey((0, 0, 0))
     if escala is not None:

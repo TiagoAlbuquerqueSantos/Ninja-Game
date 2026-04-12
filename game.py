@@ -22,7 +22,7 @@ class Game:
         pygame.init()
         environ['SDL_VIDEO_CENTERED'] = '1'
         pygame.display.set_caption(LEGENDA)
-        self.tela = pygame.display.set_mode(RES_TELA, FLAGS_TELA)
+        self.tela = pygame.display.set_mode(RES_TELA, FLAGS_TELA, vsync=True)
         self.mascara_surf = pygame.Surface(RES_TELA, pygame.SRCALPHA)
         self.relogio = pygame.time.Clock()
         self.dt = 0.0

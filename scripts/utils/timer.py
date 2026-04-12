@@ -1,9 +1,16 @@
+from typing import Any
 
 from pygame.time import get_ticks
 
 
 class Timer:
-    def __init__(self, duracao, repetir=False, auto_start=False, funcao=None):
+    def __init__(
+            self,
+            duracao: int,
+            repetir: bool = False,
+            auto_start: bool = False,
+            funcao: Any = None
+    ) -> None:
         self.duracao = duracao
         self.tempo_inicial = 0
         self.ativo = False
@@ -12,17 +19,17 @@ class Timer:
         if auto_start:
             self.ativar()
 
-    def ativar(self):
+    def ativar(self) -> None:
         self.ativo = True
         self.tempo_inicial = get_ticks()
 
-    def desativar(self):
+    def desativar(self) -> None:
         self.ativo = False
         self.tempo_inicial = 0
         if self.repetir:
             self.ativar()
 
-    def atualizar(self):
+    def atualizar(self) -> None:
         if self.ativo:
             tempo_atual = get_ticks()
             if tempo_atual - self.tempo_inicial >= self.duracao:

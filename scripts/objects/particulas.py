@@ -2,7 +2,7 @@
 import pygame
 
 from random import random, randint
-from pygame.sprite import Sprite
+from pygame.sprite import Sprite, Group
 from pygame.math import Vector2
 from math import sin
 
@@ -10,7 +10,14 @@ from scripts.utils import Animacao
 
 
 class Particula(Sprite):
-    def __init__(self, grupos, anim: Animacao, pos: tuple, velocidade: tuple, frame: int) -> None:
+    def __init__(
+            self,
+            grupos: Group,
+            anim: Animacao,
+            pos: tuple,
+            velocidade: tuple,
+            frame: int
+    ) -> None:
         super().__init__(grupos)
         self.pos = Vector2(pos)
         self.velocidade = velocidade
@@ -36,7 +43,13 @@ class Particula(Sprite):
 
 
 class ParticulaFolha(Particula):
-    def __init__(self, game, pos: tuple, velocidade: tuple, frame: int) -> None:
+    def __init__(
+            self,
+            game,
+            pos: tuple,
+            velocidade: tuple,
+            frame: int
+    ) -> None:
         self.anim = game.assets['folhas']
 
         super().__init__(game.particulas, self.anim, pos, velocidade, frame)
