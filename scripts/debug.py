@@ -1,55 +1,51 @@
 import pygame
-from pgbitmapfont import BitmapFont
 
 from .constants import *
-from .paths import FONTS_ASSETS
+from .ui import Text
 
 
 class Debug:
     def __init__(self, game):
         self.game = game
-        self.fonte = BitmapFont(
-            path=FONTS_ASSETS / 'small_font.json',
-            size=TAM_FONTE,
-            fgcolor=pygame.Color(VERMELHO),
-            spacing=(1, 1)
-        )
+        self.exibir_dados = True
 
-        self.exibir_dados = False
-
-    def exibir_debug(self, tecla):
+    def exibir_dados_tela(self, tecla):
         if tecla.key == pygame.K_F3:
             self.exibir_dados = not self.exibir_dados
+
+    def exibir_rects_gerador_folhas(self, display):
+        for rect in self.game.gerador_folhas.geradores:
+            pygame.draw.rect(
+                display,
+                (255, 0, 0),
+                [rect.x - self.game.camera[0],
+                       rect.y - self.game.camera[1],
+                       rect.width, rect.height],
+                1)
 
     def renderizar(self, display):
         pos = (round(self.game.jogador.pos[0], 1),
                round(self.game.jogador.pos[1], 1))
         vel = (round(self.game.jogador.velocidade[0], 2),
                round(self.game.jogador.velocidade[1], 2))
+        mov = (round(self.game.jogador.movimento_frame[0], 2),
+               round(self.game.jogador.movimento_frame[1], 2))
 
         dados_texto = f"""
         FPS: {self.game.relogio.get_fps():.2f} - Dt: {self.game.dt:.4f}
-        Pos: {pos}
-        Vel: {vel}
-        Nums de chances: {self.game.derrotado} - Tempo no Ar: {self.game.jogador.tempo_ar}
+        Vel: {vel} - Pos: {pos}
+        Mov Frame: {mov}
+        Num de chances: {self.game.derrotado} - Tempo no Ar: {self.game.jogador.tempo_ar}
         """
 
         if self.exibir_dados:
+            self.exibir_rects_gerador_folhas(display)
             self.renderizar_customizado(display, dados_texto)
 
-    def renderizar_customizado(self, display, dados_texto, posicao=(-30, DISPLAY_A - 45)):
-        """
-        Renderiza textos customizados em uma posição específica.
-
-        Args:
-            display: Superfície pygame onde renderizar
-            dados_texto: String ou lista de strings a renderizar
-            posicao: Tupla (x, y) para posição inicial
-        """
+    def renderizar_customizado(self, display, dados_texto, posicao=(-30, ALTURA - 45)):
         if isinstance(dados_texto, str):
             dados_texto = [dados_texto]
 
         x, y = posicao
         for i, texto in enumerate(dados_texto):
-            surf_texto = self.fonte.render(texto)[0]
-            display.blit(surf_texto, (x, y + i * 15))
+            Text(texto, display, (x, y + i * 15), cor=Cores.VERMELHO)

@@ -1,19 +1,21 @@
 import pygame
 
-from .constants import *
-
+from ..constants import *
+from .text import Text
 
 class HUD:
     def __init__(self, game):
         self.game = game
 
-        self.barra_vida = BarraVida((DISPLAY_L / 2 - 50, 5), (100, 10), 100)
+        self.barra_vida = BarraVida((LARGURA / 2 - 50, 5), (100, 10), 100)
 
     def atualizar(self):
         pass
 
-    def renderizar(self, display):
-        self.barra_vida.renderizar(display)
+    def renderizar(self, surf):
+        pass
+        #Text('Use WASD para mover o jogador', surf, CENTRO_TELA)
+       # self.barra_vida.renderizar(surf)
 
 
 class BarraVida:
@@ -33,12 +35,12 @@ class BarraVida:
 
     def renderizar(self, surf):
         proporcao = self.hp_atual / self.hp_max
-        cor_hp = VERDE if proporcao > 0.4 else VERMELHO
+        cor_hp = Cores.VERDE if proporcao > 0.4 else Cores.VERMELHO
 
         rect_fundo = pygame.Rect(0, 0, self.surf.get_width(), self.surf.get_height())
         rect_vida = pygame.Rect(0, 0, self.surf.get_width() * proporcao, self.surf.get_height())
 
         self.surf.fill((100, 100, 100))
         pygame.draw.rect(self.surf, cor_hp, rect_vida)
-        pygame.draw.rect(self.surf, PRETO, rect_fundo, 1)
+        pygame.draw.rect(self.surf, Cores.PRETO, rect_fundo, 1)
         surf.blit(self.surf, self.pos)

@@ -2,11 +2,12 @@ import sys
 
 import pygame
 
-from tkinter import Tk, filedialog
+from pygame.math import Vector2
+from tkinter import filedialog
 
 from scripts.editor_config import *
 from scripts.utils import carregar_imagens
-from scripts.tilemap import Tilemap
+from scripts.objects import Tilemap
 
 
 class Editor:
@@ -31,8 +32,6 @@ class Editor:
             'geradores': carregar_imagens('tiles/spawners')
         }
 
-        self.movimento = [False, False, False, False]
-
         self.mapa_jogo = Tilemap(self, TILE_SIZE)
 
         try:
@@ -40,7 +39,7 @@ class Editor:
         except FileNotFoundError:
             pass
 
-        self.scroll = [0, 0]
+        self.scroll = Vector2(0, 0)
 
         self.lista_tiles = list(self.assets)
         self.grupo_tile = 0
@@ -52,13 +51,14 @@ class Editor:
         self.grid_ativo = True
 
     def pesquisar_mapas(self):
-        janela = Tk()
-        janela.withdraw()
-        nome_arquivo = filedialog.askopenfilename(
-            initialdir='', title='Selecionar Mapa',
-            filetypes=(('mapas json', '*.json'), ('todos os arquivos', '*.*')))
-        if nome_arquivo != '':
-            self.mapa_jogo.carregar(nome_arquivo)
+        try:
+            nome_arquivo = filedialog.askopenfilename(
+                initialdir='', title='Selecionar Mapa',
+                filetypes=(('mapas json', '*.json'), ('todos os arquivos', '*.*')))
+            if nome_arquivo != '':
+                self.mapa_jogo.carregar(nome_arquivo)
+        except Exception as e:
+            print(f'Erro ao carregar mapa: {e}')
 
     # ------------------------------- Interfaçe Visual --------------------------------------------
     def renderizar_tile_atual(self, mpos, pos_tile):
@@ -68,27 +68,19 @@ class Editor:
         if not self.grid_ativo:
             self.display.blit(img_tile, mpos)
         else:
-            pos = (pos_tile[0] * TILE_SIZE - self.scroll[0],
-                   pos_tile[1] * TILE_SIZE - self.scroll[1])
+            pos = (pos_tile[0] * TILE_SIZE - self.scroll.x,
+                   pos_tile[1] * TILE_SIZE - self.scroll.y)
             self.display.blit(img_tile, pos)
             pygame.draw.rect(self.display, BRANCO, (pos[0], pos[1], TILE_SIZE, TILE_SIZE), 1)
 
-    def desenhar_sidebar(self):
-        surf_sidebar = pygame.Surface((70, self.display.get_height()), pygame.SRCALPHA)
-        surf_sidebar.fill((0, 40, 60, 180))
-
-        pygame.draw.line(surf_sidebar, (0, 255, 120), (0, 0), (0, surf_sidebar.get_height()))
-        pygame.draw.line(surf_sidebar, (0, 255, 120), (0, 70), (surf_sidebar.get_width(), 70))
-        self.display.blit(surf_sidebar, (self.display.get_width() - 70, 0))
-
     def grids_editor(self):
-        deslocamento_grid = (self.scroll[0] % TILE_SIZE, self.scroll[1] % TILE_SIZE)
+        deslocamento_grid = (self.scroll.x % TILE_SIZE, self.scroll.y % TILE_SIZE)
         surf_grid = pygame.Surface(self.display.get_size(), pygame.SRCALPHA)
 
         pygame.draw.line(surf_grid, (0, 255, 255),
-                         (-self.scroll[0], 0), (-self.scroll[0], DISPLAY_A), 3)
+                         (-self.scroll.x, 0), (-self.scroll.x, DISPLAY_A), 3)
         pygame.draw.line(surf_grid, (0, 255, 255),
-                         (0, -self.scroll[1]), (DISPLAY_L, -self.scroll[1]), 3)
+                         (0, -self.scroll.y), (DISPLAY_L, -self.scroll.y), 3)
 
         # Linhas Horizontais
         for x in range(DISPLAY_L // TILE_SIZE + 1):
@@ -119,7 +111,7 @@ class Editor:
                 self.variante_tile = 0
 
     def adicionar_tiles(self, mpos, pos_tile):
-        pos_offgrid = (mpos[0] + self.scroll[0], mpos[1] + self.scroll[1])
+        pos_offgrid = (mpos[0] + self.scroll.x, mpos[1] + self.scroll.y)
         tipo_tile_atual = self.lista_tiles[self.grupo_tile]
         if self.clique and self.grid_ativo:
             self.mapa_jogo.tilemap[str(pos_tile[0]) + ';' + str(pos_tile[1])] =\
@@ -137,21 +129,26 @@ class Editor:
                 del self.mapa_jogo.tilemap[loc_tile]
             for tile in self.mapa_jogo.offgrid_tiles.copy():
                 img_tile = self.assets[tile['tipo']][tile['variante']]
-                r_tile = pygame.Rect(tile['pos'][0] - self.scroll[0], tile['pos'][1] - self.scroll[1],
+                r_tile = pygame.Rect(tile['pos'][0] - self.scroll.x, tile['pos'][1] - self.scroll.y,
                                      img_tile.get_width(), img_tile.get_height())
                 if r_tile.collidepoint(mpos):
                     self.mapa_jogo.offgrid_tiles.remove(tile)
 
     def movimento_camera(self):
-        self.scroll[0] += (self.movimento[1] - self.movimento[0]) * VEL_CAMERA
-        self.scroll[1] += (self.movimento[3] - self.movimento[2]) * VEL_CAMERA
-        self.camera = (int(self.scroll[0]), int(self.scroll[1]))
+        teclas = pygame.key.get_pressed()
+
+        dx = int(teclas[pygame.K_d]) - int(teclas[pygame.K_a])
+        dy = int(teclas[pygame.K_s]) - int(teclas[pygame.K_w])
+
+        self.scroll.x += dx * VEL_CAMERA
+        self.scroll.y += dy * VEL_CAMERA
+        self.camera = (int(self.scroll.x), int(self.scroll.y))
 
     def mouse_tile_pos(self):
         mpos = pygame.mouse.get_pos()
         mpos = (mpos[0] / ESCALA_RENDER, mpos[1] / ESCALA_RENDER)
-        pos_tile = (int((mpos[0] + self.scroll[0]) // TILE_SIZE),
-                    int((mpos[1] + self.scroll[1]) // TILE_SIZE))
+        pos_tile = (int((mpos[0] + self.scroll.x) // TILE_SIZE),
+                    int((mpos[1] + self.scroll.y) // TILE_SIZE))
         return mpos, pos_tile
 
     def atualizar(self):
@@ -164,7 +161,6 @@ class Editor:
         self.display.fill(PRETO)
         self.mapa_jogo.renderizar(self.display, deslocamento=self.camera)
         self.grids_editor()
-        #self.desenhar_sidebar()
         self.renderizar_tile_atual(self.m_pos, self.pos_tile)
 
         self.tela.blit(pygame.transform.scale(
@@ -189,14 +185,6 @@ class Editor:
             if evento.type == pygame.KEYDOWN:
                 if evento.key == pygame.K_ESCAPE:
                     self.rodando = False
-                elif evento.key == pygame.K_a:
-                    self.movimento[0] = True
-                elif evento.key == pygame.K_d:
-                    self.movimento[1] = True
-                elif evento.key == pygame.K_w:
-                    self.movimento[2] = True
-                elif evento.key == pygame.K_s:
-                    self.movimento[3] = True
                 elif evento.key == pygame.K_LSHIFT:
                     self.shift = True
                 elif evento.key == pygame.K_g:
@@ -208,15 +196,7 @@ class Editor:
                 elif evento.key == pygame.K_p:
                     self.pesquisar_mapas()
             elif evento.type == pygame.KEYUP:
-                if evento.key == pygame.K_a:
-                    self.movimento[0] = False
-                elif evento.key == pygame.K_d:
-                    self.movimento[1] = False
-                elif evento.key == pygame.K_w:
-                    self.movimento[2] = False
-                elif evento.key == pygame.K_s:
-                    self.movimento[3] = False
-                elif evento.key == pygame.K_LSHIFT:
+                if evento.key == pygame.K_LSHIFT:
                     self.shift = False
 
     def rodar(self):

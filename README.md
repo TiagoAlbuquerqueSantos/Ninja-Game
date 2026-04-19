@@ -1,2 +1,2 @@
-# Ninja-Game
-Jogo de plataforma 2D em python
+# Ninja Game
+### Jogo de plataforma 2D em python

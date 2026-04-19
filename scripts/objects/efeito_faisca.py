@@ -14,6 +14,8 @@ class Faisca:
         self.pos[0] += cos(self.angulo) * self.velocidade
         self.pos[1] += sin(self.angulo) * self.velocidade
 
+        # self.angulo += 0.1 * sin(pygame.time.get_ticks() * 0.01)
+
         self.velocidade = max(0, self.velocidade - 0.1)
         return not self.velocidade
 
