@@ -1,8 +1,9 @@
 
 import pygame
+
 from .state import State
-from scripts.constants import CENTRO_TELA
 from ..ui import TextoTitulo
+from ..constants import CENTRO_TELA
 
 
 class Splash(State):
@@ -13,9 +14,9 @@ class Splash(State):
         self.duracao_splash = 3.0  # 3 segundos
         self.alpha = 255
 
-    def checar_evento(self, eventos):
-        for evento in eventos:
-            if evento.type == pygame.KEYDOWN:
+    def checar_evento(self, evento):
+        if evento.type == pygame.KEYDOWN:
+            if evento.key == pygame.K_RETURN:
                 self.tempo_decorrido = self.duracao_splash  # Pula para transição
 
     def atualizar(self, dt, tempo):
